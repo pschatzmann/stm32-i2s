@@ -1,0 +1,14 @@
+../Drivers/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal_i2s_ex.c:206:19:HAL_I2SEx_TransmitReceive	64	static
+../Drivers/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal_i2s_ex.c:427:19:HAL_I2SEx_TransmitReceive_IT	32	static
+../Drivers/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal_i2s_ex.c:539:19:HAL_I2SEx_TransmitReceive_DMA	40	static
+../Drivers/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal_i2s_ex.c:677:6:HAL_I2SEx_FullDuplex_IRQHandler	40	static
+../Drivers/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal_i2s_ex.c:823:13:HAL_I2SEx_TxRxHalfCpltCallback	16	static
+../Drivers/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal_i2s_ex.c:838:13:HAL_I2SEx_TxRxCpltCallback	16	static
+../Drivers/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal_i2s_ex.c:866:13:I2SEx_TxRxDMAHalfCplt	24	static
+../Drivers/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal_i2s_ex.c:884:13:I2SEx_TxRxDMACplt	24	static
+../Drivers/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal_i2s_ex.c:923:13:I2SEx_TxRxDMAError	24	static
+../Drivers/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal_i2s_ex.c:951:13:I2SEx_TxISR_I2S	16	static
+../Drivers/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal_i2s_ex.c:980:13:I2SEx_TxISR_I2SExt	16	static
+../Drivers/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal_i2s_ex.c:1009:13:I2SEx_RxISR_I2S	16	static
+../Drivers/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal_i2s_ex.c:1038:13:I2SEx_RxISR_I2SExt	16	static
+../Drivers/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal_i2s_ex.c:1071:26:I2SEx_FullDuplexWaitFlagStateUntilTimeout	32	static

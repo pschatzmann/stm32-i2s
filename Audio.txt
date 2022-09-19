@@ -1,0 +1,68 @@
+Configuration	Audio
+STM32CubeMX 	6.6.1
+Date	09/19/2022
+MCU	STM32F411CEUx
+
+
+
+PERIPHERALS	MODES	FUNCTIONS	PINS
+I2S3	Full-Duplex Master	I2S3_CK	PB3
+I2S3	Full-Duplex Master	I2S3_SD	PB5
+I2S3	Full-Duplex Master	I2S3_WS	PA4
+I2S3	Full-Duplex Master	I2S3_ext_SD	PB4
+I2S3	Activated	I2S3_MCK	PB10
+SYS	SysTick	SYS_VS_Systick	VP_SYS_VS_Systick
+TIM1	ITR0	TIM1_VS_ClockSourceITR	VP_TIM1_VS_ClockSourceITR
+
+
+
+Pin Nb	PINs	FUNCTIONs	LABELs
+14	PA4	I2S3_WS	
+21	PB10	I2S3_MCK	
+39	PB3	I2S3_CK	
+40	PB4	I2S3_ext_SD	
+41	PB5	I2S3_SD	
+PERIPHERALS	MODES	FUNCTIONS	PINS
+I2S3	Full-Duplex Master	I2S3_CK	PB3
+I2S3	Full-Duplex Master	I2S3_SD	PB5
+I2S3	Full-Duplex Master	I2S3_WS	PA4
+I2S3	Full-Duplex Master	I2S3_ext_SD	PB4
+I2S3	Activated	I2S3_MCK	PB10
+SYS	SysTick	SYS_VS_Systick	VP_SYS_VS_Systick
+TIM1	ITR0	TIM1_VS_ClockSourceITR	VP_TIM1_VS_ClockSourceITR
+
+
+
+Pin Nb	PINs	FUNCTIONs	LABELs
+14	PA4	I2S3_WS	
+21	PB10	I2S3_MCK	
+39	PB3	I2S3_CK	
+40	PB4	I2S3_ext_SD	
+41	PB5	I2S3_SD	
+
+
+
+SOFTWARE PROJECT
+
+Project Settings : 
+Project Name : Audio
+Project Folder : /Users/pschatzmann/STM32CubeIDE/workspace_1.10.1/Audio
+Toolchain / IDE : STM32CubeIDE
+Firmware Package Name and Version : STM32Cube FW_F4 V1.27.1
+
+
+Code Generation Settings : 
+STM32Cube MCU packages and embedded software packs : Copy only the necessary library files
+Generate peripheral initialization as a pair of '.c/.h' files per peripheral : No
+Backup previously generated files when re-generating : No
+Delete previously generated files when not re-generated : Yes
+Set all free pins as analog (to optimize the power consumption) : No
+
+
+Toolchains Settings : 
+Compiler Optimizations : 
+
+
+
+
+

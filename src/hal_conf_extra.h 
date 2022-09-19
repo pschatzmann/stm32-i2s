@@ -1,0 +1,2 @@
+#pragma once
+//#define HAL_I2S_MODULE_ENABLED
