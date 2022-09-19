@@ -1,4 +1,4 @@
-# STM32F411 I2S
+# Arduino STM32F411 I2S Library
 
 I wanted to use I2S in Arduino with my __STM32F411 Black Pill__ processor.
 
