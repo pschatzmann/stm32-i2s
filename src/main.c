@@ -68,19 +68,7 @@ static void MX_DMA_Init(void);
 static void MX_TIM1_Init(void);
 static void MX_I2S3_Init(void);
 /* USER CODE BEGIN PFP */
-
-void i2s_begin(void)
-{
-  /* Reset of all peripherals, Initializes the Flash interface and the Systick. */
-  HAL_Init();
-  /* Configure the system clock */
-  SystemClock_Config();
-  /* Initialize all configured peripherals */
-  MX_GPIO_Init();
-  MX_DMA_Init();
-  MX_TIM1_Init();
-  MX_I2S3_Init();
-}
+static void MX_I2S3_Init_Ext(void);
 
 /* USER CODE END PFP */
 
@@ -277,6 +265,38 @@ static void MX_GPIO_Init(void)
 }
 
 /* USER CODE BEGIN 4 */
+/// Copy of MX_I2S3_Init which allows some default parameters
+static void MX_I2S3_Init_Ext(void)
+{
+
+  hi2s3.Instance = SPI3;
+  hi2s3.Init.Mode = i2s_default_mode;
+  hi2s3.Init.Standard = i2s_default_standard;
+  hi2s3.Init.FullDuplexMode = i2s_default_fullduplexmode;
+  hi2s3.Init.DataFormat = I2S_DATAFORMAT_16B;
+  hi2s3.Init.MCLKOutput = I2S_MCLKOUTPUT_ENABLE;
+  hi2s3.Init.AudioFreq = i2s_default_samplerate; //I2S_AUDIOFREQ_44K; //I2S_AUDIOFREQ_8K;
+  hi2s3.Init.CPOL = I2S_CPOL_LOW;
+  hi2s3.Init.ClockSource = I2S_CLOCK_PLL;
+  if (HAL_I2S_Init(&hi2s3) != HAL_OK)
+  {
+    Error_Handler();
+  }
+}
+
+/// Starts the i2s processing
+void i2s_begin(void)
+{
+  /* Reset of all peripherals, Initializes the Flash interface and the Systick. */
+  HAL_Init();
+  /* Configure the system clock */
+  SystemClock_Config();
+  /* Initialize all configured peripherals */
+  MX_GPIO_Init();
+  MX_DMA_Init();
+  MX_TIM1_Init();
+  MX_I2S3_Init_Ext();
+}
 
 void startI2STransmit(I2S_HandleTypeDef *i2s, void (*readToTransmit)(uint8_t *buffer, uint16_t byteCount), uint16_t buffer_size) {
 	readToTransmitCB = readToTransmit;
