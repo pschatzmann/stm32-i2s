@@ -2,6 +2,9 @@
 
 I wanted to use I2S in Arduino with my __STM32F411 Black Pill__ processor. 
 
+![stm32f411](https://pschatzmann.github.io/stm32f411-i2s/stm32f411.jpeg)
+
+
 My first trials failed miserably using the DMA versions of the API, so I decideed to generate a working solution using the STM Cube IDE and then convert this to Arduino.
 
 - The API is using Callbacks to transfer the data.
