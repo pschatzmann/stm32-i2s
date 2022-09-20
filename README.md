@@ -11,6 +11,7 @@ Please note that this is just a working prototype:
 - Only Master Mode is supported
 - Only 16bit data is supported
 - Full Duplex is supported
+- Sampling rate is 44100
 
 ## Pins
 
