@@ -31,6 +31,8 @@ extern "C" {
 
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
+#define I2S_BUFFER_SIZE 512
+
 /* USER CODE END Includes */
 
 /* Exported types ------------------------------------------------------------*/
@@ -45,7 +47,6 @@ extern "C" {
 
 /* Exported macro ------------------------------------------------------------*/
 /* USER CODE BEGIN EM */
-void i2s_begin(void);
 
 /* USER CODE END EM */
 
@@ -53,6 +54,14 @@ void i2s_begin(void);
 void Error_Handler(void);
 
 /* USER CODE BEGIN EFP */
+void startI2STransmit(I2S_HandleTypeDef *i2s,void (*readToTransmitCB)(uint8_t *buffer, uint16_t byteCount), uint16_t buffer_size);
+void startI2SReceive(I2S_HandleTypeDef *i2s,void (*writeFromReceiveCB)(uint8_t *buffer, uint16_t byteCount), uint16_t buffer_size);
+void startI2STransmitReceive(I2S_HandleTypeDef *i2s, void (*readToTransmit)(uint8_t *buffer, uint16_t byteCount), void (*writeFromReceive)(uint8_t *buffer, uint16_t byteCount), uint16_t buffer_size);
+void stopI2S();
+
+extern I2S_HandleTypeDef hi2s3;
+extern void (*readToTransmitCB)(uint8_t *buffer, uint16_t byteCount);
+extern void (*writeFromReceiveCB)(uint8_t *buffer, uint16_t byteCount);
 
 /* USER CODE END EFP */
 

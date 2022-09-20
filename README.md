@@ -1,8 +1,77 @@
 # Arduino STM32F411 I2S Library
 
-I wanted to use I2S in Arduino with my __STM32F411 Black Pill__ processor.
+I wanted to use I2S in Arduino with my __STM32F411 Black Pill__ processor. 
 
-My first trials failed miserably, so I decideed to generate a working solution using the STM Cube IDE and then convert this to Arduino.
+My first trials failed miserably using the DMA versions of the API, so I decideed to generate a working solution using the STM Cube IDE and then convert this to Arduino.
 
-Please note that this is just a working prototype...
+Please note that this is just a working prototype:
+- The API is using Callbacks to transfer the data.
+- The DMA is used to transfer the data
+- I2S Protocol is Standard Philips
+- Only Master Mode is supported
+- Only 16bit data is supported
+- Full Duplex is supported
 
+## Pins
+
+PINs  |	FUNCTIONs 
+------|------------	
+PA4	  | I2S3_WS	
+PB10  |	I2S3_MCK	
+PB3	  | I2S3_CK	
+PB4	  | I2S3_ext_SD	
+PB5	  | I2S3_SD	
+
+
+## Sending Data
+
+```
+#include "AudioTools.h"
+#include "stm32-i2s.h"
+
+SineWaveGenerator<int16_t> sineWave(32000);   // subclass of SoundGenerator with max amplitude of 32000
+int sample_rate = 44100;
+int channels = 1;
+
+void readToTransmit(uint8_t *buffer, uint16_t byteCount) {
+	uint16_t samples = byteCount / 2;
+	int16_t *buffer_16 = (int16_t*) buffer;
+	for (uint j = 0; j < samples; j+=2) {
+		int16_t sample = sineWave.readSample();
+		buffer_16[j] = sample;
+		buffer_16[j+1] = sample;
+	}
+}
+
+void setup() {
+	sineWave.begin(channels, sample_rate, N_B4);
+	startI2STransmit(&hi2s3, readToTransmit);
+}
+
+void loop() {
+
+}
+```
+
+
+## Receiving Data
+
+```
+#include "AudioTools.h"
+#include "stm32-i2s.h"
+
+CsvStream<int16_t> out(Serial, 2); // ASCII output stream 
+
+void writeFromReceive(uint8_t *buffer, uint16_t byteCount){
+	out.write(buffer, byteCount);
+}
+
+void setup() {
+	startI2SReceive(&hi2s3, writeFromReceive, I2S_BUFFER_SIZE);
+}
+
+void loop() {
+
+}
+
+```

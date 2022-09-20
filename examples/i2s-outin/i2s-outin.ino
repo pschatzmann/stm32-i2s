@@ -15,10 +15,14 @@ void readToTransmit(uint8_t *buffer, uint16_t byteCount) {
 	}
 }
 
+void writeToReceive(uint8_t *buffer, uint16_t byteCount) {
+	out.write(buffer, byteCount);
+}
+
 void setup() {
 	Serial.begin(115200);
 	sineWave.begin(channels, sample_rate, N_B4);
-	startI2STransmit(&hi2s3, readToTransmit);
+	startI2STransmitReceive(&hi2s3, readToTransmit, writeToReceive, I2S_BUFFER_SIZE);
 }
 
 void loop() {

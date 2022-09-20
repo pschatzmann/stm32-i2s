@@ -18,9 +18,11 @@
 /* USER CODE END Header */
 /* Includes ------------------------------------------------------------------*/
 #include "main.h"
-
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
+#include <stdint.h>
+#include <string.h>
+#include <stdlib.h>
 
 /* USER CODE END Includes */
 
@@ -31,6 +33,7 @@
 
 /* Private define ------------------------------------------------------------*/
 /* USER CODE BEGIN PD */
+
 /* USER CODE END PD */
 
 /* Private macro -------------------------------------------------------------*/
@@ -42,11 +45,16 @@
 I2S_HandleTypeDef hi2s3;
 DMA_HandleTypeDef hdma_i2s3_ext_rx;
 DMA_HandleTypeDef hdma_spi3_tx;
-
 TIM_HandleTypeDef htim1;
-
 DMA_HandleTypeDef hdma_memtomem_dma2_stream0;
+
 /* USER CODE BEGIN PV */
+
+void (*readToTransmitCB)(uint8_t *buffer, uint16_t byteCount)=NULL;
+void (*writeFromReceiveCB)(uint8_t *buffer, uint16_t byteCount)=NULL;
+void i2s_begin(void);
+
+
 /* USER CODE END PV */
 
 /* Private function prototypes -----------------------------------------------*/
@@ -265,6 +273,72 @@ static void MX_GPIO_Init(void)
 }
 
 /* USER CODE BEGIN 4 */
+
+void startI2STransmit(I2S_HandleTypeDef *i2s, void (*readToTransmit)(uint8_t *buffer, uint16_t byteCount), uint16_t buffer_size) {
+	readToTransmitCB = readToTransmit;
+  void *dma_buffer_tx = calloc(1, buffer_size);
+  i2s_begin();
+	// start circular dma
+	if (HAL_I2S_Transmit_DMA(i2s, (uint16_t*) dma_buffer_tx, buffer_size << 1)!=HAL_OK){
+		//LOGE("HAL_I2S_Transmit_DMA");
+    Error_Handler();
+	}
+}
+
+void startI2SReceive(I2S_HandleTypeDef *i2s, void (*writeFromReceive)(uint8_t *buffer, uint16_t byteCount),uint16_t buffer_size) {
+  writeFromReceiveCB = writeFromReceive;
+  void *dma_buffer_rx = calloc(1, buffer_size);
+  i2s_begin();
+	// start circular dma
+	if (HAL_I2S_Receive_DMA(i2s, (uint16_t*) dma_buffer_rx, buffer_size << 1)!=HAL_OK){
+		//LOGE("HAL_I2S_Transmit_DMA");
+    Error_Handler();
+	}
+}
+
+void startI2STransmitReceive(I2S_HandleTypeDef *i2s, void (*readToTransmit)(uint8_t *buffer, uint16_t byteCount), void (*writeFromReceive)(uint8_t *buffer, uint16_t byteCount), uint16_t buffer_size) {
+	readToTransmitCB = readToTransmit;
+  void *dma_buffer_tx = calloc(1, buffer_size);
+  writeFromReceiveCB = writeFromReceive;
+  void *dma_buffer_rx = calloc(1, buffer_size);
+  i2s_begin();
+  if (HAL_I2SEx_TransmitReceive_DMA(i2s, (uint16_t*) dma_buffer_tx, (uint16_t*) dma_buffer_rx, buffer_size << 1)){
+		//LOGE("HAL_I2S_Transmit_DMA");
+    Error_Handler();
+	}
+}
+
+void stopI2S(I2S_HandleTypeDef *i2s) {
+  HAL_I2S_DMAStop(i2s);
+  HAL_I2S_DeInit(i2s);
+  HAL_I2S_MspDeInit(i2s);
+  if (i2s->pTxBuffPtr!=NULL){
+    free(i2s->pTxBuffPtr);
+  }
+  if (i2s->pRxBuffPtr!=NULL){
+    free(i2s->pRxBuffPtr);
+  }
+}
+
+void HAL_I2S_TxCpltCallback(I2S_HandleTypeDef *hi2s) {
+	// second half finished, filling it up again while first  half is playing
+  uint8_t* dma_buffer_tx = (uint8_t*)hi2s->pTxBuffPtr;
+  uint8_t* dma_buffer_rx = (uint8_t*)hi2s->pRxBuffPtr;
+  uint16_t buffer_size_tx = hi2s->TxXferSize;
+  uint16_t buffer_size_rx = hi2s->RxXferSize;
+	if (readToTransmitCB!=NULL) readToTransmitCB(&(dma_buffer_tx[buffer_size_tx >> 1]), buffer_size_tx >> 1);
+  if (writeFromReceiveCB!=NULL) writeFromReceiveCB(&(dma_buffer_rx[buffer_size_rx >> 1]), buffer_size_rx >> 1);
+}
+
+void HAL_I2S_TxHalfCpltCallback(I2S_HandleTypeDef *hi2s) {
+  uint8_t* dma_buffer_tx = (uint8_t*)hi2s->pTxBuffPtr;
+  uint8_t* dma_buffer_rx = (uint8_t*)hi2s->pRxBuffPtr;
+  uint16_t buffer_size_tx = hi2s->TxXferSize;
+  uint16_t buffer_size_rx = hi2s->RxXferSize;
+	// first half finished, filling it up again while second half is playing
+	if (readToTransmitCB!=NULL) readToTransmitCB(&(dma_buffer_tx[0]), buffer_size_tx >> 1);
+  if (writeFromReceiveCB!=NULL) writeFromReceiveCB(&(dma_buffer_rx[0]), buffer_size_rx >> 1);
+}
 
 /* USER CODE END 4 */
 
