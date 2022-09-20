@@ -2,7 +2,14 @@
 
 I wanted to use __I2S__ in Arduino with my __STM32F411 Black Pill__ processor together with my [Arduino Audio Tools](https://github.com/pschatzmann/arduino-audio-tools)! Unfortunately [STMDuino](https://github.com/stm32duino) does not provide this functionality.
 
+<<<<<<< HEAD
 My first trials failed miserably using the DMA versions of the HAL API, so I decideed to generate a working solution using the __STM Cube IDE__ and then convert this to Arduino library:
+=======
+![stm32f411](https://pschatzmann.github.io/stm32f411-i2s/stm32f411.jpeg)
+
+
+My first trials failed miserably using the DMA versions of the API, so I decideed to generate a working solution using the STM Cube IDE and then convert this to Arduino.
+>>>>>>> a32ef0ab5bcab2fb81412c19f8a1cbb6dbae35c4
 
 - The DMA is used to transfer the data
 - I2S Protocol can be defined with __i2s_default_standard__ variable (default is I2S_STANDARD_PHILIPS)
