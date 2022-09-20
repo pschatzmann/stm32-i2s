@@ -4,14 +4,13 @@ I wanted to use I2S in Arduino with my __STM32F411 Black Pill__ processor.
 
 My first trials failed miserably using the DMA versions of the API, so I decideed to generate a working solution using the STM Cube IDE and then convert this to Arduino.
 
-Please note that this is just a working prototype:
 - The API is using Callbacks to transfer the data.
 - The DMA is used to transfer the data
-- I2S Protocol is Standard Philips
-- Only Master Mode is supported
+- I2S Protocol can be defined with __i2s_default_standard__ (default is I2S_STANDARD_PHILIPS)
+- Mode can be selected with __i2s_default_mode__ (default is I2S_MODE_MASTER_TX)
+- Full Duplex is supported with __i2s_default_fullduplexmode__ (default is I2S_FULLDUPLEXMODE_ENABLE)
+- Sampling rate can be selected with __is2_default_samplerate__ (default value is I2S_AUDIOFREQ_44K) 
 - Only 16bit data is supported
-- Full Duplex is supported
-- Sampling rate is 44100
 
 ## Pins
 
