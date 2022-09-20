@@ -1,0 +1,9 @@
+{
+	"folders": [
+		{
+			"name": "stm32-i2s-test",
+			"path": "../../../../.."
+		}
+	],
+	"settings": {}
+}

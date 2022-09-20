@@ -23,6 +23,7 @@
 #include <stdint.h>
 #include <string.h>
 #include <stdlib.h>
+#include <assert.h>
 
 /* USER CODE END Includes */
 
@@ -303,7 +304,7 @@ void startI2STransmit(I2S_HandleTypeDef *i2s, void (*readToTransmit)(uint8_t *bu
   void *dma_buffer_tx = calloc(1, buffer_size);
   i2s_begin();
 	// start circular dma
-	if (HAL_I2S_Transmit_DMA(i2s, (uint16_t*) dma_buffer_tx, buffer_size << 1)!=HAL_OK){
+	if (HAL_I2S_Transmit_DMA(i2s, (uint16_t*) dma_buffer_tx, buffer_size)!=HAL_OK){
 		//LOGE("HAL_I2S_Transmit_DMA");
     Error_Handler();
 	}
@@ -314,7 +315,7 @@ void startI2SReceive(I2S_HandleTypeDef *i2s, void (*writeFromReceive)(uint8_t *b
   void *dma_buffer_rx = calloc(1, buffer_size);
   i2s_begin();
 	// start circular dma
-	if (HAL_I2S_Receive_DMA(i2s, (uint16_t*) dma_buffer_rx, buffer_size << 1)!=HAL_OK){
+	if (HAL_I2S_Receive_DMA(i2s, (uint16_t*) dma_buffer_rx, buffer_size)!=HAL_OK){
 		//LOGE("HAL_I2S_Transmit_DMA");
     Error_Handler();
 	}
@@ -326,7 +327,7 @@ void startI2STransmitReceive(I2S_HandleTypeDef *i2s, void (*readToTransmit)(uint
   writeFromReceiveCB = writeFromReceive;
   void *dma_buffer_rx = calloc(1, buffer_size);
   i2s_begin();
-  if (HAL_I2SEx_TransmitReceive_DMA(i2s, (uint16_t*) dma_buffer_tx, (uint16_t*) dma_buffer_rx, buffer_size << 1)){
+  if (HAL_I2SEx_TransmitReceive_DMA(i2s, (uint16_t*) dma_buffer_tx, (uint16_t*) dma_buffer_rx, buffer_size)){
 		//LOGE("HAL_I2S_Transmit_DMA");
     Error_Handler();
 	}
@@ -374,6 +375,7 @@ void Error_Handler(void)
 {
   /* USER CODE BEGIN Error_Handler_Debug */
   /* User can add his own implementation to report the HAL error return state */
+  assert(0);
   __disable_irq();
   while (1)
   {
