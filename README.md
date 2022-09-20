@@ -6,10 +6,10 @@ My first trials failed miserably using the DMA versions of the API, so I decidee
 
 - The API is using Callbacks to transfer the data.
 - The DMA is used to transfer the data
-- I2S Protocol can be defined with __i2s_default_standard__ (default is I2S_STANDARD_PHILIPS)
-- Mode can be selected with __i2s_default_mode__ (default is I2S_MODE_MASTER_TX)
-- Full Duplex is supported with __i2s_default_fullduplexmode__ (default is I2S_FULLDUPLEXMODE_ENABLE)
-- Sampling rate can be selected with __is2_default_samplerate__ (default value is I2S_AUDIOFREQ_44K) 
+- I2S Protocol can be defined with __i2s_default_standard__ variable (default is I2S_STANDARD_PHILIPS)
+- Mode can be selected with __i2s_default_mode__ variable (default is I2S_MODE_MASTER_TX)
+- Full Duplex is supported with __i2s_default_fullduplexmode__ variable (default is I2S_FULLDUPLEXMODE_ENABLE)
+- Sampling rate can be selected with __is2_default_samplerate__ variable(default value is I2S_AUDIOFREQ_44K) 
 - Only 16bit data is supported
 
 ## Pins
@@ -75,3 +75,14 @@ void loop() {
 }
 
 ```
+
+### Installation in Arduino
+
+You can download the library as zip and call include Library -> zip library. Or you can git clone this project into the Arduino libraries folder e.g. with
+
+```
+cd  ~/Documents/Arduino/libraries
+git clone pschatzmann/https://github.com/pschatzmann/stm32f411-i2s.git
+```
+
+I recommend to use git because you can easily update to the latest version just by executing the ```git pull``` command in the project folder.
