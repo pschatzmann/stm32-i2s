@@ -53,12 +53,7 @@ DMA_HandleTypeDef hdma_memtomem_dma2_stream0;
 
 void (*readToTransmitCB)(uint8_t *buffer, uint16_t byteCount)=NULL;
 void (*writeFromReceiveCB)(uint8_t *buffer, uint16_t byteCount)=NULL;
-void i2s_begin(void);
 
-uint32_t i2s_default_mode = I2S_MODE_MASTER_TX;
-uint32_t i2s_default_standard = I2S_STANDARD_PHILIPS;
-uint32_t i2s_default_fullduplexmode = I2S_FULLDUPLEXMODE_ENABLE;
-uint32_t i2s_default_samplerate = I2S_AUDIOFREQ_44K;
 
 /* USER CODE END PV */
 
@@ -69,7 +64,7 @@ static void MX_DMA_Init(void);
 static void MX_TIM1_Init(void);
 static void MX_I2S3_Init(void);
 /* USER CODE BEGIN PFP */
-static void MX_I2S3_Init_Ext(void);
+static void MX_I2S3_Init_Ext(I2SSettingsSTM32 *settings);
 
 /* USER CODE END PFP */
 
@@ -145,12 +140,12 @@ static void MX_I2S3_Init(void)
 
   /* USER CODE END I2S3_Init 1 */
   hi2s3.Instance = SPI3;
-  hi2s3.Init.Mode = i2s_default_mode;
-  hi2s3.Init.Standard = i2s_default_standard;
-  hi2s3.Init.FullDuplexMode = i2s_default_fullduplexmode;
+  hi2s3.Init.Mode = I2S_MODE_MASTER_TX;
+  hi2s3.Init.Standard = I2S_STANDARD_PHILIPS;
+  hi2s3.Init.FullDuplexMode = I2S_FULLDUPLEXMODE_ENABLE;
   hi2s3.Init.DataFormat = I2S_DATAFORMAT_16B;
   hi2s3.Init.MCLKOutput = I2S_MCLKOUTPUT_ENABLE;
-  hi2s3.Init.AudioFreq = i2s_default_samplerate; //I2S_AUDIOFREQ_44K; //I2S_AUDIOFREQ_8K;
+  hi2s3.Init.AudioFreq = I2S_AUDIOFREQ_44K; //I2S_AUDIOFREQ_44K; //I2S_AUDIOFREQ_8K;
   hi2s3.Init.CPOL = I2S_CPOL_LOW;
   hi2s3.Init.ClockSource = I2S_CLOCK_PLL;
   if (HAL_I2S_Init(&hi2s3) != HAL_OK)
@@ -267,16 +262,16 @@ static void MX_GPIO_Init(void)
 
 /* USER CODE BEGIN 4 */
 /// Copy of MX_I2S3_Init which allows some default parameters
-static void MX_I2S3_Init_Ext(void)
+static void MX_I2S3_Init_Ext(I2SSettingsSTM32 *settings)
 {
 
   hi2s3.Instance = SPI3;
-  hi2s3.Init.Mode = i2s_default_mode;
-  hi2s3.Init.Standard = i2s_default_standard;
-  hi2s3.Init.FullDuplexMode = i2s_default_fullduplexmode;
+  hi2s3.Init.Mode = settings->mode;
+  hi2s3.Init.Standard = settings->standard;
+  hi2s3.Init.FullDuplexMode = settings->fullduplexmode;
+  hi2s3.Init.AudioFreq = settings->sample_rate; //I2S_AUDIOFREQ_44K; //I2S_AUDIOFREQ_8K;
   hi2s3.Init.DataFormat = I2S_DATAFORMAT_16B;
   hi2s3.Init.MCLKOutput = I2S_MCLKOUTPUT_ENABLE;
-  hi2s3.Init.AudioFreq = i2s_default_samplerate; //I2S_AUDIOFREQ_44K; //I2S_AUDIOFREQ_8K;
   hi2s3.Init.CPOL = I2S_CPOL_LOW;
   hi2s3.Init.ClockSource = I2S_CLOCK_PLL;
   if (HAL_I2S_Init(&hi2s3) != HAL_OK)
@@ -286,8 +281,26 @@ static void MX_I2S3_Init_Ext(void)
 }
 
 /// Starts the i2s processing
-void i2s_begin(void)
+void i2s_begin(I2SSettingsSTM32 *settings)
 {
+  // default values
+  if (settings->mode ==0){
+     settings->mode = I2S_MODE_MASTER_TX;
+  }
+  if (settings->standard==0){
+     settings->standard = I2S_STANDARD_PHILIPS;
+  }
+  if (settings->fullduplexmode==0){
+     settings->fullduplexmode = I2S_FULLDUPLEXMODE_ENABLE;
+  }
+  if (settings->sample_rate==0){
+     settings->sample_rate = I2S_AUDIOFREQ_44K;
+  }
+  if (settings->i2s==NULL){
+     settings->i2s = &hi2s3;
+  }
+
+
   /* Reset of all peripherals, Initializes the Flash interface and the Systick. */
   HAL_Init();
   /* Configure the system clock */
@@ -296,38 +309,38 @@ void i2s_begin(void)
   MX_GPIO_Init();
   MX_DMA_Init();
   MX_TIM1_Init();
-  MX_I2S3_Init_Ext();
+  MX_I2S3_Init_Ext(settings);
 }
 
-void startI2STransmit(I2S_HandleTypeDef *i2s, void (*readToTransmit)(uint8_t *buffer, uint16_t byteCount), uint16_t buffer_size) {
+void startI2STransmit(I2SSettingsSTM32 *settings, void (*readToTransmit)(uint8_t *buffer, uint16_t byteCount), uint16_t buffer_size) {
 	readToTransmitCB = readToTransmit;
   void *dma_buffer_tx = calloc(1, buffer_size);
-  i2s_begin();
+  i2s_begin(settings);
 	// start circular dma
-	if (HAL_I2S_Transmit_DMA(i2s, (uint16_t*) dma_buffer_tx, buffer_size)!=HAL_OK){
+	if (HAL_I2S_Transmit_DMA(settings->i2s, (uint16_t*) dma_buffer_tx, buffer_size)!=HAL_OK){
 		//LOGE("HAL_I2S_Transmit_DMA");
     Error_Handler();
 	}
 }
 
-void startI2SReceive(I2S_HandleTypeDef *i2s, void (*writeFromReceive)(uint8_t *buffer, uint16_t byteCount),uint16_t buffer_size) {
+void startI2SReceive(I2SSettingsSTM32 *settings, void (*writeFromReceive)(uint8_t *buffer, uint16_t byteCount),uint16_t buffer_size) {
   writeFromReceiveCB = writeFromReceive;
   void *dma_buffer_rx = calloc(1, buffer_size);
-  i2s_begin();
+  i2s_begin(settings);
 	// start circular dma
-	if (HAL_I2S_Receive_DMA(i2s, (uint16_t*) dma_buffer_rx, buffer_size)!=HAL_OK){
+	if (HAL_I2S_Receive_DMA(settings->i2s, (uint16_t*) dma_buffer_rx, buffer_size)!=HAL_OK){
 		//LOGE("HAL_I2S_Transmit_DMA");
     Error_Handler();
 	}
 }
 
-void startI2STransmitReceive(I2S_HandleTypeDef *i2s, void (*readToTransmit)(uint8_t *buffer, uint16_t byteCount), void (*writeFromReceive)(uint8_t *buffer, uint16_t byteCount), uint16_t buffer_size) {
+void startI2STransmitReceive(I2SSettingsSTM32 *settings, void (*readToTransmit)(uint8_t *buffer, uint16_t byteCount), void (*writeFromReceive)(uint8_t *buffer, uint16_t byteCount), uint16_t buffer_size) {
 	readToTransmitCB = readToTransmit;
   void *dma_buffer_tx = calloc(1, buffer_size);
   writeFromReceiveCB = writeFromReceive;
   void *dma_buffer_rx = calloc(1, buffer_size);
-  i2s_begin();
-  if (HAL_I2SEx_TransmitReceive_DMA(i2s, (uint16_t*) dma_buffer_tx, (uint16_t*) dma_buffer_rx, buffer_size)){
+  i2s_begin(settings);
+  if (HAL_I2SEx_TransmitReceive_DMA(settings->i2s, (uint16_t*) dma_buffer_tx, (uint16_t*) dma_buffer_rx, buffer_size)){
 		//LOGE("HAL_I2S_Transmit_DMA");
     Error_Handler();
 	}

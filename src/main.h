@@ -54,16 +54,23 @@ extern "C" {
 void Error_Handler(void);
 
 /* USER CODE BEGIN EFP */
-void startI2STransmit(I2S_HandleTypeDef *i2s,void (*readToTransmitCB)(uint8_t *buffer, uint16_t byteCount), uint16_t buffer_size);
-void startI2SReceive(I2S_HandleTypeDef *i2s,void (*writeFromReceiveCB)(uint8_t *buffer, uint16_t byteCount), uint16_t buffer_size);
-void startI2STransmitReceive(I2S_HandleTypeDef *i2s, void (*readToTransmit)(uint8_t *buffer, uint16_t byteCount), void (*writeFromReceive)(uint8_t *buffer, uint16_t byteCount), uint16_t buffer_size);
-void stopI2S();
 
 extern I2S_HandleTypeDef hi2s3;
-extern uint32_t i2s_default_mode;
-extern uint32_t i2s_default_standard;
-extern uint32_t i2s_default_fullduplexmode;
-extern uint32_t i2s_default_samplerate;
+
+// supported parameters
+typedef struct I2SSettingsSTM32 {
+  uint32_t mode;
+  uint32_t standard;
+  uint32_t fullduplexmode;
+  uint32_t sample_rate;
+  I2S_HandleTypeDef *i2s;
+} I2SSettingsSTM32;
+
+void startI2STransmit(I2SSettingsSTM32 *settings,void (*readToTransmitCB)(uint8_t *buffer, uint16_t byteCount), uint16_t buffer_size);
+void startI2SReceive(I2SSettingsSTM32 *settings,void (*writeFromReceiveCB)(uint8_t *buffer, uint16_t byteCount), uint16_t buffer_size);
+void startI2STransmitReceive(I2SSettingsSTM32 *settings, void (*readToTransmit)(uint8_t *buffer, uint16_t byteCount), void (*writeFromReceive)(uint8_t *buffer, uint16_t byteCount), uint16_t buffer_size);
+void stopI2S();
+
 
 extern void (*readToTransmitCB)(uint8_t *buffer, uint16_t byteCount);
 extern void (*writeFromReceiveCB)(uint8_t *buffer, uint16_t byteCount);

@@ -2,6 +2,7 @@
 #include "stm32-i2s.h"
 
 SineWaveGenerator<int16_t> sineWave(32000);   // subclass of SoundGenerator with max amplitude of 32000
+I2SSettingsSTM32 i2s_settings;
 int sample_rate = 44100;
 int channels = 1;
 
@@ -22,7 +23,8 @@ void writeToReceive(uint8_t *buffer, uint16_t byteCount) {
 void setup() {
 	Serial.begin(115200);
 	sineWave.begin(channels, sample_rate, N_B4);
-	startI2STransmitReceive(&hi2s3, readToTransmit, writeToReceive, I2S_BUFFER_SIZE);
+	i2s_settings.sample_rate =I2S_AUDIOFREQ_44K;
+	startI2STransmitReceive(&i2s_settings, readToTransmit, writeToReceive, I2S_BUFFER_SIZE);
 }
 
 void loop() {
