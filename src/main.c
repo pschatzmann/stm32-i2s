@@ -18,6 +18,7 @@
 /* USER CODE END Header */
 /* Includes ------------------------------------------------------------------*/
 #include "main.h"
+
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
 #include <stdint.h>
@@ -46,8 +47,8 @@
 I2S_HandleTypeDef hi2s3;
 DMA_HandleTypeDef hdma_i2s3_ext_rx;
 DMA_HandleTypeDef hdma_spi3_tx;
+
 TIM_HandleTypeDef htim1;
-DMA_HandleTypeDef hdma_memtomem_dma2_stream0;
 
 /* USER CODE BEGIN PV */
 
@@ -70,6 +71,9 @@ static void MX_I2S3_Init_Ext(I2SSettingsSTM32 *settings);
 
 /* Private user code ---------------------------------------------------------*/
 /* USER CODE BEGIN 0 */
+
+// WARDNING: The SystemClock_Config leads to conflicts, so we rename it to make sure that it is not used!
+#define SystemClock_Config SystemClock_Config_Ext
 
 /* USER CODE END 0 */
 
@@ -142,12 +146,12 @@ static void MX_I2S3_Init(void)
   hi2s3.Instance = SPI3;
   hi2s3.Init.Mode = I2S_MODE_MASTER_TX;
   hi2s3.Init.Standard = I2S_STANDARD_PHILIPS;
-  hi2s3.Init.FullDuplexMode = I2S_FULLDUPLEXMODE_ENABLE;
   hi2s3.Init.DataFormat = I2S_DATAFORMAT_16B;
   hi2s3.Init.MCLKOutput = I2S_MCLKOUTPUT_ENABLE;
-  hi2s3.Init.AudioFreq = I2S_AUDIOFREQ_44K; //I2S_AUDIOFREQ_44K; //I2S_AUDIOFREQ_8K;
+  hi2s3.Init.AudioFreq = I2S_AUDIOFREQ_96K;
   hi2s3.Init.CPOL = I2S_CPOL_LOW;
   hi2s3.Init.ClockSource = I2S_CLOCK_PLL;
+  hi2s3.Init.FullDuplexMode = I2S_FULLDUPLEXMODE_ENABLE;
   if (HAL_I2S_Init(&hi2s3) != HAL_OK)
   {
     Error_Handler();
@@ -207,42 +211,20 @@ static void MX_TIM1_Init(void)
 
 /**
   * Enable DMA controller clock
-  * Configure DMA for memory to memory transfers
-  *   hdma_memtomem_dma2_stream0
   */
 static void MX_DMA_Init(void)
 {
 
   /* DMA controller clock enable */
-  __HAL_RCC_DMA2_CLK_ENABLE();
   __HAL_RCC_DMA1_CLK_ENABLE();
 
-  /* Configure DMA request hdma_memtomem_dma2_stream0 on DMA2_Stream0 */
-  hdma_memtomem_dma2_stream0.Instance = DMA2_Stream0;
-  hdma_memtomem_dma2_stream0.Init.Channel = DMA_CHANNEL_0;
-  hdma_memtomem_dma2_stream0.Init.Direction = DMA_MEMORY_TO_MEMORY;
-  hdma_memtomem_dma2_stream0.Init.PeriphInc = DMA_PINC_ENABLE;
-  hdma_memtomem_dma2_stream0.Init.MemInc = DMA_MINC_ENABLE;
-  hdma_memtomem_dma2_stream0.Init.PeriphDataAlignment = DMA_PDATAALIGN_BYTE;
-  hdma_memtomem_dma2_stream0.Init.MemDataAlignment = DMA_MDATAALIGN_BYTE;
-  hdma_memtomem_dma2_stream0.Init.Mode = DMA_NORMAL;
-  hdma_memtomem_dma2_stream0.Init.Priority = DMA_PRIORITY_LOW;
-  hdma_memtomem_dma2_stream0.Init.FIFOMode = DMA_FIFOMODE_ENABLE;
-  hdma_memtomem_dma2_stream0.Init.FIFOThreshold = DMA_FIFO_THRESHOLD_FULL;
-  hdma_memtomem_dma2_stream0.Init.MemBurst = DMA_MBURST_SINGLE;
-  hdma_memtomem_dma2_stream0.Init.PeriphBurst = DMA_PBURST_SINGLE;
-  if (HAL_DMA_Init(&hdma_memtomem_dma2_stream0) != HAL_OK)
-  {
-    Error_Handler( );
-  }
-
   /* DMA interrupt init */
-  /* DMA1_Stream0_IRQn interrupt configuration */
-  HAL_NVIC_SetPriority(DMA1_Stream0_IRQn, 0, 0);
-  HAL_NVIC_EnableIRQ(DMA1_Stream0_IRQn);
-  /* DMA1_Stream5_IRQn interrupt configuration */
+  /* RX DMA1_Stream0_IRQn interrupt configuration */
+  HAL_NVIC_SetPriority(DMA1_Stream2_IRQn, 0, 0);
+  HAL_NVIC_EnableIRQ(DMA1_Stream2_IRQn);
+  /* TX: DMA1_Stream5_IRQn interrupt configuration */
   HAL_NVIC_SetPriority(DMA1_Stream5_IRQn, 0, 0);
-  HAL_NVIC_EnableIRQ(DMA1_Stream5_IRQn);
+  HAL_NVIC_EnableIRQ(DMA2_Stream5_IRQn);
 
 }
 
@@ -280,6 +262,9 @@ static void MX_I2S3_Init_Ext(I2SSettingsSTM32 *settings)
   }
 }
 
+// Undo rename of SystemClock_Config method
+#undef SystemClock_Config
+
 /// Starts the i2s processing
 void i2s_begin(I2SSettingsSTM32 *settings)
 {
@@ -299,10 +284,8 @@ void i2s_begin(I2SSettingsSTM32 *settings)
   if (settings->i2s==NULL){
      settings->i2s = &hi2s3;
   }
-
-
   /* Reset of all peripherals, Initializes the Flash interface and the Systick. */
-  HAL_Init();
+  //HAL_Init();
   /* Configure the system clock */
   SystemClock_Config();
   /* Initialize all configured peripherals */
