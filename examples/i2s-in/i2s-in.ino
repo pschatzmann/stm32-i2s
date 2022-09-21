@@ -9,6 +9,7 @@ void writeFromReceive(uint8_t *buffer, uint16_t byteCount){
 
 void setup() {
 	Serial.begin(115200);
+	i2s_default_samplerate = I2S_AUDIOFREQ_8K;
 	startI2SReceive(&hi2s3, writeFromReceive, I2S_BUFFER_SIZE);
 }
 

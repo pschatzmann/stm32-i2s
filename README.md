@@ -26,6 +26,20 @@ PB3	  | I2S3_CK
 PB4	  | I2S3_ext_SD	
 PB5	  | I2S3_SD	
 
+## Supported Sample Rates
+
+- I2S_AUDIOFREQ_192K
+- I2S_AUDIOFREQ_96K
+- I2S_AUDIOFREQ_48K
+- I2S_AUDIOFREQ_44K
+- I2S_AUDIOFREQ_32K
+- I2S_AUDIOFREQ_22K
+- I2S_AUDIOFREQ_16K
+- I2S_AUDIOFREQ_11K
+- I2S_AUDIOFREQ_8K
+
+
+
 ## API
 
 Below I demonstrate the basic API provided by this library. However, I recommend that you use the I2SStream class from the [Arduino Audio Tools](https://github.com/pschatzmann/arduino-audio-tools) library which uses this functionality.
@@ -37,7 +51,7 @@ Below I demonstrate the basic API provided by this library. However, I recommend
 #include "stm32-i2s.h"
 
 SineWaveGenerator<int16_t> sineWave(32000);   // subclass of SoundGenerator with max amplitude of 32000
-int sample_rate = 44100;
+int sample_rate = 8000;
 int channels = 1;
 
 void readToTransmit(uint8_t *buffer, uint16_t byteCount) {
@@ -52,6 +66,7 @@ void readToTransmit(uint8_t *buffer, uint16_t byteCount) {
 
 void setup() {
 	sineWave.begin(channels, sample_rate, N_B4);
+	i2s_default_samplerate = I2S_AUDIOFREQ_8K;
 	startI2STransmit(&hi2s3, readToTransmit);
 }
 
@@ -74,6 +89,7 @@ void writeFromReceive(uint8_t *buffer, uint16_t byteCount){
 }
 
 void setup() {
+	i2s_default_samplerate = I2S_AUDIOFREQ_8K;
 	startI2SReceive(&hi2s3, writeFromReceive, I2S_BUFFER_SIZE);
 }
 
