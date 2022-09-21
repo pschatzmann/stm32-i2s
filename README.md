@@ -109,7 +109,7 @@ You can download the library as zip and call include Library -> zip library. Or 
 
 ```
 cd  ~/Documents/Arduino/libraries
-git clone pschatzmann/https://github.com/pschatzmann/stm32f411-i2s.git
+git clone https://github.com/pschatzmann/stm32f411-i2s.git
 ```
 
 I recommend to use git because you can easily update to the latest version just by executing the ```git pull``` command in the project folder.
