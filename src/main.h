@@ -37,6 +37,7 @@ extern "C" {
 
 /* Exported types ------------------------------------------------------------*/
 /* USER CODE BEGIN ET */
+typedef int boolean;
 
 /* USER CODE END ET */
 
@@ -66,10 +67,11 @@ typedef struct I2SSettingsSTM32 {
   I2S_HandleTypeDef *i2s;
 } I2SSettingsSTM32;
 
-void startI2STransmit(I2SSettingsSTM32 *settings,void (*readToTransmitCB)(uint8_t *buffer, uint16_t byteCount), uint16_t buffer_size);
-void startI2SReceive(I2SSettingsSTM32 *settings,void (*writeFromReceiveCB)(uint8_t *buffer, uint16_t byteCount), uint16_t buffer_size);
-void startI2STransmitReceive(I2SSettingsSTM32 *settings, void (*readToTransmit)(uint8_t *buffer, uint16_t byteCount), void (*writeFromReceive)(uint8_t *buffer, uint16_t byteCount), uint16_t buffer_size);
+boolean startI2STransmit(I2SSettingsSTM32 *settings,void (*readToTransmitCB)(uint8_t *buffer, uint16_t byteCount), uint16_t buffer_size);
+boolean startI2SReceive(I2SSettingsSTM32 *settings,void (*writeFromReceiveCB)(uint8_t *buffer, uint16_t byteCount), uint16_t buffer_size);
+boolean startI2STransmitReceive(I2SSettingsSTM32 *settings, void (*readToTransmit)(uint8_t *buffer, uint16_t byteCount), void (*writeFromReceive)(uint8_t *buffer, uint16_t byteCount), uint16_t buffer_size);
 void stopI2S();
+void STM32_LOG(const char *fmt, ...);
 
 
 extern void (*readToTransmitCB)(uint8_t *buffer, uint16_t byteCount);

@@ -17,15 +17,15 @@ My first trials failed miserably using the DMA versions of the HAL API, so I dec
 	- Sampling rate can be selected with __is2_default_samplerate__ variable(default value is I2S_AUDIOFREQ_44K) 
 - Only __16bit__ data is supported
 
-## Pins
+## Pins for I2S3
 
 PINs  |	FUNCTIONs 
 ------|------------	
-PA4	  | I2S3_WS	
-PB10  |	I2S3_MCK	
-PB3	  | I2S3_CK	
-PB4	  | I2S3_ext_SD	
-PB5	  | I2S3_SD	
+PB10  |	MCK	
+PB3	  | BCK	
+PA4	  | WS (LRC)	
+PB5	  | SD	
+PB4	  | ext_SD	
 
 ## Supported Sample Rates
 
@@ -101,9 +101,6 @@ void loop() {
 }
 
 ```
-
-
-
 
 
 ## Installation in Arduino

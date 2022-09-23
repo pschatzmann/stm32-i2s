@@ -18,19 +18,24 @@
 /* USER CODE END Header */
 /* Includes ------------------------------------------------------------------*/
 #include "main.h"
+//#include "usb_device.h"
 
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
+
 #include <stdint.h>
 #include <string.h>
 #include <stdlib.h>
+#include <stdbool.h>
+#include <stdio.h>
+#include <stdarg.h>
 #include <assert.h>
 
 /* USER CODE END Includes */
 
 /* Private typedef -----------------------------------------------------------*/
 /* USER CODE BEGIN PTD */
-
+boolean is_error;
 /* USER CODE END PTD */
 
 /* Private define ------------------------------------------------------------*/
@@ -48,8 +53,6 @@ I2S_HandleTypeDef hi2s3;
 DMA_HandleTypeDef hdma_i2s3_ext_rx;
 DMA_HandleTypeDef hdma_spi3_tx;
 
-TIM_HandleTypeDef htim1;
-
 /* USER CODE BEGIN PV */
 
 void (*readToTransmitCB)(uint8_t *buffer, uint16_t byteCount)=NULL;
@@ -62,7 +65,6 @@ void (*writeFromReceiveCB)(uint8_t *buffer, uint16_t byteCount)=NULL;
 void SystemClock_Config(void);
 static void MX_GPIO_Init(void);
 static void MX_DMA_Init(void);
-static void MX_TIM1_Init(void);
 static void MX_I2S3_Init(void);
 /* USER CODE BEGIN PFP */
 static void MX_I2S3_Init_Ext(I2SSettingsSTM32 *settings);
@@ -73,7 +75,7 @@ static void MX_I2S3_Init_Ext(I2SSettingsSTM32 *settings);
 /* USER CODE BEGIN 0 */
 
 // WARDNING: The SystemClock_Config leads to conflicts, so we rename it to make sure that it is not used!
-#define SystemClock_Config SystemClock_Config_Ext
+//#define SystemClock_Config SystemClock_Config_Ext
 
 /* USER CODE END 0 */
 
@@ -99,15 +101,14 @@ void SystemClock_Config(void)
   /** Initializes the RCC Oscillators according to the specified parameters
   * in the RCC_OscInitTypeDef structure.
   */
-  RCC_OscInitStruct.OscillatorType = RCC_OSCILLATORTYPE_HSI;
-  RCC_OscInitStruct.HSIState = RCC_HSI_ON;
-  RCC_OscInitStruct.HSICalibrationValue = RCC_HSICALIBRATION_DEFAULT;
+  RCC_OscInitStruct.OscillatorType = RCC_OSCILLATORTYPE_HSE;
+  RCC_OscInitStruct.HSEState = RCC_HSE_ON;
   RCC_OscInitStruct.PLL.PLLState = RCC_PLL_ON;
-  RCC_OscInitStruct.PLL.PLLSource = RCC_PLLSOURCE_HSI;
-  RCC_OscInitStruct.PLL.PLLM = 8;
-  RCC_OscInitStruct.PLL.PLLN = 64;
-  RCC_OscInitStruct.PLL.PLLP = RCC_PLLP_DIV2;
-  RCC_OscInitStruct.PLL.PLLQ = 4;
+  RCC_OscInitStruct.PLL.PLLSource = RCC_PLLSOURCE_HSE;
+  RCC_OscInitStruct.PLL.PLLM = 15;
+  RCC_OscInitStruct.PLL.PLLN = 144;
+  RCC_OscInitStruct.PLL.PLLP = RCC_PLLP_DIV4;
+  RCC_OscInitStruct.PLL.PLLQ = 5;
   if (HAL_RCC_OscConfig(&RCC_OscInitStruct) != HAL_OK)
   {
     Error_Handler();
@@ -118,11 +119,11 @@ void SystemClock_Config(void)
   RCC_ClkInitStruct.ClockType = RCC_CLOCKTYPE_HCLK|RCC_CLOCKTYPE_SYSCLK
                               |RCC_CLOCKTYPE_PCLK1|RCC_CLOCKTYPE_PCLK2;
   RCC_ClkInitStruct.SYSCLKSource = RCC_SYSCLKSOURCE_PLLCLK;
-  RCC_ClkInitStruct.AHBCLKDivider = RCC_SYSCLK_DIV4;
-  RCC_ClkInitStruct.APB1CLKDivider = RCC_HCLK_DIV1;
+  RCC_ClkInitStruct.AHBCLKDivider = RCC_SYSCLK_DIV1;
+  RCC_ClkInitStruct.APB1CLKDivider = RCC_HCLK_DIV2;
   RCC_ClkInitStruct.APB2CLKDivider = RCC_HCLK_DIV1;
 
-  if (HAL_RCC_ClockConfig(&RCC_ClkInitStruct, FLASH_LATENCY_0) != HAL_OK)
+  if (HAL_RCC_ClockConfig(&RCC_ClkInitStruct, FLASH_LATENCY_1) != HAL_OK)
   {
     Error_Handler();
   }
@@ -148,7 +149,7 @@ static void MX_I2S3_Init(void)
   hi2s3.Init.Standard = I2S_STANDARD_PHILIPS;
   hi2s3.Init.DataFormat = I2S_DATAFORMAT_16B;
   hi2s3.Init.MCLKOutput = I2S_MCLKOUTPUT_ENABLE;
-  hi2s3.Init.AudioFreq = I2S_AUDIOFREQ_96K;
+  hi2s3.Init.AudioFreq = I2S_AUDIOFREQ_8K;
   hi2s3.Init.CPOL = I2S_CPOL_LOW;
   hi2s3.Init.ClockSource = I2S_CLOCK_PLL;
   hi2s3.Init.FullDuplexMode = I2S_FULLDUPLEXMODE_ENABLE;
@@ -163,53 +164,6 @@ static void MX_I2S3_Init(void)
 }
 
 /**
-  * @brief TIM1 Initialization Function
-  * @param None
-  * @retval None
-  */
-static void MX_TIM1_Init(void)
-{
-
-  /* USER CODE BEGIN TIM1_Init 0 */
-
-  /* USER CODE END TIM1_Init 0 */
-
-  TIM_SlaveConfigTypeDef sSlaveConfig = {0};
-  TIM_MasterConfigTypeDef sMasterConfig = {0};
-
-  /* USER CODE BEGIN TIM1_Init 1 */
-
-  /* USER CODE END TIM1_Init 1 */
-  htim1.Instance = TIM1;
-  htim1.Init.Prescaler = 0;
-  htim1.Init.CounterMode = TIM_COUNTERMODE_UP;
-  htim1.Init.Period = 65535;
-  htim1.Init.ClockDivision = TIM_CLOCKDIVISION_DIV1;
-  htim1.Init.RepetitionCounter = 0;
-  htim1.Init.AutoReloadPreload = TIM_AUTORELOAD_PRELOAD_DISABLE;
-  if (HAL_TIM_Base_Init(&htim1) != HAL_OK)
-  {
-    Error_Handler();
-  }
-  sSlaveConfig.SlaveMode = TIM_SLAVEMODE_DISABLE;
-  sSlaveConfig.InputTrigger = TIM_TS_ITR0;
-  if (HAL_TIM_SlaveConfigSynchro(&htim1, &sSlaveConfig) != HAL_OK)
-  {
-    Error_Handler();
-  }
-  sMasterConfig.MasterOutputTrigger = TIM_TRGO_RESET;
-  sMasterConfig.MasterSlaveMode = TIM_MASTERSLAVEMODE_DISABLE;
-  if (HAL_TIMEx_MasterConfigSynchronization(&htim1, &sMasterConfig) != HAL_OK)
-  {
-    Error_Handler();
-  }
-  /* USER CODE BEGIN TIM1_Init 2 */
-
-  /* USER CODE END TIM1_Init 2 */
-
-}
-
-/**
   * Enable DMA controller clock
   */
 static void MX_DMA_Init(void)
@@ -219,12 +173,12 @@ static void MX_DMA_Init(void)
   __HAL_RCC_DMA1_CLK_ENABLE();
 
   /* DMA interrupt init */
-  /* RX DMA1_Stream0_IRQn interrupt configuration */
-  HAL_NVIC_SetPriority(DMA1_Stream2_IRQn, 0, 0);
-  HAL_NVIC_EnableIRQ(DMA1_Stream2_IRQn);
-  /* TX: DMA1_Stream5_IRQn interrupt configuration */
+  /* DMA1_Stream0_IRQn interrupt configuration */
+  HAL_NVIC_SetPriority(DMA1_Stream0_IRQn, 0, 0);
+  HAL_NVIC_EnableIRQ(DMA1_Stream0_IRQn);
+  /* DMA1_Stream5_IRQn interrupt configuration */
   HAL_NVIC_SetPriority(DMA1_Stream5_IRQn, 0, 0);
-  HAL_NVIC_EnableIRQ(DMA2_Stream5_IRQn);
+  HAL_NVIC_EnableIRQ(DMA1_Stream5_IRQn);
 
 }
 
@@ -235,10 +189,20 @@ static void MX_DMA_Init(void)
   */
 static void MX_GPIO_Init(void)
 {
+  GPIO_InitTypeDef GPIO_InitStruct = {0};
 
   /* GPIO Ports Clock Enable */
+  __HAL_RCC_GPIOH_CLK_ENABLE();
   __HAL_RCC_GPIOA_CLK_ENABLE();
   __HAL_RCC_GPIOB_CLK_ENABLE();
+
+  /*Configure GPIO pin : PA2 */
+  GPIO_InitStruct.Pin = GPIO_PIN_2;
+  GPIO_InitStruct.Mode = GPIO_MODE_AF_PP;
+  GPIO_InitStruct.Pull = GPIO_NOPULL;
+  GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
+  GPIO_InitStruct.Alternate = GPIO_AF5_SPI1;
+  HAL_GPIO_Init(GPIOA, &GPIO_InitStruct);
 
 }
 
@@ -266,7 +230,7 @@ static void MX_I2S3_Init_Ext(I2SSettingsSTM32 *settings)
 #undef SystemClock_Config
 
 /// Starts the i2s processing
-void i2s_begin(I2SSettingsSTM32 *settings)
+boolean i2s_begin(I2SSettingsSTM32 *settings)
 {
   // default values
   if (settings->mode ==0){
@@ -284,49 +248,65 @@ void i2s_begin(I2SSettingsSTM32 *settings)
   if (settings->i2s==NULL){
      settings->i2s = &hi2s3;
   }
+  is_error = false;
   /* Reset of all peripherals, Initializes the Flash interface and the Systick. */
-  //HAL_Init();
+  //HAL_Init();// Not needed -> called by Arduino
   /* Configure the system clock */
-  SystemClock_Config();
+  SystemClock_Config(); // Not needed -> called by Arduino
   /* Initialize all configured peripherals */
   MX_GPIO_Init();
   MX_DMA_Init();
-  MX_TIM1_Init();
   MX_I2S3_Init_Ext(settings);
+  return is_error;
 }
 
-void startI2STransmit(I2SSettingsSTM32 *settings, void (*readToTransmit)(uint8_t *buffer, uint16_t byteCount), uint16_t buffer_size) {
+boolean startI2STransmit(I2SSettingsSTM32 *settings, void (*readToTransmit)(uint8_t *buffer, uint16_t byteCount), uint16_t buffer_size) {
 	readToTransmitCB = readToTransmit;
   void *dma_buffer_tx = calloc(1, buffer_size);
-  i2s_begin(settings);
+  boolean result = true;
+  if (!i2s_begin(settings)){
+    return false;
+  }
 	// start circular dma
 	if (HAL_I2S_Transmit_DMA(settings->i2s, (uint16_t*) dma_buffer_tx, buffer_size)!=HAL_OK){
 		//LOGE("HAL_I2S_Transmit_DMA");
     Error_Handler();
+    result = false;
 	}
+  return result;
 }
 
-void startI2SReceive(I2SSettingsSTM32 *settings, void (*writeFromReceive)(uint8_t *buffer, uint16_t byteCount),uint16_t buffer_size) {
+boolean startI2SReceive(I2SSettingsSTM32 *settings, void (*writeFromReceive)(uint8_t *buffer, uint16_t byteCount),uint16_t buffer_size) {
+  boolean result = true;
   writeFromReceiveCB = writeFromReceive;
   void *dma_buffer_rx = calloc(1, buffer_size);
-  i2s_begin(settings);
+  if (!i2s_begin(settings)){
+    return false;
+  }
 	// start circular dma
 	if (HAL_I2S_Receive_DMA(settings->i2s, (uint16_t*) dma_buffer_rx, buffer_size)!=HAL_OK){
 		//LOGE("HAL_I2S_Transmit_DMA");
     Error_Handler();
+    result = false;
 	}
+  return result;
 }
 
-void startI2STransmitReceive(I2SSettingsSTM32 *settings, void (*readToTransmit)(uint8_t *buffer, uint16_t byteCount), void (*writeFromReceive)(uint8_t *buffer, uint16_t byteCount), uint16_t buffer_size) {
+boolean startI2STransmitReceive(I2SSettingsSTM32 *settings, void (*readToTransmit)(uint8_t *buffer, uint16_t byteCount), void (*writeFromReceive)(uint8_t *buffer, uint16_t byteCount), uint16_t buffer_size) {
+  boolean result = true;
 	readToTransmitCB = readToTransmit;
   void *dma_buffer_tx = calloc(1, buffer_size);
   writeFromReceiveCB = writeFromReceive;
   void *dma_buffer_rx = calloc(1, buffer_size);
-  i2s_begin(settings);
+  if (!i2s_begin(settings)){
+    return false;
+  }
   if (HAL_I2SEx_TransmitReceive_DMA(settings->i2s, (uint16_t*) dma_buffer_tx, (uint16_t*) dma_buffer_rx, buffer_size)){
 		//LOGE("HAL_I2S_Transmit_DMA");
     Error_Handler();
+    result = false;
 	}
+  return result;
 }
 
 void stopI2S(I2S_HandleTypeDef *i2s) {
@@ -361,6 +341,7 @@ void HAL_I2S_TxHalfCpltCallback(I2S_HandleTypeDef *hi2s) {
   if (writeFromReceiveCB!=NULL) writeFromReceiveCB(&(dma_buffer_rx[0]), buffer_size_rx >> 1);
 }
 
+
 /* USER CODE END 4 */
 
 /**
@@ -371,11 +352,13 @@ void Error_Handler(void)
 {
   /* USER CODE BEGIN Error_Handler_Debug */
   /* User can add his own implementation to report the HAL error return state */
-  assert(0);
-  __disable_irq();
-  while (1)
-  {
-  }
+  is_error = true;
+  STM32_LOG("%s","stm32-i2s: Error");
+  // assert(0);
+  // __disable_irq();
+  // while (1)
+  // {
+  // }
   /* USER CODE END Error_Handler_Debug */
 }
 
@@ -392,6 +375,7 @@ void assert_failed(uint8_t *file, uint32_t line)
   /* USER CODE BEGIN 6 */
   /* User can add his own implementation to report the file name and line number,
      ex: printf("Wrong parameters value: file %s on line %d\r\n", file, line) */
+  STM32_LOG("stm32-i2s: Wrong parameters value: file %s on line %d", file, line);
   /* USER CODE END 6 */
 }
 #endif /* USE_FULL_ASSERT */
