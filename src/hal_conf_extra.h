@@ -1,0 +1,3 @@
+#pragma once
+#define USE_HAL_I2S_REGISTER_CALLBACKS
+#define SPI_I2S_FULLDUPLEX_SUPPORT
