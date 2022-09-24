@@ -130,21 +130,21 @@ void HAL_I2S_MspInit(I2S_HandleTypeDef* hi2s)
     GPIO_InitStruct.Pin = GPIO_PIN_4;
     GPIO_InitStruct.Mode = GPIO_MODE_AF_PP;
     GPIO_InitStruct.Pull = GPIO_NOPULL;
-    GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_HIGH;
+    GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_VERY_HIGH;
     GPIO_InitStruct.Alternate = GPIO_AF6_SPI3;
     HAL_GPIO_Init(GPIOA, &GPIO_InitStruct);
 
     GPIO_InitStruct.Pin = GPIO_PIN_10|GPIO_PIN_3|GPIO_PIN_5;
     GPIO_InitStruct.Mode = GPIO_MODE_AF_PP;
     GPIO_InitStruct.Pull = GPIO_NOPULL;
-    GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_HIGH;
+    GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_VERY_HIGH;
     GPIO_InitStruct.Alternate = GPIO_AF6_SPI3;
     HAL_GPIO_Init(GPIOB, &GPIO_InitStruct);
 
     GPIO_InitStruct.Pin = GPIO_PIN_4;
     GPIO_InitStruct.Mode = GPIO_MODE_AF_PP;
     GPIO_InitStruct.Pull = GPIO_NOPULL;
-    GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_HIGH;
+    GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_VERY_HIGH;
     GPIO_InitStruct.Alternate = GPIO_AF7_I2S3ext;
     HAL_GPIO_Init(GPIOB, &GPIO_InitStruct);
 
@@ -161,8 +161,8 @@ void HAL_I2S_MspInit(I2S_HandleTypeDef* hi2s)
     hdma_i2s3_ext_rx.Init.Priority = DMA_PRIORITY_HIGH;
     hdma_i2s3_ext_rx.Init.FIFOMode = DMA_FIFOMODE_ENABLE;
     hdma_i2s3_ext_rx.Init.FIFOThreshold = DMA_FIFO_THRESHOLD_HALFFULL;
-    hdma_i2s3_ext_rx.Init.MemBurst = DMA_MBURST_SINGLE;
-    hdma_i2s3_ext_rx.Init.PeriphBurst = DMA_PBURST_SINGLE;
+    hdma_i2s3_ext_rx.Init.MemBurst = DMA_MBURST_INC4;
+    hdma_i2s3_ext_rx.Init.PeriphBurst = DMA_PBURST_INC4;
     if (HAL_DMA_Init(&hdma_i2s3_ext_rx) != HAL_OK)
     {
       Error_Handler();
@@ -182,8 +182,8 @@ void HAL_I2S_MspInit(I2S_HandleTypeDef* hi2s)
     hdma_spi3_tx.Init.Priority = DMA_PRIORITY_HIGH;
     hdma_spi3_tx.Init.FIFOMode = DMA_FIFOMODE_ENABLE;
     hdma_spi3_tx.Init.FIFOThreshold = DMA_FIFO_THRESHOLD_HALFFULL;
-    hdma_spi3_tx.Init.MemBurst = DMA_MBURST_SINGLE;
-    hdma_spi3_tx.Init.PeriphBurst = DMA_PBURST_SINGLE;
+    hdma_spi3_tx.Init.MemBurst = DMA_PBURST_INC4;
+    hdma_spi3_tx.Init.PeriphBurst = DMA_PBURST_INC4;
     if (HAL_DMA_Init(&hdma_spi3_tx) != HAL_OK)
     {
       Error_Handler();
