@@ -75,7 +75,7 @@ static void MX_I2S3_Init_Ext(I2SSettingsSTM32 *settings);
 /* USER CODE BEGIN 0 */
 
 // WARDNING: The SystemClock_Config leads to conflicts, so we rename it to make sure that it is not used!
-#define SystemClock_Config SystemClock_Config_Ext
+#define SystemClock_Config NA_SystemClock_Config
 
 /* USER CODE END 0 */
 
