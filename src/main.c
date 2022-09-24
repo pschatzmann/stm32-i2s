@@ -301,7 +301,7 @@ boolean startI2STransmitReceive(I2SSettingsSTM32 *settings, void (*readToTransmi
   if (!i2s_begin(settings)){
     return false;
   }
-  if (HAL_I2SEx_TransmitReceive_DMA(settings->i2s, (uint16_t*) dma_buffer_tx, (uint16_t*) dma_buffer_rx, buffer_size)){
+  if (HAL_I2SEx_TransmitReceive_DMA(settings->i2s, (uint16_t*) dma_buffer_tx, (uint16_t*) dma_buffer_rx, buffer_size)!=HAL_OK){
 		//LOGE("HAL_I2S_Transmit_DMA");
     Error_Handler();
     result = false;
@@ -321,7 +321,7 @@ void stopI2S(I2S_HandleTypeDef *i2s) {
   }
 }
 
-void HAL_I2S_TxCpltCallback(I2S_HandleTypeDef *hi2s) {
+void HAL_I2SEx_TxRxCpltCallback(I2S_HandleTypeDef *hi2s) {
 	// second half finished, filling it up again while first  half is playing
   uint8_t* dma_buffer_tx = (uint8_t*)hi2s->pTxBuffPtr;
   uint8_t* dma_buffer_rx = (uint8_t*)hi2s->pRxBuffPtr;
@@ -331,14 +331,30 @@ void HAL_I2S_TxCpltCallback(I2S_HandleTypeDef *hi2s) {
   if (writeFromReceiveCB!=NULL) writeFromReceiveCB(&(dma_buffer_rx[buffer_size_rx >> 1]), buffer_size_rx >> 1);
 }
 
-void HAL_I2S_TxHalfCpltCallback(I2S_HandleTypeDef *hi2s) {
+void HAL_I2SEx_TxRxHalfCpltCallback(I2S_HandleTypeDef *hi2s) {
+	// second half finished, filling it up again while first  half is playing
   uint8_t* dma_buffer_tx = (uint8_t*)hi2s->pTxBuffPtr;
   uint8_t* dma_buffer_rx = (uint8_t*)hi2s->pRxBuffPtr;
   uint16_t buffer_size_tx = hi2s->TxXferSize;
   uint16_t buffer_size_rx = hi2s->RxXferSize;
-	// first half finished, filling it up again while second half is playing
-	if (readToTransmitCB!=NULL) readToTransmitCB(&(dma_buffer_tx[0]), buffer_size_tx >> 1);
-  if (writeFromReceiveCB!=NULL) writeFromReceiveCB(&(dma_buffer_rx[0]), buffer_size_rx >> 1);
+	if (readToTransmitCB!=NULL) readToTransmitCB(&(dma_buffer_tx[buffer_size_tx >> 1]), buffer_size_tx >> 1);
+  if (writeFromReceiveCB!=NULL) writeFromReceiveCB(&(dma_buffer_rx[buffer_size_rx >> 1]), buffer_size_rx >> 1);
+}
+
+void HAL_I2S_TxCpltCallback(I2S_HandleTypeDef *hi2s) {
+  HAL_I2SEx_TxRxCpltCallback(hi2s);
+}
+
+void HAL_I2S_TxHalfCpltCallback(I2S_HandleTypeDef *hi2s) {
+  HAL_I2SEx_TxRxHalfCpltCallback(hi2s);
+}
+
+void HAL_I2S_RxCpltCallback(I2S_HandleTypeDef *hi2s) {
+  HAL_I2SEx_TxRxCpltCallback(hi2s);
+}
+
+void HAL_I2S_RxHalfCpltCallback(I2S_HandleTypeDef *hi2s) {
+  HAL_I2SEx_TxRxHalfCpltCallback(hi2s);
 }
 
 void HAL_I2S_ErrorCallback(I2S_HandleTypeDef *hi2s) {
