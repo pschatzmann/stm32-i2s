@@ -31,6 +31,7 @@ extern "C" {
 
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
+#undef Error_Handler
 #define I2S_BUFFER_SIZE 512
 
 /* USER CODE END Includes */

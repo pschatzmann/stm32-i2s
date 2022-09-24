@@ -1,3 +1,5 @@
 #pragma once
-#define USE_HAL_I2S_REGISTER_CALLBACKS
-#define SPI_I2S_FULLDUPLEX_SUPPORT
+#include <stm32_def.h>
+//#define HAL_ADC_MODULE_DISABLED
+//#define HAL_SPI_MODULE_DISABLED
+//#define HAL_DAC_MODULE_DISABLED

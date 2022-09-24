@@ -75,7 +75,7 @@ static void MX_I2S3_Init_Ext(I2SSettingsSTM32 *settings);
 /* USER CODE BEGIN 0 */
 
 // WARDNING: The SystemClock_Config leads to conflicts, so we rename it to make sure that it is not used!
-//#define SystemClock_Config SystemClock_Config_Ext
+#define SystemClock_Config SystemClock_Config_Ext
 
 /* USER CODE END 0 */
 
@@ -252,12 +252,12 @@ boolean i2s_begin(I2SSettingsSTM32 *settings)
   /* Reset of all peripherals, Initializes the Flash interface and the Systick. */
   //HAL_Init();// Not needed -> called by Arduino
   /* Configure the system clock */
-  SystemClock_Config(); // Not needed -> called by Arduino
+  //SystemClock_Config(); // Not needed -> called by Arduino
   /* Initialize all configured peripherals */
   MX_GPIO_Init();
   MX_DMA_Init();
   MX_I2S3_Init_Ext(settings);
-  return is_error;
+  return !is_error;
 }
 
 boolean startI2STransmit(I2SSettingsSTM32 *settings, void (*readToTransmit)(uint8_t *buffer, uint16_t byteCount), uint16_t buffer_size) {
@@ -341,6 +341,9 @@ void HAL_I2S_TxHalfCpltCallback(I2S_HandleTypeDef *hi2s) {
   if (writeFromReceiveCB!=NULL) writeFromReceiveCB(&(dma_buffer_rx[0]), buffer_size_rx >> 1);
 }
 
+void HAL_I2S_ErrorCallback(I2S_HandleTypeDef *hi2s) {
+  Error_Handler();
+}
 
 /* USER CODE END 4 */
 
