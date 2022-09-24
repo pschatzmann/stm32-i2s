@@ -24,7 +24,11 @@ void setup() {
 	Serial.begin(115200);
 	sineWave.begin(channels, sample_rate, N_B4);
 	i2s_settings.sample_rate =I2S_AUDIOFREQ_44K;
-	startI2STransmitReceive(&i2s_settings, readToTransmit, writeToReceive, I2S_BUFFER_SIZE);
+	if (!startI2STransmitReceive(&i2s_settings, readToTransmit, writeToReceive, I2S_BUFFER_SIZE)){
+		Serial.println("I2S Error");
+		return;
+	}
+
 }
 
 void loop() {
