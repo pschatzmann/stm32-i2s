@@ -16,6 +16,7 @@ My first trials failed miserably using the DMA versions of the HAL API, so I dec
 	- Full Duplex is supported with __i2s_default_fullduplexmode__ variable (default is I2S_FULLDUPLEXMODE_ENABLE)
 	- Sampling rate can be selected with __is2_default_samplerate__ variable(default value is I2S_AUDIOFREQ_44K) 
 - Only __16bit__ data is supported
+- I also incuded the Cirrus cs43l22 codec driver because this codec is part of some stm32 evaluation boards. 
 
 ## Pins for I2S3
 
@@ -38,7 +39,6 @@ PB4	  | ext_SD
 - I2S_AUDIOFREQ_16K
 - I2S_AUDIOFREQ_11K
 - I2S_AUDIOFREQ_8K
-
 
 
 ## API
@@ -113,3 +113,36 @@ git clone https://github.com/pschatzmann/stm32f411-i2s.git
 ```
 
 I recommend to use git because you can easily update to the latest version just by executing the ```git pull``` command in the project folder.
+
+
+## Copyright
+
+__Copyright © 2022 Phil Schatzmann__
+
+[GNU General Public License](License.txt)
+
+
+__COPYRIGHT(c) 2015 STMicroelectronics__
+  
+Redistribution and use in source and binary forms, with or without modification,
+are permitted provided that the following conditions are met:
+	1. Redistributions of source code must retain the above copyright notice,
+	this list of conditions and the following disclaimer.
+	2. Redistributions in binary form must reproduce the above copyright notice,
+	this list of conditions and the following disclaimer in the documentation
+	and/or other materials provided with the distribution.
+	3. Neither the name of STMicroelectronics nor the names of its contributors
+	may be used to endorse or promote products derived from this software
+	without specific prior written permission.
+
+THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
+AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
+IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
+DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE
+FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL
+DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR
+SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER
+CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY,
+OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
+OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+  

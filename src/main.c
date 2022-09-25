@@ -57,6 +57,8 @@ DMA_HandleTypeDef hdma_spi3_tx;
 
 void (*readToTransmitCB)(uint8_t *buffer, uint16_t byteCount)=NULL;
 void (*writeFromReceiveCB)(uint8_t *buffer, uint16_t byteCount)=NULL;
+void STM32_LOG(const char *fmt, ...);
+void Error_Handler(void);
 
 
 /* USER CODE END PV */
@@ -75,7 +77,7 @@ static void MX_I2S3_Init_Ext(I2SSettingsSTM32 *settings);
 /* USER CODE BEGIN 0 */
 
 // WARDNING: The SystemClock_Config leads to conflicts, so we rename it to make sure that it is not used!
-#define SystemClock_Config NA_SystemClock_Config
+//#define SystemClock_Config NA_SystemClock_Config
 
 /* USER CODE END 0 */
 

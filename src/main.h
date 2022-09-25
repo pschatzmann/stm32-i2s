@@ -16,6 +16,11 @@
   *
   ******************************************************************************
   */
+
+/** @addtogroup I2S
+  * @{
+  */ 
+
 /* USER CODE END Header */
 
 /* Define to prevent recursive inclusion -------------------------------------*/
@@ -53,7 +58,6 @@ typedef int boolean;
 /* USER CODE END EM */
 
 /* Exported functions prototypes ---------------------------------------------*/
-void Error_Handler(void);
 
 /* USER CODE BEGIN EFP */
 
@@ -72,7 +76,6 @@ boolean startI2STransmit(I2SSettingsSTM32 *settings,void (*readToTransmitCB)(uin
 boolean startI2SReceive(I2SSettingsSTM32 *settings,void (*writeFromReceiveCB)(uint8_t *buffer, uint16_t byteCount), uint16_t buffer_size);
 boolean startI2STransmitReceive(I2SSettingsSTM32 *settings, void (*readToTransmit)(uint8_t *buffer, uint16_t byteCount), void (*writeFromReceive)(uint8_t *buffer, uint16_t byteCount), uint16_t buffer_size);
 void stopI2S();
-void STM32_LOG(const char *fmt, ...);
 
 
 extern void (*readToTransmitCB)(uint8_t *buffer, uint16_t byteCount);
@@ -82,6 +85,12 @@ extern void (*writeFromReceiveCB)(uint8_t *buffer, uint16_t byteCount);
 
 /* Private defines -----------------------------------------------------------*/
 /* USER CODE BEGIN Private defines */
+
+
+/**
+  * @}
+  */ 
+
 
 /* USER CODE END Private defines */
 
