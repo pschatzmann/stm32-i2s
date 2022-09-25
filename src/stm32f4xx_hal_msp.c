@@ -58,6 +58,7 @@ extern DMA_HandleTypeDef hdma_spi3_tx;
 
 /* External functions --------------------------------------------------------*/
 /* USER CODE BEGIN ExternalFunctions */
+void Error_Handler(void);
 
 /* USER CODE END ExternalFunctions */
 
