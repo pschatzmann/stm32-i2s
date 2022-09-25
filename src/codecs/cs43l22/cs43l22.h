@@ -40,10 +40,6 @@
 /* Includes ------------------------------------------------------------------*/
 #include <stdint.h>
 
-/** @addtogroup BSP
-  * @{
-  */ 
-
 /** @addtogroup Component
   * @{
   */ 
@@ -222,10 +218,6 @@ uint8_t   AUDIO_IO_Read(uint8_t Addr, uint8_t Reg);
 /**
   * @}
   */ 
-
-/**
-  * @}
-  */
 
 /**
   * @}
