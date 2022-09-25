@@ -75,7 +75,8 @@ static void MX_I2S3_Init_Ext(I2SSettingsSTM32 *settings);
 /* Private user code ---------------------------------------------------------*/
 /* USER CODE BEGIN 0 */
 
-// WARDNING: The SystemClock_Config leads to conflicts, so we rename it to make sure that it is not used!
+// WARDNING: The SystemClock_Config can lead to conflicts, so we can rename it to make sure that it is not used and 
+// we use the default implementation provided by Arduino!
 //#define SystemClock_Config NA_SystemClock_Config
 
 /* USER CODE END 0 */
