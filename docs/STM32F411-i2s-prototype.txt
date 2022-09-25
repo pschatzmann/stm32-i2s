@@ -1,6 +1,6 @@
 Configuration	STM32F411-i2s-prototype
 STM32CubeMX 	6.6.1
-Date	09/23/2022
+Date	09/24/2022
 MCU	STM32F411CEUx
 
 
