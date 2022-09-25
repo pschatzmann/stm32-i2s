@@ -16,7 +16,7 @@ My first trials failed miserably using the DMA versions of the HAL API, so I dec
 	- Full Duplex is supported with __i2s_default_fullduplexmode__ variable (default is I2S_FULLDUPLEXMODE_ENABLE)
 	- Sampling rate can be selected with __is2_default_samplerate__ variable(default value is I2S_AUDIOFREQ_44K) 
 - Only __16bit__ data is supported
-- I also incuded the Cirrus cs43l22 codec driver because this codec is part of some stm32 evaluation boards. 
+- I also incuded the __codec drivers__ that are part of some stm32 evaluation boards. 
 
 ## Pins for I2S3
 
