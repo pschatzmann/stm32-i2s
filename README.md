@@ -127,7 +127,7 @@ __Copyright © 2022 Phil Schatzmann__
 [GNU General Public License](License.txt)
 
 
-__COPYRIGHT(c) 2015 STMicroelectronics__
+__COPYRIGHT © 2015 STMicroelectronics__
   
 Redistribution and use in source and binary forms, with or without modification,
 are permitted provided that the following conditions are met:
