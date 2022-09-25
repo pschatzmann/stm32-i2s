@@ -18,7 +18,6 @@
 /* USER CODE END Header */
 /* Includes ------------------------------------------------------------------*/
 #include "main.h"
-//#include "usb_device.h"
 
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
@@ -327,20 +326,20 @@ void HAL_I2SEx_TxRxCpltCallback(I2S_HandleTypeDef *hi2s) {
 	// second half finished, filling it up again while first  half is playing
   uint8_t* dma_buffer_tx = (uint8_t*)hi2s->pTxBuffPtr;
   uint8_t* dma_buffer_rx = (uint8_t*)hi2s->pRxBuffPtr;
-  uint16_t buffer_size_tx = hi2s->TxXferSize;
-  uint16_t buffer_size_rx = hi2s->RxXferSize;
-	if (readToTransmitCB!=NULL) readToTransmitCB(&(dma_buffer_tx[buffer_size_tx >> 1]), buffer_size_tx >> 1);
-  if (writeFromReceiveCB!=NULL) writeFromReceiveCB(&(dma_buffer_rx[buffer_size_rx >> 1]), buffer_size_rx >> 1);
+  uint16_t buffer_size_tx = hi2s->TxXferSize*2;  // XferSize is in words
+  uint16_t buffer_size_rx = hi2s->RxXferSize*2;
+	if (readToTransmitCB!=NULL) readToTransmitCB(&(dma_buffer_tx[buffer_size_tx/2]), buffer_size_tx/2);
+  if (writeFromReceiveCB!=NULL) writeFromReceiveCB(&(dma_buffer_rx[buffer_size_rx/2]), buffer_size_rx/2);
 }
 
 void HAL_I2SEx_TxRxHalfCpltCallback(I2S_HandleTypeDef *hi2s) {
 	// second half finished, filling it up again while first  half is playing
   uint8_t* dma_buffer_tx = (uint8_t*)hi2s->pTxBuffPtr;
   uint8_t* dma_buffer_rx = (uint8_t*)hi2s->pRxBuffPtr;
-  uint16_t buffer_size_tx = hi2s->TxXferSize;
-  uint16_t buffer_size_rx = hi2s->RxXferSize;
-	if (readToTransmitCB!=NULL) readToTransmitCB(&(dma_buffer_tx[buffer_size_tx >> 1]), buffer_size_tx >> 1);
-  if (writeFromReceiveCB!=NULL) writeFromReceiveCB(&(dma_buffer_rx[buffer_size_rx >> 1]), buffer_size_rx >> 1);
+  uint16_t buffer_size_tx = hi2s->TxXferSize*2; // XferSize is in words  
+  uint16_t buffer_size_rx = hi2s->RxXferSize*2;
+	if (readToTransmitCB!=NULL) readToTransmitCB(&(dma_buffer_tx[0]), buffer_size_tx/2);
+  if (writeFromReceiveCB!=NULL) writeFromReceiveCB(&(dma_buffer_rx[0]), buffer_size_rx/2);
 }
 
 void HAL_I2S_TxCpltCallback(I2S_HandleTypeDef *hi2s) {

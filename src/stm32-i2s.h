@@ -9,6 +9,4 @@
  * 
  */
 #pragma once
-// We might have some conflicting defines that we need to get rid of
-#undef Error_Handler
 #include "main.h"

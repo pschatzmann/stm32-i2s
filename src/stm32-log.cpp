@@ -8,6 +8,8 @@
  * @copyright Copyright (c) 2022
  * 
  */
+#ifdef ARDUINO
+
 #include "Arduino.h"
 
 extern "C" void STM32_LOG(const char *fmt,...) {
@@ -19,3 +21,5 @@ extern "C" void STM32_LOG(const char *fmt,...) {
   va_end(arg);
   Serial.println(log_buffer);
 }
+
+#endif

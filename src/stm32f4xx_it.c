@@ -32,8 +32,11 @@
 /* Private define ------------------------------------------------------------*/
 /* USER CODE BEGIN PD */
 
+#ifdef ARDUINO
 // WARDNING: The SysTick_Handler leads to conflicts, so we rename it to make sure that it is not used!
 #define SysTick_Handler NA_SysTick_Handler
+#endif
+
 /* USER CODE END PD */
 
 /* Private macro -------------------------------------------------------------*/

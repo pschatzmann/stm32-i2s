@@ -36,7 +36,10 @@ extern "C" {
 
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
+#ifdef ARDUINO
 #undef Error_Handler
+#endif
+
 #define I2S_BUFFER_SIZE 512
 
 /* USER CODE END Includes */
