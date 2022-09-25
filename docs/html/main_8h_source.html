@@ -124,28 +124,32 @@ $(function() {
 <div class="line"><a name="l00075"></a><span class="lineno">   75</span>&#160;  I2S_HandleTypeDef *i2s;</div>
 <div class="line"><a name="l00076"></a><span class="lineno">   76</span>&#160;} <a class="code" href="struct_i2_s_settings_s_t_m32.html">I2SSettingsSTM32</a>;</div>
 <div class="line"><a name="l00077"></a><span class="lineno">   77</span>&#160; </div>
-<div class="line"><a name="l00078"></a><span class="lineno">   78</span>&#160;<span class="keywordtype">boolean</span> startI2STransmit(<a class="code" href="struct_i2_s_settings_s_t_m32.html">I2SSettingsSTM32</a> *settings,<span class="keywordtype">void</span> (*readToTransmitCB)(uint8_t *buffer, uint16_t byteCount), uint16_t buffer_size);</div>
-<div class="line"><a name="l00079"></a><span class="lineno">   79</span>&#160;<span class="keywordtype">boolean</span> startI2SReceive(<a class="code" href="struct_i2_s_settings_s_t_m32.html">I2SSettingsSTM32</a> *settings,<span class="keywordtype">void</span> (*writeFromReceiveCB)(uint8_t *buffer, uint16_t byteCount), uint16_t buffer_size);</div>
-<div class="line"><a name="l00080"></a><span class="lineno">   80</span>&#160;<span class="keywordtype">boolean</span> startI2STransmitReceive(<a class="code" href="struct_i2_s_settings_s_t_m32.html">I2SSettingsSTM32</a> *settings, <span class="keywordtype">void</span> (*readToTransmit)(uint8_t *buffer, uint16_t byteCount), <span class="keywordtype">void</span> (*writeFromReceive)(uint8_t *buffer, uint16_t byteCount), uint16_t buffer_size);</div>
-<div class="line"><a name="l00081"></a><span class="lineno">   81</span>&#160;<span class="keywordtype">void</span> stopI2S();</div>
-<div class="line"><a name="l00082"></a><span class="lineno">   82</span>&#160; </div>
-<div class="line"><a name="l00083"></a><span class="lineno">   83</span>&#160; </div>
-<div class="line"><a name="l00084"></a><span class="lineno">   84</span>&#160;<span class="keyword">extern</span> void (*readToTransmitCB)(uint8_t *buffer, uint16_t byteCount);</div>
-<div class="line"><a name="l00085"></a><span class="lineno">   85</span>&#160;<span class="keyword">extern</span> void (*writeFromReceiveCB)(uint8_t *buffer, uint16_t byteCount);</div>
+<div class="line"><a name="l00079"></a><span class="lineno"><a class="line" href="group___i2_s.html#gabdb9ee146afa10f56619d23efc619162">   79</a></span>&#160;<span class="keywordtype">boolean</span> <a class="code" href="group___i2_s.html#gabdb9ee146afa10f56619d23efc619162">startI2STransmit</a>(<a class="code" href="struct_i2_s_settings_s_t_m32.html">I2SSettingsSTM32</a> *settings,<span class="keywordtype">void</span> (*readToTransmitCB)(uint8_t *buffer, uint16_t byteCount), uint16_t buffer_size);</div>
+<div class="line"><a name="l00081"></a><span class="lineno"><a class="line" href="group___i2_s.html#ga9c327a61227dee8dff8d932e1af3114b">   81</a></span>&#160;<span class="keywordtype">boolean</span> <a class="code" href="group___i2_s.html#ga9c327a61227dee8dff8d932e1af3114b">startI2SReceive</a>(<a class="code" href="struct_i2_s_settings_s_t_m32.html">I2SSettingsSTM32</a> *settings,<span class="keywordtype">void</span> (*writeFromReceiveCB)(uint8_t *buffer, uint16_t byteCount), uint16_t buffer_size);</div>
+<div class="line"><a name="l00083"></a><span class="lineno"><a class="line" href="group___i2_s.html#ga1e3125cc141558d43db8e7c89fddb6d7">   83</a></span>&#160;<span class="keywordtype">boolean</span> <a class="code" href="group___i2_s.html#ga1e3125cc141558d43db8e7c89fddb6d7">startI2STransmitReceive</a>(<a class="code" href="struct_i2_s_settings_s_t_m32.html">I2SSettingsSTM32</a> *settings, <span class="keywordtype">void</span> (*readToTransmit)(uint8_t *buffer, uint16_t byteCount), <span class="keywordtype">void</span> (*writeFromReceive)(uint8_t *buffer, uint16_t byteCount), uint16_t buffer_size);</div>
+<div class="line"><a name="l00085"></a><span class="lineno"><a class="line" href="group___i2_s.html#gadc82281082eaac2f9cd438d3200432e8">   85</a></span>&#160;<span class="keywordtype">void</span> <a class="code" href="group___i2_s.html#gadc82281082eaac2f9cd438d3200432e8">stopI2S</a>();</div>
 <div class="line"><a name="l00086"></a><span class="lineno">   86</span>&#160; </div>
-<div class="line"><a name="l00087"></a><span class="lineno">   87</span>&#160;<span class="comment">/* USER CODE END EFP */</span></div>
-<div class="line"><a name="l00088"></a><span class="lineno">   88</span>&#160; </div>
-<div class="line"><a name="l00089"></a><span class="lineno">   89</span>&#160;<span class="comment">/* Private defines -----------------------------------------------------------*/</span></div>
-<div class="line"><a name="l00090"></a><span class="lineno">   90</span>&#160;<span class="comment">/* USER CODE BEGIN Private defines */</span></div>
-<div class="line"><a name="l00091"></a><span class="lineno">   91</span>&#160; </div>
+<div class="line"><a name="l00087"></a><span class="lineno">   87</span>&#160; </div>
+<div class="line"><a name="l00088"></a><span class="lineno">   88</span>&#160;<span class="keyword">extern</span> void (*readToTransmitCB)(uint8_t *buffer, uint16_t byteCount);</div>
+<div class="line"><a name="l00089"></a><span class="lineno">   89</span>&#160;<span class="keyword">extern</span> void (*writeFromReceiveCB)(uint8_t *buffer, uint16_t byteCount);</div>
+<div class="line"><a name="l00090"></a><span class="lineno">   90</span>&#160; </div>
+<div class="line"><a name="l00091"></a><span class="lineno">   91</span>&#160;<span class="comment">/* USER CODE END EFP */</span></div>
 <div class="line"><a name="l00092"></a><span class="lineno">   92</span>&#160; </div>
-<div class="line"><a name="l00098"></a><span class="lineno">   98</span>&#160;<span class="comment">/* USER CODE END Private defines */</span></div>
-<div class="line"><a name="l00099"></a><span class="lineno">   99</span>&#160; </div>
-<div class="line"><a name="l00100"></a><span class="lineno">  100</span>&#160;<span class="preprocessor">#ifdef __cplusplus</span></div>
-<div class="line"><a name="l00101"></a><span class="lineno">  101</span>&#160;}</div>
-<div class="line"><a name="l00102"></a><span class="lineno">  102</span>&#160;<span class="preprocessor">#endif</span></div>
+<div class="line"><a name="l00093"></a><span class="lineno">   93</span>&#160;<span class="comment">/* Private defines -----------------------------------------------------------*/</span></div>
+<div class="line"><a name="l00094"></a><span class="lineno">   94</span>&#160;<span class="comment">/* USER CODE BEGIN Private defines */</span></div>
+<div class="line"><a name="l00095"></a><span class="lineno">   95</span>&#160; </div>
+<div class="line"><a name="l00096"></a><span class="lineno">   96</span>&#160; </div>
+<div class="line"><a name="l00102"></a><span class="lineno">  102</span>&#160;<span class="comment">/* USER CODE END Private defines */</span></div>
 <div class="line"><a name="l00103"></a><span class="lineno">  103</span>&#160; </div>
-<div class="line"><a name="l00104"></a><span class="lineno">  104</span>&#160;<span class="preprocessor">#endif </span><span class="comment">/* __MAIN_H */</span><span class="preprocessor"></span></div>
+<div class="line"><a name="l00104"></a><span class="lineno">  104</span>&#160;<span class="preprocessor">#ifdef __cplusplus</span></div>
+<div class="line"><a name="l00105"></a><span class="lineno">  105</span>&#160;}</div>
+<div class="line"><a name="l00106"></a><span class="lineno">  106</span>&#160;<span class="preprocessor">#endif</span></div>
+<div class="line"><a name="l00107"></a><span class="lineno">  107</span>&#160; </div>
+<div class="line"><a name="l00108"></a><span class="lineno">  108</span>&#160;<span class="preprocessor">#endif </span><span class="comment">/* __MAIN_H */</span><span class="preprocessor"></span></div>
+<div class="ttc" id="agroup___i2_s_html_ga1e3125cc141558d43db8e7c89fddb6d7"><div class="ttname"><a href="group___i2_s.html#ga1e3125cc141558d43db8e7c89fddb6d7">startI2STransmitReceive</a></div><div class="ttdeci">boolean startI2STransmitReceive(I2SSettingsSTM32 *settings, void(*readToTransmit)(uint8_t *buffer, uint16_t byteCount), void(*writeFromReceive)(uint8_t *buffer, uint16_t byteCount), uint16_t buffer_size)</div><div class="ttdoc">Start to receive and transmit I2S data.</div></div>
+<div class="ttc" id="agroup___i2_s_html_ga9c327a61227dee8dff8d932e1af3114b"><div class="ttname"><a href="group___i2_s.html#ga9c327a61227dee8dff8d932e1af3114b">startI2SReceive</a></div><div class="ttdeci">boolean startI2SReceive(I2SSettingsSTM32 *settings, void(*writeFromReceiveCB)(uint8_t *buffer, uint16_t byteCount), uint16_t buffer_size)</div><div class="ttdoc">Start to receive I2S data.</div></div>
+<div class="ttc" id="agroup___i2_s_html_gabdb9ee146afa10f56619d23efc619162"><div class="ttname"><a href="group___i2_s.html#gabdb9ee146afa10f56619d23efc619162">startI2STransmit</a></div><div class="ttdeci">boolean startI2STransmit(I2SSettingsSTM32 *settings, void(*readToTransmitCB)(uint8_t *buffer, uint16_t byteCount), uint16_t buffer_size)</div><div class="ttdoc">Start to transmit I2S data.</div></div>
+<div class="ttc" id="agroup___i2_s_html_gadc82281082eaac2f9cd438d3200432e8"><div class="ttname"><a href="group___i2_s.html#gadc82281082eaac2f9cd438d3200432e8">stopI2S</a></div><div class="ttdeci">void stopI2S()</div><div class="ttdoc">Stop I2S processing.</div></div>
 <div class="ttc" id="astruct_i2_s_settings_s_t_m32_html"><div class="ttname"><a href="struct_i2_s_settings_s_t_m32.html">I2SSettingsSTM32</a></div><div class="ttdef"><b>Definition:</b> main.h:70</div></div>
 </div><!-- fragment --></div><!-- contents -->
 <!-- start footer part -->

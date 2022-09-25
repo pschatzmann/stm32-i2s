@@ -1,4 +1,7 @@
 var searchData=
 [
-  ['busfault_5fhandler_66',['BusFault_Handler',['../stm32f4xx__it_8c.html#a850cefb17a977292ae5eb4cafa9976c3',1,'BusFault_Handler(void):&#160;stm32f4xx_it.c'],['../stm32f4xx__it_8h.html#a850cefb17a977292ae5eb4cafa9976c3',1,'BusFault_Handler(void):&#160;stm32f4xx_it.c']]]
+  ['starti2sreceive_25',['startI2SReceive',['../group___i2_s.html#ga9c327a61227dee8dff8d932e1af3114b',1,'main.h']]],
+  ['starti2stransmit_26',['startI2STransmit',['../group___i2_s.html#gabdb9ee146afa10f56619d23efc619162',1,'main.h']]],
+  ['starti2stransmitreceive_27',['startI2STransmitReceive',['../group___i2_s.html#ga1e3125cc141558d43db8e7c89fddb6d7',1,'main.h']]],
+  ['stopi2s_28',['stopI2S',['../group___i2_s.html#gadc82281082eaac2f9cd438d3200432e8',1,'main.h']]]
 ];

@@ -75,9 +75,13 @@ typedef struct I2SSettingsSTM32 {
   I2S_HandleTypeDef *i2s;
 } I2SSettingsSTM32;
 
+/// Start to transmit I2S data
 boolean startI2STransmit(I2SSettingsSTM32 *settings,void (*readToTransmitCB)(uint8_t *buffer, uint16_t byteCount), uint16_t buffer_size);
+/// Start to receive I2S data
 boolean startI2SReceive(I2SSettingsSTM32 *settings,void (*writeFromReceiveCB)(uint8_t *buffer, uint16_t byteCount), uint16_t buffer_size);
+/// Start to receive and transmit I2S data
 boolean startI2STransmitReceive(I2SSettingsSTM32 *settings, void (*readToTransmit)(uint8_t *buffer, uint16_t byteCount), void (*writeFromReceive)(uint8_t *buffer, uint16_t byteCount), uint16_t buffer_size);
+/// Stop I2S processing
 void stopI2S();
 
 

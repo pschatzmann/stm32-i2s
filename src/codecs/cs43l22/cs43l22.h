@@ -48,14 +48,6 @@
   * @{
   */
 
-/** @defgroup CS43L22_Exported_Types
-  * @{
-  */
-
-/**
-  * @}
-  */
-
 /** @defgroup CS43L22_Exported_Constants
   * @{
   */ 
@@ -166,14 +158,6 @@
   *        011 - Rev B1
   */
 #define CS43L22_CHIPID_ADDR    0x01
-
-/**
-  * @}
-  */ 
-
-/** @defgroup CS43L22_Exported_Macros
-  * @{
-  */
 
 /**
   * @}
