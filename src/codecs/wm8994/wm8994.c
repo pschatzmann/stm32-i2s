@@ -113,7 +113,7 @@ static uint32_t inputEnabled = 0;
 /** @defgroup WM8994_Function_Prototypes
   * @{
   */
-static uint8_t CODEC_IO_Write(uint8_t Addr, uint16_t Reg, uint16_t Value);
+static uint8_t CODEC_IO_Write(uint8_t Addr, uint16_t Reg, uint8_t Value);
 /**
   * @}
   */ 
@@ -891,7 +891,7 @@ uint32_t wm8994_Reset(uint16_t DeviceAddr)
   * @param  Value: Data to be written
   * @retval None
   */
-static uint8_t CODEC_IO_Write(uint8_t Addr, uint16_t Reg, uint16_t Value)
+static uint8_t CODEC_IO_Write(uint8_t Addr, uint16_t Reg, uint8_t Value)
 {
   uint32_t result = 0;
   
