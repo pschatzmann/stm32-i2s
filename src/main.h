@@ -46,8 +46,9 @@ extern "C" {
 
 /* Exported types ------------------------------------------------------------*/
 /* USER CODE BEGIN ET */
+#ifndef __cplusplus
 typedef int boolean;
-
+#endif
 /* USER CODE END ET */
 
 /* Exported constants --------------------------------------------------------*/
