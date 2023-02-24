@@ -18,7 +18,7 @@ My first trials failed miserably using the DMA versions of the HAL API, so I dec
 - Only __16bit__ data is supported
 - I also incuded the __codec drivers__ that are part of some stm32 evaluation boards. 
 
-## Pins for I2S3
+## Pins for  I2S3
 
 PINs  |	FUNCTIONs 
 ------|------------	

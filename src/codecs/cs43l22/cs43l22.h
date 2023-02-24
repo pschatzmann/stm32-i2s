@@ -34,17 +34,13 @@
   */
 
 /* Define to prevent recursive inclusion -------------------------------------*/
-#ifndef __CS43L22_H
-#define __CS43L22_H
+#pragma once
 
 /* Includes ------------------------------------------------------------------*/
 //#include "../Common/audio.h"
 #include <stdint.h>
+#include "stm32-common.h"
 
-/** @addtogroup Component
-  * @{
-  */ 
-  
 /** @addtogroup CS43L22
   * @{
   */
@@ -56,6 +52,7 @@
 /******************************************************************************/
 /***************************  Codec User defines ******************************/
 /******************************************************************************/
+
 /* Codec output DEVICE */
 #define OUTPUT_DEVICE_SPEAKER         1
 #define OUTPUT_DEVICE_HEADPHONE       2
@@ -168,9 +165,14 @@
   * @{
   */
     
+
 /*------------------------------------------------------------------------------
                            Audio Codec functions 
 ------------------------------------------------------------------------------*/
+#ifdef __cplusplus
+extern "C" {
+#endif
+
 /* High Layer codec functions */
 uint32_t cs43l22_Init(uint16_t DeviceAddr, uint16_t OutputDevice, uint8_t Volume, uint32_t AudioFreq);
 void     cs43l22_DeInit(void);
@@ -185,20 +187,14 @@ uint32_t cs43l22_SetMute(uint16_t DeviceAddr, uint32_t Cmd);
 uint32_t cs43l22_SetOutputMode(uint16_t DeviceAddr, uint8_t Output);
 uint32_t cs43l22_Reset(uint16_t DeviceAddr);
 
-/* AUDIO IO functions */
-void      AUDIO_IO_Init(void);
-void      AUDIO_IO_DeInit(void);
-void      AUDIO_IO_Write(uint8_t Addr, uint16_t Reg, uint8_t Value);
-uint8_t   AUDIO_IO_Read(uint8_t Addr, uint16_t Reg);
 
 /* Audio driver structure */
 //extern AUDIO_DrvTypeDef   cs43l22_drv;
 
-#endif /* __CS43L22_H */
 
-/**
-  * @}
-  */ 
+#ifdef __cplusplus
+}
+#endif
 
 /**
   * @}

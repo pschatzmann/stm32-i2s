@@ -36,13 +36,10 @@
 /* Includes ------------------------------------------------------------------*/
 #include "cs43l22.h"
 
-/** @addtogroup BSP
+/** @addtogroup Audio
   * @{
   */
   
-/** @addtogroup Components
-  * @{
-  */ 
 
 /** @addtogroup CS43L22
   * @brief     This file provides a set of functions needed to drive the 
@@ -62,11 +59,6 @@
   * @{
   */
 #define VOLUME_CONVERT(Volume)    (((Volume) > 100)? 255:((uint8_t)(((Volume) * 255) / 100)))  
-/* Uncomment this line to enable verifying data sent to codec after each write 
-   operation (for debug purpose) */
-#if !defined (VERIFY_WRITTENDATA)  
-/* #define VERIFY_WRITTENDATA */
-#endif /* VERIFY_WRITTENDATA */
 /**
   * @}
   */ 
@@ -113,7 +105,6 @@ volatile uint8_t OutputDev = 0;
 /** @defgroup CS43L22_Function_Prototypes
   * @{
   */
-static uint8_t CODEC_IO_Write(uint8_t Addr, uint8_t Reg, uint8_t Value);
 /**
   * @}
   */ 
@@ -134,8 +125,30 @@ uint32_t cs43l22_Init(uint16_t DeviceAddr, uint16_t OutputDevice, uint8_t Volume
 {
   uint32_t counter = 0;
   
-  /* Initialize the Control interface of the Audio Codec */
+  /* Initialize the I2C Control interface of the Audio Codec */
   AUDIO_IO_Init();     
+
+  // Basic Initialization sequence START. Without this Register Writes will fail!
+  CODEC_AUDIO_POWER(false);
+
+  /* wait until power supplies are stable */
+  delay(10);
+
+  /* Power on the codec */
+  CODEC_AUDIO_POWER(true);
+
+  /* Wait at least 500ns after reset */
+  delay(1);
+
+  /* Set the device in standby mode */
+  uint8_t value = AUDIO_IO_Read(CS43L22_I2C_ADDRESS, 0x02);
+  AUDIO_IO_Write(CS43L22_I2C_ADDRESS, 0x02, (value | 0x01));
+
+  /* Set all power down bits to 1 */
+  AUDIO_IO_Write(CS43L22_I2C_ADDRESS, 0x02, 0x7F);
+  value = AUDIO_IO_Read(CS43L22_I2C_ADDRESS, 0x03);
+  AUDIO_IO_Write(CS43L22_I2C_ADDRESS, 0x03, (value | 0x0E));
+  // Basic Initialization END
     
   /* Keep Codec powered OFF */
   counter += CODEC_IO_Write(DeviceAddr, CS43L22_REG_POWER_CTL1, 0x01);  
@@ -217,7 +230,9 @@ uint32_t cs43l22_Init(uint16_t DeviceAddr, uint16_t OutputDevice, uint8_t Volume
 void cs43l22_DeInit(void)
 {
   /* Deinitialize Audio Codec interface */
+  CODEC_AUDIO_POWER(false);
   AUDIO_IO_DeInit();
+
 }
 
 /**
@@ -438,6 +453,7 @@ uint32_t cs43l22_SetOutputMode(uint16_t DeviceAddr, uint8_t Output)
     default:
       counter += CODEC_IO_Write(DeviceAddr, CS43L22_REG_POWER_CTL2, 0x05); /* Detect the HP or the SPK automatically */
       OutputDev = 0x05;
+      STM32_LOG("Undefined device: %d", Output);
       break;
   }  
   return counter;
@@ -453,30 +469,46 @@ uint32_t cs43l22_Reset(uint16_t DeviceAddr)
   return 0;
 }
 
+#ifdef __cplusplus
+extern "C" {
+#endif
+
+
 /**
   * @brief  Writes/Read a single data.
   * @param  Addr: I2C address
   * @param  Reg: Reg address 
   * @param  Value: Data to be written
-  * @retval None
+  * @retval 0 if no error
   */
-static uint8_t CODEC_IO_Write(uint8_t Addr, uint8_t Reg, uint8_t Value)
+int CODEC_IO_Write(uint8_t Addr, uint8_t Reg, uint8_t Value)
 {
-  uint32_t result = 0;
+  int result = 0;
   
   AUDIO_IO_Write(Addr, Reg, Value);
   
-#ifdef VERIFY_WRITTENDATA
+#if VERIFY_WRITTENDATA
   /* Verify that the data has been correctly written */  
-  result = (AUDIO_IO_Read(Addr, Reg) == Value)? 0:1;
+  int readResult = AUDIO_IO_Read(Addr, Reg);
+  if (readResult != Value){
+    delay(100);
+    AUDIO_IO_Write(Addr, Reg, Value);
+    delay(100);
+    readResult = AUDIO_IO_Read(Addr, Reg);
+    if (readResult != Value){
+      STM32_LOG("CODEC_IO_Write FAILED for Reg 0x%X: 0x%X vs 0x%X", Reg, Value, readResult); 
+      result = 1;
+    }
+  }
 #endif /* VERIFY_WRITTENDATA */
   
   return result;
 }
 
-/**
-  * @}
-  */
+#ifdef __cplusplus
+}
+#endif
+
 
 /**
   * @}

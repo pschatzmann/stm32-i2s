@@ -1,8 +1,7 @@
 var searchData=
 [
-  ['component_0',['Component',['../group___component.html',1,'']]],
-  ['cs43l22_1',['CS43L22',['../group___c_s43_l22.html',1,'']]],
-  ['cs43l22_2eh_2',['cs43l22.h',['../cs43l22_8h.html',1,'']]],
+  ['cs43l22_1',['CS43L22',['../class_c_s43_l22.html',1,'CS43L22'],['../group___c_s43_l22.html',1,'(Global Namespace)']]],
+  ['cs43l22_2eh_2',['cs43l22.h',['../codecs_2cs43l22_2cs43l22_8h.html',1,'']]],
   ['cs43l22_5fchipid_5faddr_3',['CS43L22_CHIPID_ADDR',['../group___c_s43_l22___exported___constants.html#ga8b34c1514aaed772f942050e648491a1',1,'cs43l22.h']]],
   ['cs43l22_5fexported_5fconstants_4',['CS43L22_Exported_Constants',['../group___c_s43_l22___exported___constants.html',1,'']]],
   ['cs43l22_5fexported_5ffunctions_5',['CS43L22_Exported_Functions',['../group___c_s43_l22___exported___functions.html',1,'']]],
