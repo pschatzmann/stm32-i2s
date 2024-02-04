@@ -34,7 +34,7 @@
 
 /* Private typedef -----------------------------------------------------------*/
 /* USER CODE BEGIN PTD */
-boolean is_error;
+bool is_error;
 /* USER CODE END PTD */
 
 /* Private define ------------------------------------------------------------*/
@@ -107,7 +107,9 @@ void SystemClock_Config(void)
   RCC_OscInitStruct.HSEState = RCC_HSE_ON;
   RCC_OscInitStruct.PLL.PLLState = RCC_PLL_ON;
   RCC_OscInitStruct.PLL.PLLSource = RCC_PLLSOURCE_HSE;
+#if USE_PLLI2SM
   RCC_OscInitStruct.PLL.PLLM = 15;
+#endif
   RCC_OscInitStruct.PLL.PLLN = 144;
   RCC_OscInitStruct.PLL.PLLP = RCC_PLLP_DIV4;
   RCC_OscInitStruct.PLL.PLLQ = 5;
@@ -232,7 +234,7 @@ static void MX_I2S3_Init_Ext(I2SSettingsSTM32 *settings)
 #undef SystemClock_Config
 
 /// Starts the i2s processing
-boolean i2s_begin(I2SSettingsSTM32 *settings)
+bool i2s_begin(I2SSettingsSTM32 *settings)
 {
   // default values
   if (settings->mode ==0){
@@ -262,10 +264,10 @@ boolean i2s_begin(I2SSettingsSTM32 *settings)
   return !is_error;
 }
 
-boolean startI2STransmit(I2SSettingsSTM32 *settings, void (*readToTransmit)(uint8_t *buffer, uint16_t byteCount), uint16_t buffer_size) {
+bool startI2STransmit(I2SSettingsSTM32 *settings, void (*readToTransmit)(uint8_t *buffer, uint16_t byteCount), uint16_t buffer_size) {
 	readToTransmitCB = readToTransmit;
   void *dma_buffer_tx = calloc(1, buffer_size);
-  boolean result = true;
+  bool result = true;
   if (!i2s_begin(settings)){
     return false;
   }
@@ -278,8 +280,8 @@ boolean startI2STransmit(I2SSettingsSTM32 *settings, void (*readToTransmit)(uint
   return result;
 }
 
-boolean startI2SReceive(I2SSettingsSTM32 *settings, void (*writeFromReceive)(uint8_t *buffer, uint16_t byteCount),uint16_t buffer_size) {
-  boolean result = true;
+bool startI2SReceive(I2SSettingsSTM32 *settings, void (*writeFromReceive)(uint8_t *buffer, uint16_t byteCount),uint16_t buffer_size) {
+  bool result = true;
   writeFromReceiveCB = writeFromReceive;
   void *dma_buffer_rx = calloc(1, buffer_size);
   if (!i2s_begin(settings)){
@@ -294,8 +296,8 @@ boolean startI2SReceive(I2SSettingsSTM32 *settings, void (*writeFromReceive)(uin
   return result;
 }
 
-boolean startI2STransmitReceive(I2SSettingsSTM32 *settings, void (*readToTransmit)(uint8_t *buffer, uint16_t byteCount), void (*writeFromReceive)(uint8_t *buffer, uint16_t byteCount), uint16_t buffer_size) {
-  boolean result = true;
+bool startI2STransmitReceive(I2SSettingsSTM32 *settings, void (*readToTransmit)(uint8_t *buffer, uint16_t byteCount), void (*writeFromReceive)(uint8_t *buffer, uint16_t byteCount), uint16_t buffer_size) {
+  bool result = true;
 	readToTransmitCB = readToTransmit;
   void *dma_buffer_tx = calloc(1, buffer_size);
   writeFromReceiveCB = writeFromReceive;
