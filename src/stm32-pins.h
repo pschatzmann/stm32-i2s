@@ -1,7 +1,7 @@
 #pragma once
 
 #ifdef ARDUINO_BLACKPILL_F411CE
-#define BLACK_PILL \
+  #define BLACK_PILL \
   {\
     {mclk, PB_10, GPIO_AF6_SPI3},\
     {bck, PB_3, GPIO_AF6_SPI3},\

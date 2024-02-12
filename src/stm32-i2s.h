@@ -80,10 +80,16 @@ struct HardwareConfig {
   HardwareConfig() {
     irq1 = DMA1_Stream0_IRQn;
     irq2 = DMA1_Stream5_IRQn;
-
-    plln = 192;
-    pllm = 16;
-    pllr = 2;
+    #ifdef BLACK_PILL
+      plln = 192;
+      pllm = 16;
+      pllr = 2;
+    #endif 
+    #ifdef STM32F411DISCO
+      plln = 200;
+      pllm = 5;
+      pllr = 2;
+    #endif 
 
     rx_instance = DMA1_Stream0;
     rx_channel = DMA_CHANNEL_3;
