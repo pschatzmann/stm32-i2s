@@ -13,7 +13,7 @@
   #define HAS_PLLI2SM
 #endif
 
-#ifdef TM32F411xE
+#ifdef ARDUINO_GENERIC_F411VETX
   #define STM32F411DISCO \
     { \
       {mclk, PC_7, GPIO_AF6_SPI3},\

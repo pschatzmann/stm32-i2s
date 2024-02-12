@@ -262,16 +262,6 @@ protected:
   /// Starts the i2s processing
   bool i2s_begin() {
     is_error = false;
-    // default values
-    if (settings.mode == 0) {
-      return false;
-    }
-    if (settings.standard == 0) {
-      return false;
-    }
-    if (settings.fullduplexmode == 0) {
-      return false;
-    }
     if (settings.sample_rate == 0) {
       return false;
     }
