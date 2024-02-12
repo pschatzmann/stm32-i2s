@@ -20,13 +20,13 @@ My first trials failed miserably using the DMA versions of the HAL API, so I dec
 
 ## Pins for I2S3
 
-PINs  |	FUNCTIONs 
-------|------------	
-PB10  |	MCK	
-PB3	  | BCK	
-PA4	  | WS (LRC)	
-PB5	  | SD	
-PB4	  | ext_SD	
+FUNCTIONs  | BlackP | Disco
+-----------|--------|------
+MCK	       | PB10   | PC7
+BCK	       | PB3    | PC10
+WS (LRC)   | PA4	| PA4
+SD	       | PB5    | PC3
+ext_SD	   | PB4    | PC12
 
 ## Supported Sample Rates
 
