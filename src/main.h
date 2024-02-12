@@ -17,13 +17,6 @@
   ******************************************************************************
   */
 
-#ifdef STM32F407xx 
-#define USE_PLLI2SM false
-#else
-#define USE_PLLI2SM true
-#endif
-
-
 /** @addtogroup I2S
   * @{
   */ 
