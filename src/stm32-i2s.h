@@ -44,7 +44,7 @@ struct I2SSettingsSTM32 {
   uint32_t sample_rate = I2S_AUDIOFREQ_44K;
 };
 
-enum I2SPinFunction { mclk, bck, ws, out, in };
+enum I2SPinFunction { mclk, bck, ws, data_out, data_in };
 
 struct I2SPin {
   I2SPin(I2SPinFunction f, PinName n, int alt) {}
