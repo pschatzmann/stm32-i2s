@@ -11,7 +11,7 @@ void writeFromReceive(uint8_t *buffer, uint16_t byteCount){
 void setup() {
 	Serial.begin(115200);
 	i2s_settings.sample_rate = I2S_AUDIOFREQ_8K;
-	if (!startI2SReceive(&i2s_settings, writeFromReceive, I2S_BUFFER_SIZE){
+	if (!I2s.startI2SReceive(&i2s_settings, writeFromReceive, I2S_BUFFER_SIZE){
 		Serial.println("I2S Error");
 	}
 }
