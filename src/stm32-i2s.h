@@ -16,6 +16,9 @@
 #define STM32_I2S_WITH_OBJECT
 #define USE_FULL_ASSERT
 
+#include "Arduino.h"
+#include "stm32-pins.h"
+#include "stm32f4xx_hal.h"
 #include <assert.h>
 #include <stdarg.h>
 #include <stdbool.h>
@@ -23,10 +26,6 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include "stm32-pins.h"
-#include "stm32f4xx_hal.h"
-#include "Arduino.h"
-
 
 extern "C" void DMA1_Stream0_IRQHandler(void);
 extern "C" void DMA1_Stream5_IRQHandler(void);
@@ -35,16 +34,6 @@ extern "C" void STM32_LOG(const char *fmt, ...);
 static bool is_error;
 
 using byte = uint8_t;
-
-/**
- * @brief Currently supported parameters
- */
-struct I2SSettingsSTM32 {
-  uint32_t mode = I2S_MODE_MASTER_TX;
-  uint32_t standard = I2S_STANDARD_PHILIPS;
-  uint32_t fullduplexmode = I2S_FULLDUPLEXMODE_ENABLE;
-  uint32_t sample_rate = I2S_AUDIOFREQ_44K;
-};
 
 enum I2SPinFunction { mclk, bck, ws, data_out, data_in };
 
@@ -59,9 +48,6 @@ struct I2SPin {
  * @brief Processor specific settings
  */
 struct HardwareConfig {
-  uint32_t a_pins = 0;
-  uint32_t b_pins = 0;
-  uint32_t d_pins = 0;
   IRQn_Type irq1;
   IRQn_Type irq2;
 
@@ -101,8 +87,18 @@ struct HardwareConfig {
     pllm = 5;
     pllr = 2;
 #endif
-
   }
+};
+
+/**
+ * @brief Currently supported parameters
+ */
+struct I2SSettingsSTM32 {
+  uint32_t mode = I2S_MODE_MASTER_TX;
+  uint32_t standard = I2S_STANDARD_PHILIPS;
+  uint32_t fullduplexmode = I2S_FULLDUPLEXMODE_ENABLE;
+  uint32_t sample_rate = I2S_AUDIOFREQ_44K;
+  HardwareConfig hardware_config;
 };
 
 /**
@@ -110,13 +106,13 @@ struct HardwareConfig {
  */
 class Stm32I2sClass {
 public:
-  Stm32I2sClass(HardwareConfig hwcfg) { hw = hwcfg; }
   /// Start to transmit I2S data
   bool startI2STransmit(I2SSettingsSTM32 settings,
                         void (*readToTransmit)(uint8_t *buffer,
                                                uint16_t byteCount),
                         uint16_t buffer_size) {
     this->settings = settings;
+    this->hw = settings.hardware_config;
     readToTransmitCB = readToTransmit;
     if (dma_buffer_tx == nullptr)
       dma_buffer_tx = new byte[buffer_size];
@@ -140,6 +136,7 @@ public:
                                                 uint16_t byteCount),
                        uint16_t buffer_size) {
     this->settings = settings;
+    this->hw = settings.hardware_config;
     bool result = true;
     writeFromReceiveCB = writeFromReceive;
     if (dma_buffer_rx == nullptr)
@@ -165,6 +162,7 @@ public:
                                                         uint16_t byteCount),
                                uint16_t buffer_size) {
     this->settings = settings;
+    this->hw = settings.hardware_config;
     bool result = true;
     readToTransmitCB = readToTransmit;
     writeFromReceiveCB = writeFromReceive;
@@ -432,5 +430,4 @@ protected:
   }
 };
 
-static HardwareConfig hw_cfg;
-static Stm32I2sClass I2S(hw_cfg);
+static Stm32I2sClass I2S;
