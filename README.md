@@ -69,7 +69,7 @@ void readToTransmit(uint8_t *buffer, uint16_t byteCount) {
 void setup() {
 	sineWave.begin(channels, sample_rate, N_B4);
 	i2s_settings.sample_rate = I2S_AUDIOFREQ_8K;
-	startI2STransmit(&i2s_settings, readToTransmit);
+	I2S.startI2STransmit(&i2s_settings, readToTransmit);
 }
 
 void loop() {
@@ -93,7 +93,7 @@ void writeFromReceive(uint8_t *buffer, uint16_t byteCount){
 
 void setup() {
 	i2s_settings.sample_rate = I2S_AUDIOFREQ_8K;
-	startI2SReceive(&i2s_settings, writeFromReceive, I2S_BUFFER_SIZE);
+	I2S.startI2SReceive(&i2s_settings, writeFromReceive, I2S_BUFFER_SIZE);
 }
 
 void loop() {

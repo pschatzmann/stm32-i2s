@@ -12,8 +12,10 @@
  */
 #pragma once
 
-#include "Arduino.h"
-#include "stm32f4xx_hal.h"
+#define I2S_BUFFER_SIZE 512
+#define STM32_I2S_WITH_OBJECT
+#define USE_FULL_ASSERT
+
 #include <assert.h>
 #include <stdarg.h>
 #include <stdbool.h>
@@ -22,14 +24,14 @@
 #include <stdlib.h>
 #include <string.h>
 #include "stm32-pins.h"
+#include "stm32f4xx_hal.h"
+#include "Arduino.h"
 
-#define I2S_BUFFER_SIZE 512
-#define STM32_I2S_WITH_OBJECT
 
 extern "C" void DMA1_Stream0_IRQHandler(void);
 extern "C" void DMA1_Stream5_IRQHandler(void);
 extern "C" void Report_Error();
-void STM32_LOG(const char *fmt, ...);
+extern "C" void STM32_LOG(const char *fmt, ...);
 static bool is_error;
 
 using byte = uint8_t;
@@ -80,16 +82,6 @@ struct HardwareConfig {
   HardwareConfig() {
     irq1 = DMA1_Stream0_IRQn;
     irq2 = DMA1_Stream5_IRQn;
-    #ifdef BLACK_PILL
-      plln = 192;
-      pllm = 16;
-      pllr = 2;
-    #endif 
-    #ifdef STM32F411DISCO
-      plln = 200;
-      pllm = 5;
-      pllr = 2;
-    #endif 
 
     rx_instance = DMA1_Stream0;
     rx_channel = DMA_CHANNEL_3;
@@ -98,6 +90,18 @@ struct HardwareConfig {
     tx_instance = DMA1_Stream5;
     tx_channel = DMA_CHANNEL_0;
     tx_direction = DMA_MEMORY_TO_PERIPH;
+
+#ifdef BLACK_PILL
+    plln = 192;
+    pllm = 16;
+    pllr = 2;
+#endif
+#ifdef STM32F411DISCO
+    plln = 200;
+    pllm = 5;
+    pllr = 2;
+#endif
+
   }
 };
 
@@ -263,6 +267,7 @@ protected:
   bool i2s_begin() {
     is_error = false;
     if (settings.sample_rate == 0) {
+      STM32_LOG("sample_rate must not be 0");
       return false;
     }
     is_error = false;
@@ -287,12 +292,29 @@ protected:
   virtual void MX_GPIO_Init(void) {
     GPIO_InitTypeDef GPIO_InitStruct = {0};
 
-    /* GPIO Ports Clock Enable */
+    // GPIO Ports Clock Enable
     __HAL_RCC_GPIOH_CLK_ENABLE();
 
+    // Define pins
     for (I2SPin &pin : hw.pins) {
       pinModeAltFunction(pin.pin, pin.altFunction);
     }
+  }
+
+  /**
+   * Enable DMA controller clock
+   */
+  virtual void MX_DMA_Init(void) {
+    /* DMA controller clock enable */
+    __HAL_RCC_DMA1_CLK_ENABLE();
+
+    /* DMA interrupt init */
+    /* DMA1_Stream0_IRQn interrupt configuration */
+    HAL_NVIC_SetPriority(hw.irq1, 0, 0);
+    HAL_NVIC_EnableIRQ(hw.irq1);
+    /* DMA1_Stream5_IRQn interrupt configuration */
+    HAL_NVIC_SetPriority(hw.irq2, 0, 0);
+    HAL_NVIC_EnableIRQ(hw.irq2);
   }
 
   /**
@@ -311,6 +333,71 @@ protected:
     hi2s3.Init.CPOL = I2S_CPOL_LOW;
     hi2s3.Init.ClockSource = I2S_CLOCK_PLL;
     if (HAL_I2S_Init(&hi2s3) != HAL_OK) {
+      Report_Error();
+    }
+  }
+
+  /**
+   * @brief I2S MSP Initialization
+   * This function configures the hardware resources used in this example
+   * @param hi2s: I2S handle pointer
+   * @retval None
+   */
+  virtual void i2s_MspInit(I2S_HandleTypeDef *hi2s) {
+    GPIO_InitTypeDef GPIO_InitStruct = {0};
+    RCC_PeriphCLKInitTypeDef PeriphClkInitStruct = {0};
+    if (hi2s->Instance == SPI3) {
+      /**
+       * Initializes the peripherals clock
+       */
+      PeriphClkInitStruct.PeriphClockSelection = RCC_PERIPHCLK_I2S;
+      PeriphClkInitStruct.PLLI2S.PLLI2SN = hw.plln; // 192;
+#ifdef HAS_PLLI2SM
+      PeriphClkInitStruct.PLLI2S.PLLI2SM = hw.pllm; // 16;
+#endif
+      PeriphClkInitStruct.PLLI2S.PLLI2SR = hw.pllr; // 2;
+      if (HAL_RCCEx_PeriphCLKConfig(&PeriphClkInitStruct) != HAL_OK) {
+        Report_Error();
+      }
+
+      /* Peripheral clock enable */
+      __HAL_RCC_SPI3_CLK_ENABLE();
+
+      DMA_Stream_TypeDef *rx_instance;
+      uint32_t rx_channel;
+      uint32_t rx_direction;
+
+      /* I2S3 DMA Init */
+      if (dma_buffer_rx) {
+        setupDMA(hdma_i2s3_ext_rx, hw.rx_instance, hw.rx_channel,
+                 hw.rx_direction);
+        __HAL_LINKDMA(hi2s, hdmarx, hdma_i2s3_ext_rx);
+      }
+
+      if (dma_buffer_tx) {
+        setupDMA(hdma_i2s3_ext_tx, hw.tx_instance, hw.tx_channel,
+                 hw.tx_direction);
+        __HAL_LINKDMA(hi2s, hdmatx, hdma_i2s3_ext_tx);
+      }
+    }
+  }
+
+  void setupDMA(DMA_HandleTypeDef &dma, DMA_Stream_TypeDef *instance,
+                uint32_t channel, uint32_t direction) {
+    dma.Instance = instance;
+    dma.Init.Channel = channel;
+    dma.Init.Direction = direction;
+    dma.Init.PeriphInc = DMA_PINC_DISABLE;
+    dma.Init.MemInc = DMA_MINC_ENABLE;
+    dma.Init.PeriphDataAlignment = DMA_PDATAALIGN_HALFWORD;
+    dma.Init.MemDataAlignment = DMA_MDATAALIGN_HALFWORD;
+    dma.Init.Mode = DMA_CIRCULAR;
+    dma.Init.Priority = DMA_PRIORITY_HIGH;
+    dma.Init.FIFOMode = DMA_FIFOMODE_ENABLE;
+    dma.Init.FIFOThreshold = DMA_FIFO_THRESHOLD_HALFFULL;
+    dma.Init.MemBurst = DMA_PBURST_INC4;
+    dma.Init.PeriphBurst = DMA_PBURST_INC4;
+    if (HAL_DMA_Init(&dma) != HAL_OK) {
       Report_Error();
     }
   }
@@ -341,83 +428,6 @@ protected:
       /* I2S3 DMA DeInit */
       HAL_DMA_DeInit(hi2s->hdmarx);
       HAL_DMA_DeInit(hi2s->hdmatx);
-    }
-  }
-
-  /**
-   * Enable DMA controller clock
-   */
-  virtual void MX_DMA_Init(void) {
-    /* DMA controller clock enable */
-    __HAL_RCC_DMA1_CLK_ENABLE();
-
-    /* DMA interrupt init */
-    /* DMA1_Stream0_IRQn interrupt configuration */
-    HAL_NVIC_SetPriority(hw.irq1, 0, 0);
-    HAL_NVIC_EnableIRQ(hw.irq1);
-    /* DMA1_Stream5_IRQn interrupt configuration */
-    HAL_NVIC_SetPriority(hw.irq2, 0, 0);
-    HAL_NVIC_EnableIRQ(hw.irq2);
-  }
-
-  /**
-   * @brief I2S MSP Initialization
-   * This function configures the hardware resources used in this example
-   * @param hi2s: I2S handle pointer
-   * @retval None
-   */
-  virtual void i2s_MspInit(I2S_HandleTypeDef *hi2s) {
-    GPIO_InitTypeDef GPIO_InitStruct = {0};
-    RCC_PeriphCLKInitTypeDef PeriphClkInitStruct = {0};
-    if (hi2s->Instance == SPI3) {
-      /** 
-       * Initializes the peripherals clock
-       */
-      PeriphClkInitStruct.PeriphClockSelection = RCC_PERIPHCLK_I2S;
-      PeriphClkInitStruct.PLLI2S.PLLI2SN = hw.plln; // 192;
-#ifdef HAS_PLLI2SM
-      PeriphClkInitStruct.PLLI2S.PLLI2SM = hw.pllm; // 16;
-#endif
-      PeriphClkInitStruct.PLLI2S.PLLI2SR = hw.pllr; // 2;
-      if (HAL_RCCEx_PeriphCLKConfig(&PeriphClkInitStruct) != HAL_OK) {
-        Report_Error();
-      }
-
-      /* Peripheral clock enable */
-      __HAL_RCC_SPI3_CLK_ENABLE();
-
-      DMA_Stream_TypeDef *rx_instance;
-      uint32_t rx_channel;
-      uint32_t rx_direction;
-
-      /* I2S3 DMA Init */
-      setupDMA(hdma_i2s3_ext_rx, hw.rx_instance, hw.rx_channel,
-               hw.rx_direction);
-      __HAL_LINKDMA(hi2s, hdmarx, hdma_i2s3_ext_rx);
-
-      setupDMA(hdma_i2s3_ext_tx, hw.tx_instance, hw.tx_channel,
-               hw.tx_direction);
-      __HAL_LINKDMA(hi2s, hdmatx, hdma_i2s3_ext_tx);
-    }
-  }
-
-  void setupDMA(DMA_HandleTypeDef &dma, DMA_Stream_TypeDef *instance,
-                uint32_t channel, uint32_t direction) {
-    dma.Instance = instance;
-    dma.Init.Channel = channel;
-    dma.Init.Direction = direction;
-    dma.Init.PeriphInc = DMA_PINC_DISABLE;
-    dma.Init.MemInc = DMA_MINC_ENABLE;
-    dma.Init.PeriphDataAlignment = DMA_PDATAALIGN_HALFWORD;
-    dma.Init.MemDataAlignment = DMA_MDATAALIGN_HALFWORD;
-    dma.Init.Mode = DMA_CIRCULAR;
-    dma.Init.Priority = DMA_PRIORITY_HIGH;
-    dma.Init.FIFOMode = DMA_FIFOMODE_ENABLE;
-    dma.Init.FIFOThreshold = DMA_FIFO_THRESHOLD_HALFFULL;
-    dma.Init.MemBurst = DMA_PBURST_INC4;
-    dma.Init.PeriphBurst = DMA_PBURST_INC4;
-    if (HAL_DMA_Init(&dma) != HAL_OK) {
-      Report_Error();
     }
   }
 };
