@@ -6,7 +6,7 @@
 
 #ifdef ARDUINO_BLACKPILL_F411CE
   #define SPI_INSTANCE_FOR_I2S SPI3
-  #define BLACK_PILL \
+  #define STM_I2S_PINS \
   {\
     {mclk, PB_10, GPIO_AF6_SPI3},\
     {bck, PB_3, GPIO_AF6_SPI3},\
@@ -14,7 +14,6 @@
     {data_out, PB_4, GPIO_AF7_I2S3ext},\
     {data_in, PB_5, GPIO_AF6_SPI3},\
   }
-  #define STM_I2S_PINS BLACK_PILL
   #define PLLN 192
   #define PLLM  16
   #define PLLR   2
@@ -22,7 +21,7 @@
 
 #ifdef ARDUINO_GENERIC_F411VETX
   #define SPI_INSTANCE_FOR_I2S SPI3
-  #define STM32F411DISCO \
+  #define STM_I2S_PINS \
     { \
       {mclk, PC_7, GPIO_AF6_SPI3},\
       {bck, PC_10, GPIO_AF6_SPI3},\
@@ -30,7 +29,6 @@
       {data_out, PC_3, GPIO_AF6_SPI3},\
       {data_in, PC_12, GPIO_AF6_SPI3}\
     };
-  #define STM_I2S_PINS STM32F411DISCO
   #define PLLN 200
   #define PLLM   5
   #define PLLR   2
