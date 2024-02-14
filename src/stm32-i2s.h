@@ -6,18 +6,12 @@
  * @date 2022-09-22
  *
  * @copyright Copyright (c) 2022
- * @addtogroup I2S
- * @{
- *
  */
 #pragma once
 
-#define I2S_BUFFER_SIZE 512
-#define STM32_I2S_WITH_OBJECT
-#define USE_FULL_ASSERT
 
 #include "Arduino.h"
-#include "stm32-pins.h"
+#include "stm32-config-i2s.h"
 #include "stm32f4xx_hal.h"
 #include <assert.h>
 #include <stdarg.h>
@@ -26,18 +20,35 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include "PinConfigured.h"
+
+extern uint32_t g_anOutputPinConfigured[MAX_NB_PORT];
 
 namespace stm32_i2s {
 
-extern "C" void DMA1_Stream0_IRQHandler(void);
-extern "C" void DMA1_Stream5_IRQHandler(void);
-extern "C" void Report_Error();
-extern "C" void STM32_LOG(const char *fmt, ...);
-static bool is_error;
-
 using byte = uint8_t;
 
+extern "C" void HAL_I2S_TxCpltCallback(I2S_HandleTypeDef *hi2s);
+extern "C" void HAL_I2S_TxHalfCpltCallback(I2S_HandleTypeDef *hi2s);
+extern "C" void HAL_I2S_RxCpltCallback(I2S_HandleTypeDef *hi2s);
+extern "C" void HAL_I2S_RxHalfCpltCallback(I2S_HandleTypeDef *hi2s);
+extern "C" void DMA1_Stream0_IRQHandler(void);
+extern "C" void DMA1_Stream5_IRQHandler(void);
+extern "C" void HAL_I2S_MspInit(I2S_HandleTypeDef *hi2s);
+extern "C" void HAL_I2S_MspDeInit(I2S_HandleTypeDef *hi2s);
+extern "C" void Report_Error();
+extern "C" void STM32_LOG(const char *fmt, ...);
+extern bool stm32_i2s_is_error;
+
+/// @brief i2s pin function used as documentation
 enum I2SPinFunction { mclk, bck, ws, data_out, data_in };
+
+/**
+ * @brief Define individual Pin. This is used to set up processor specific
+ * arrays with all I2S pins.
+ * @author Phil Schatzmann
+ * @copyright GPLv3
+ */
 
 struct I2SPin {
   I2SPin(I2SPinFunction f, PinName n, int alt) {}
@@ -47,53 +58,37 @@ struct I2SPin {
 };
 
 /**
- * @brief Processor specific settings
+ * @brief Processor specific settings that are needed to set up I2S
+ * @author Phil Schatzmann
+ * @copyright GPLv3
  */
 struct HardwareConfig {
-  IRQn_Type irq1;
-  IRQn_Type irq2;
+  IRQn_Type irq1 = DMA1_Stream0_IRQn;
+  IRQn_Type irq2 = DMA1_Stream5_IRQn;;
 
-  uint32_t plln = 0;
-  uint32_t pllm = 0;
-  uint32_t pllr = 0;
+  uint32_t plln = PLLN;
+  uint32_t pllm = PLLM;
+  uint32_t pllr = PLLR;
 
-  DMA_Stream_TypeDef *rx_instance = nullptr;
-  uint32_t rx_channel;
-  uint32_t rx_direction;
+  DMA_Stream_TypeDef *rx_instance = DMA1_Stream0;
+  uint32_t rx_channel = DMA_CHANNEL_3;
+  uint32_t rx_direction = DMA_PERIPH_TO_MEMORY;
 
-  DMA_Stream_TypeDef *tx_instance = nullptr;
-  uint32_t tx_channel;
-  uint32_t tx_direction;
+  DMA_Stream_TypeDef *tx_instance = DMA1_Stream5;
+  uint32_t tx_channel = DMA_CHANNEL_0;
+  uint32_t tx_direction = DMA_MEMORY_TO_PERIPH;
 
   I2SPin pins[5] = STM_I2S_PINS;
 
   HardwareConfig() {
-    irq1 = DMA1_Stream0_IRQn;
-    irq2 = DMA1_Stream5_IRQn;
-
-    rx_instance = DMA1_Stream0;
-    rx_channel = DMA_CHANNEL_3;
-    rx_direction = DMA_PERIPH_TO_MEMORY;
-
-    tx_instance = DMA1_Stream5;
-    tx_channel = DMA_CHANNEL_0;
-    tx_direction = DMA_MEMORY_TO_PERIPH;
-
-#ifdef BLACK_PILL
-    plln = 192;
-    pllm = 16;
-    pllr = 2;
-#endif
-#ifdef STM32F411DISCO
-    plln = 200;
-    pllm = 5;
-    pllr = 2;
-#endif
+    // overwrite processor specific default settings if necessary
   }
 };
 
 /**
  * @brief Currently supported parameters
+ * @author Phil Schatzmann
+ * @copyright GPLv3
  */
 struct I2SSettingsSTM32 {
   uint32_t mode = I2S_MODE_MASTER_TX;
@@ -104,9 +99,20 @@ struct I2SSettingsSTM32 {
 };
 
 /**
- * I2S API for STM32
+ * @brief I2S API for STM32
+ * @author Phil Schatzmann
+ * @copyright GPLv3
  */
 class Stm32I2sClass {
+ friend void DMA1_Stream0_IRQHandler(void);
+ friend void DMA1_Stream5_IRQHandler(void);
+ friend void HAL_I2S_MspInit(I2S_HandleTypeDef *hi2s);
+ friend void HAL_I2S_MspDeInit(I2S_HandleTypeDef *hi2s);
+ friend void HAL_I2S_TxCpltCallback(I2S_HandleTypeDef *hi2s);
+ friend void HAL_I2S_TxHalfCpltCallback(I2S_HandleTypeDef *hi2s);
+ friend void HAL_I2S_RxCpltCallback(I2S_HandleTypeDef *hi2s);
+ friend void HAL_I2S_RxHalfCpltCallback(I2S_HandleTypeDef *hi2s);
+
 public:
   /// Start to transmit I2S data
   bool startI2STransmit(I2SSettingsSTM32 settings,
@@ -200,7 +206,20 @@ public:
     }
   }
 
-  void txRxCpltCallback(I2S_HandleTypeDef *hi2s) {
+protected:
+  I2SSettingsSTM32 settings;
+  I2S_HandleTypeDef hi2s3;
+  byte *dma_buffer_tx = nullptr;
+  byte *dma_buffer_rx = nullptr;
+  void (*readToTransmitCB)(uint8_t *buffer, uint16_t byteCount);
+  void (*writeFromReceiveCB)(uint8_t *buffer, uint16_t byteCount);
+  DMA_HandleTypeDef hdma_i2s3_ext_rx;
+  DMA_HandleTypeDef hdma_i2s3_ext_tx;
+  HardwareConfig hw;
+
+  /// @brief Callback for double buffer
+  /// @param hi2s 
+  void cb_TxRxComplete(I2S_HandleTypeDef *hi2s) {
     // second half finished, filling it up again while first  half is playing
     uint8_t *dma_buffer_tx = (uint8_t *)hi2s->pTxBuffPtr;
     uint8_t *dma_buffer_rx = (uint8_t *)hi2s->pRxBuffPtr;
@@ -214,7 +233,9 @@ public:
                          buffer_size_rx / 2);
   }
 
-  void txRxHalfCpltCallback(I2S_HandleTypeDef *hi2s) {
+  /// @brief Callback for double buffer
+  /// @param hi2s 
+  void cb_TxRxHalfComplete(I2S_HandleTypeDef *hi2s) {
     // second half finished, filling it up again while first  half is playing
     uint8_t *dma_buffer_tx = (uint8_t *)hi2s->pTxBuffPtr;
     uint8_t *dma_buffer_rx = (uint8_t *)hi2s->pRxBuffPtr;
@@ -226,51 +247,26 @@ public:
       writeFromReceiveCB(&(dma_buffer_rx[0]), buffer_size_rx / 2);
   }
 
-  inline void dmaIrqRx() { HAL_DMA_IRQHandler(&hdma_i2s3_ext_rx); }
+  /// @brief Callback for DMA interrupt request
+  inline void cb_dmaIrqRx() { HAL_DMA_IRQHandler(&hdma_i2s3_ext_rx); }
 
-  inline void dmaIrqTx() { HAL_DMA_IRQHandler(&hdma_i2s3_ext_tx); }
+  /// @brief Callback for DMA interrupt request
+  inline void cb_dmaIrqTx() { HAL_DMA_IRQHandler(&hdma_i2s3_ext_tx); }
 
-  inline void HAL_I2S_MspInit(I2S_HandleTypeDef *hi2s) { i2s_MspInit(hi2s); }
+  /// @brief Callback I2S intitialization
+  inline void cb_HAL_I2S_MspInit(I2S_HandleTypeDef *hi2s) { cb_i2s_MspInit(hi2s); }
 
-  inline void HAL_I2S_MspDeInit(I2S_HandleTypeDef *hi2s) {
-    i2s_MspDeInit(hi2s);
-  }
-
-protected:
-  I2SSettingsSTM32 settings;
-  I2S_HandleTypeDef hi2s3;
-  byte *dma_buffer_tx = nullptr;
-  byte *dma_buffer_rx = nullptr;
-  void (*readToTransmitCB)(uint8_t *buffer, uint16_t byteCount);
-  void (*writeFromReceiveCB)(uint8_t *buffer, uint16_t byteCount);
-  DMA_HandleTypeDef hdma_i2s3_ext_rx;
-  DMA_HandleTypeDef hdma_i2s3_ext_tx;
-  HardwareConfig hw;
-
-  // example call: pinModeAF(PD12, GPIO_AF2_TIM4);
-  void pinModeAltFunction(PinName pn, uint32_t Alternate) {
-    // int pn = digitalPinToPinName(ulPin);
-
-    if (STM_PIN(pn) < 8) {
-      LL_GPIO_SetAFPin_0_7(get_GPIO_Port(STM_PORT(pn)), STM_LL_GPIO_PIN(pn),
-                           Alternate);
-    } else {
-      LL_GPIO_SetAFPin_8_15(get_GPIO_Port(STM_PORT(pn)), STM_LL_GPIO_PIN(pn),
-                            Alternate);
-    }
-
-    LL_GPIO_SetPinMode(get_GPIO_Port(STM_PORT(pn)), STM_LL_GPIO_PIN(pn),
-                       LL_GPIO_MODE_ALTERNATE); // STM_MODE_AF_PP
-  }
+  /// @brief Callback I2S de-intitialization
+  inline void cb_HAL_I2S_MspDeInit(I2S_HandleTypeDef *hi2s) { cb_i2s_MspDeInit(hi2s);}
 
   /// Starts the i2s processing
   bool i2s_begin() {
-    is_error = false;
+    stm32_i2s_is_error = false;
     if (settings.sample_rate == 0) {
       STM32_LOG("sample_rate must not be 0");
       return false;
     }
-    is_error = false;
+    stm32_i2s_is_error = false;
     /* Reset of all peripherals, Initializes the Flash interface and the
      * Systick.
      */
@@ -281,11 +277,12 @@ protected:
     MX_GPIO_Init();
     MX_DMA_Init();
     MX_I2S3_Init();
-    return !is_error;
+    return !stm32_i2s_is_error;
   }
 
   /**
-   * @brief GPIO Initialization Function for I2S_CKIN
+   * @brief GPIO Initialization Function for I2S pins
+   * 
    * @param None
    * @retval None
    */
@@ -295,7 +292,37 @@ protected:
 
     // Define pins
     for (I2SPin &pin : hw.pins) {
-      pinModeAltFunction(pin.pin, pin.altFunction);
+      //pinModeAltFunction(pin.pin, pin.altFunction);
+        PinName p = pin.pin;
+        resetPin(p);
+        // define I2S function (= alternative Function)
+        pin_function(p, STM_PIN_DATA(STM_MODE_AF_PP, GPIO_NOPULL, pin.altFunction));
+    }
+  }
+
+
+  /// Undo the current pin function
+  void resetPin(PinName p){
+    if (p != NC) {
+      // If the pin that support PWM or DAC output, we need to turn it off
+  #if (defined(HAL_DAC_MODULE_ENABLED) && !defined(HAL_DAC_MODULE_ONLY)) ||\
+      (defined(HAL_TIM_MODULE_ENABLED) && !defined(HAL_TIM_MODULE_ONLY))
+      if (is_pin_configured(p, g_anOutputPinConfigured)) {
+  #if defined(HAL_DAC_MODULE_ENABLED) && !defined(HAL_DAC_MODULE_ONLY)
+        if (pin_in_pinmap(p, PinMap_DAC)) {
+          dac_stop(p);
+        } else
+  #endif //HAL_DAC_MODULE_ENABLED && !HAL_DAC_MODULE_ONLY
+  #if defined(HAL_TIM_MODULE_ENABLED) && !defined(HAL_TIM_MODULE_ONLY)
+          if (pin_in_pinmap(p, PinMap_TIM)) {
+            pwm_stop(p);
+          }
+  #endif //HAL_TIM_MODULE_ENABLED && !HAL_TIM_MODULE_ONLY
+        {
+          reset_pin_configured(p, g_anOutputPinConfigured);
+        }
+      }
+  #endif
     }
   }
 
@@ -321,7 +348,7 @@ protected:
    * @retval None
    */
   virtual void MX_I2S3_Init(void) {
-    hi2s3.Instance = SPI3;
+    hi2s3.Instance = SPI_INSTANCE_FOR_I2S;
     hi2s3.Init.Mode = settings.mode;
     hi2s3.Init.Standard = settings.standard;
     hi2s3.Init.FullDuplexMode = settings.fullduplexmode;
@@ -341,7 +368,7 @@ protected:
    * @param hi2s: I2S handle pointer
    * @retval None
    */
-  virtual void i2s_MspInit(I2S_HandleTypeDef *hi2s) {
+  virtual void cb_i2s_MspInit(I2S_HandleTypeDef *hi2s) {
     RCC_PeriphCLKInitTypeDef PeriphClkInitStruct = {0};
     if (hi2s->Instance == SPI3) {
       /**
@@ -349,7 +376,7 @@ protected:
        */
       PeriphClkInitStruct.PeriphClockSelection = RCC_PERIPHCLK_I2S;
       PeriphClkInitStruct.PLLI2S.PLLI2SN = hw.plln; // 192;
-#ifdef HAS_PLLI2SM
+#ifdef PLLM
       PeriphClkInitStruct.PLLI2S.PLLI2SM = hw.pllm; // 16;
 #endif
       PeriphClkInitStruct.PLLI2S.PLLI2SR = hw.pllr; // 2;
@@ -375,6 +402,10 @@ protected:
     }
   }
 
+  /**
+   * @brief DMA Initialization
+   * This function configures and initializes the DMA
+   */
   void setupDMA(DMA_HandleTypeDef &dma, DMA_Stream_TypeDef *instance,
                 uint32_t channel, uint32_t direction) {
     dma.Instance = instance;
@@ -401,22 +432,10 @@ protected:
    * @param hi2s: I2S handle pointer
    * @retval None
    */
-  virtual void i2s_MspDeInit(I2S_HandleTypeDef *hi2s) {
+  virtual void cb_i2s_MspDeInit(I2S_HandleTypeDef *hi2s) {
     if (hi2s->Instance == SPI3) {
       /* Peripheral clock disable */
       __HAL_RCC_SPI3_CLK_DISABLE();
-
-      /**I2S3 GPIO Configuration
-      PA2     -------> I2S_CKIN
-      PA4     ------> I2S3_WS
-      PB10     ------> I2S3_MCK
-      PB3     ------> I2S3_CK
-      PB4     ------> I2S3_ext_SD
-      PB5     ------> I2S3_SD
-      */
-      // HAL_GPIO_DeInit(GPIOA, hw.a_pins);
-      // HAL_GPIO_DeInit(GPIOB, hw.b_pins);
-      // HAL_GPIO_DeInit(GPIOD, hw.d_pins);
 
       /* I2S3 DMA DeInit */
       HAL_DMA_DeInit(hi2s->hdmarx);
@@ -425,8 +444,8 @@ protected:
   }
 };
 
+/// @brief Global I2S Object
 extern Stm32I2sClass STM32_I2S;
-
 
 }
 

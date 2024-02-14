@@ -1,6 +1,11 @@
 #pragma once
 
+#define I2S_BUFFER_SIZE 512
+#define STM32_I2S_WITH_OBJECT
+#define USE_FULL_ASSERT
+
 #ifdef ARDUINO_BLACKPILL_F411CE
+  #define SPI_INSTANCE_FOR_I2S SPI3
   #define BLACK_PILL \
   {\
     {mclk, PB_10, GPIO_AF6_SPI3},\
@@ -10,10 +15,13 @@
     {data_in, PB_5, GPIO_AF6_SPI3},\
   }
   #define STM_I2S_PINS BLACK_PILL
-  #define HAS_PLLI2SM
+  #define PLLN 192
+  #define PLLM  16
+  #define PLLR   2
 #endif
 
 #ifdef ARDUINO_GENERIC_F411VETX
+  #define SPI_INSTANCE_FOR_I2S SPI3
   #define STM32F411DISCO \
     { \
       {mclk, PC_7, GPIO_AF6_SPI3},\
@@ -23,6 +31,8 @@
       {data_in, PC_12, GPIO_AF6_SPI3}\
     };
   #define STM_I2S_PINS STM32F411DISCO
-  #define HAS_PLLI2SM
+  #define PLLN 200
+  #define PLLM   5
+  #define PLLR   2
 #endif
 

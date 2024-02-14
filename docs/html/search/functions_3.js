@@ -1,4 +1,4 @@
 var searchData=
 [
-  ['error_5fhandler_82',['Error_Handler',['../group___i2_s.html#ga1730ffe1e560465665eb47d9264826f9',1,'Error_Handler(void):&#160;main.c'],['../group___i2_s.html#ga1730ffe1e560465665eb47d9264826f9',1,'Error_Handler(void):&#160;main.c']]]
+  ['resetpin_44',['resetPin',['../classstm32__i2s_1_1_stm32_i2s_class.html#ae9fde31d71da42c270d145089d50cd40',1,'stm32_i2s::Stm32I2sClass']]]
 ];

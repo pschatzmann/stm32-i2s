@@ -1,4 +1,4 @@
 var searchData=
 [
-  ['i2ssettingsstm32_0',['I2SSettingsSTM32',['../struct_i2_s_settings_s_t_m32.html',1,'']]]
+  ['hardwareconfig_26',['HardwareConfig',['../structstm32__i2s_1_1_hardware_config.html',1,'stm32_i2s']]]
 ];
