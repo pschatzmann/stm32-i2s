@@ -104,7 +104,7 @@ void loop() {
 
 ## Documentation
 
-Here is the link to the [actual documentation](https://pschatzmann.github.io/stm32f411-i2s/html/modules.html).
+Here is the link to the [actual documentation](https://pschatzmann.github.io/stm32f411-i2s/html/classstm32__i2s_1_1_stm32_i2s_class.html).
 
 You might also find further information in [my Blogs](https://www.pschatzmann.ch/tags/stm32)
 
