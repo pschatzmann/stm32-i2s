@@ -2,20 +2,24 @@
 #include "stm32-i2s.h"
 #include "Arduino.h"
 
+namespace stm32_i2s {
+
+Stm32I2sClass STM32_I2S;
+
 extern "C" void HAL_I2S_TxCpltCallback(I2S_HandleTypeDef *hi2s) {
-  I2S.txRxCpltCallback(hi2s);
+  STM32_I2S.txRxCpltCallback(hi2s);
 }
 
 extern "C" void HAL_I2S_TxHalfCpltCallback(I2S_HandleTypeDef *hi2s) {
-  I2S.txRxHalfCpltCallback(hi2s);
+  STM32_I2S.txRxHalfCpltCallback(hi2s);
 }
 
 extern "C" void HAL_I2S_RxCpltCallback(I2S_HandleTypeDef *hi2s) {
-  I2S.txRxCpltCallback(hi2s);
+  STM32_I2S.txRxCpltCallback(hi2s);
 }
 
 extern "C" void HAL_I2S_RxHalfCpltCallback(I2S_HandleTypeDef *hi2s) {
-  I2S.txRxHalfCpltCallback(hi2s);
+  STM32_I2S.txRxHalfCpltCallback(hi2s);
 }
 
 extern "C" void HAL_I2S_ErrorCallback(I2S_HandleTypeDef *hi2s) { Report_Error(); }
@@ -23,12 +27,12 @@ extern "C" void HAL_I2S_ErrorCallback(I2S_HandleTypeDef *hi2s) { Report_Error();
 /**
  * @brief This function handles DMA1 stream0 global interrupt.
  */
-extern "C" void DMA1_Stream0_IRQHandler(void) { I2S.dmaIrqRx(); }
+extern "C" void DMA1_Stream0_IRQHandler(void) { STM32_I2S.dmaIrqRx(); }
 
 /**
  * @brief This function handles DMA1 stream5 global interrupt.
  */
-extern "C" void DMA1_Stream5_IRQHandler(void) { I2S.dmaIrqTx(); }
+extern "C" void DMA1_Stream5_IRQHandler(void) { STM32_I2S.dmaIrqTx(); }
 
 /**
  * @brief I2S MSP Initialization
@@ -36,7 +40,7 @@ extern "C" void DMA1_Stream5_IRQHandler(void) { I2S.dmaIrqTx(); }
  * @param hi2s: I2S handle pointer
  * @retval None
  */
-extern "C" void HAL_I2S_MspInit(I2S_HandleTypeDef *hi2s) { I2S.HAL_I2S_MspInit(hi2s); }
+extern "C" void HAL_I2S_MspInit(I2S_HandleTypeDef *hi2s) { STM32_I2S.HAL_I2S_MspInit(hi2s); }
 
 /**
  * @brief I2S MSP De-Initialization
@@ -44,7 +48,7 @@ extern "C" void HAL_I2S_MspInit(I2S_HandleTypeDef *hi2s) { I2S.HAL_I2S_MspInit(h
  * @param hi2s: I2S handle pointer
  * @retval None
  */
-extern "C" void HAL_I2S_MspDeInit(I2S_HandleTypeDef *hi2s) { I2S.HAL_I2S_MspDeInit(hi2s); }
+extern "C" void HAL_I2S_MspDeInit(I2S_HandleTypeDef *hi2s) { STM32_I2S.HAL_I2S_MspDeInit(hi2s); }
 /**
  * @brief  This function is executed in case of error occurrence.
  * @retval None
@@ -65,6 +69,7 @@ void STM32_LOG(const char *fmt, ...) {
   int len = vsnprintf(log_buffer + 7, 200, fmt, arg);
   va_end(arg);
   Serial.println(log_buffer);
+  Serial.flush();
 }
 
 #ifdef USE_FULL_ASSERT
@@ -75,7 +80,7 @@ void STM32_LOG(const char *fmt, ...) {
  * @param  line: assert_param error line source number
  * @retval None
  */
-void assert_failed(uint8_t *file, uint32_t line) {
+extern "C" void assert_failed(uint8_t *file, uint32_t line) {
   /* User can add his own implementation to report the file name and line
      number, ex: printf("Wrong parameters value: file %s on line %d\r\n", file,
      line) */
@@ -83,3 +88,5 @@ void assert_failed(uint8_t *file, uint32_t line) {
             line);
 }
 #endif /* USE_FULL_ASSERT */
+
+}

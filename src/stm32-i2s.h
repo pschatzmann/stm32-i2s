@@ -27,6 +27,8 @@
 #include <stdlib.h>
 #include <string.h>
 
+namespace stm32_i2s {
+
 extern "C" void DMA1_Stream0_IRQHandler(void);
 extern "C" void DMA1_Stream5_IRQHandler(void);
 extern "C" void Report_Error();
@@ -123,7 +125,7 @@ public:
     // start circular dma
     if (HAL_I2S_Transmit_DMA(&hi2s3, (uint16_t *)dma_buffer_tx, buffer_size) !=
         HAL_OK) {
-      // LOGE("HAL_I2S_Transmit_DMA");
+      STM32_LOG("error HAL_I2S_Transmit_DMA");
       Report_Error();
       result = false;
     }
@@ -147,7 +149,7 @@ public:
     // start circular dma
     if (HAL_I2S_Receive_DMA(&hi2s3, (uint16_t *)dma_buffer_rx, buffer_size) !=
         HAL_OK) {
-      // LOGE("HAL_I2S_Transmit_DMA");
+      STM32_LOG("error: HAL_I2S_Transmit_DMA");
       Report_Error();
       result = false;
     }
@@ -179,7 +181,7 @@ public:
     if (HAL_I2SEx_TransmitReceive_DMA(&hi2s3, (uint16_t *)dma_buffer_tx,
                                       (uint16_t *)dma_buffer_rx,
                                       buffer_size) != HAL_OK) {
-      // LOGE("HAL_I2S_Transmit_DMA");
+      STM32_LOG("error HAL_I2SEx_TransmitReceive_DMA");
       Report_Error();
       result = false;
     }
@@ -288,8 +290,6 @@ protected:
    * @retval None
    */
   virtual void MX_GPIO_Init(void) {
-    GPIO_InitTypeDef GPIO_InitStruct = {0};
-
     // GPIO Ports Clock Enable
     __HAL_RCC_GPIOH_CLK_ENABLE();
 
@@ -342,7 +342,6 @@ protected:
    * @retval None
    */
   virtual void i2s_MspInit(I2S_HandleTypeDef *hi2s) {
-    GPIO_InitTypeDef GPIO_InitStruct = {0};
     RCC_PeriphCLKInitTypeDef PeriphClkInitStruct = {0};
     if (hi2s->Instance == SPI3) {
       /**
@@ -361,18 +360,14 @@ protected:
       /* Peripheral clock enable */
       __HAL_RCC_SPI3_CLK_ENABLE();
 
-      DMA_Stream_TypeDef *rx_instance;
-      uint32_t rx_channel;
-      uint32_t rx_direction;
-
       /* I2S3 DMA Init */
-      if (dma_buffer_rx) {
+      if (dma_buffer_rx != nullptr) {
         setupDMA(hdma_i2s3_ext_rx, hw.rx_instance, hw.rx_channel,
                  hw.rx_direction);
         __HAL_LINKDMA(hi2s, hdmarx, hdma_i2s3_ext_rx);
       }
 
-      if (dma_buffer_tx) {
+      if (dma_buffer_tx != nullptr) {
         setupDMA(hdma_i2s3_ext_tx, hw.tx_instance, hw.tx_channel,
                  hw.tx_direction);
         __HAL_LINKDMA(hi2s, hdmatx, hdma_i2s3_ext_tx);
@@ -430,4 +425,8 @@ protected:
   }
 };
 
-static Stm32I2sClass I2S;
+extern Stm32I2sClass STM32_I2S;
+
+
+}
+
