@@ -106,364 +106,374 @@ $(function() {
 <div class="line"><a name="l00044"></a><span class="lineno"><a class="line" href="stm32-i2s_8h.html#a44498895f4b65c359a7e5846c7c16053">   44</a></span>&#160;<span class="keyword">enum</span> <a class="code" href="stm32-i2s_8h.html#a44498895f4b65c359a7e5846c7c16053">I2SPinFunction</a> { mclk, bck, ws, data_out, data_in };</div>
 <div class="line"><a name="l00045"></a><span class="lineno">   45</span>&#160; </div>
 <div class="line"><a name="l00053"></a><span class="lineno"><a class="line" href="structstm32__i2s_1_1_i2_s_pin.html">   53</a></span>&#160;<span class="keyword">struct </span><a class="code" href="structstm32__i2s_1_1_i2_s_pin.html">I2SPin</a> {</div>
-<div class="line"><a name="l00054"></a><span class="lineno">   54</span>&#160;  <a class="code" href="structstm32__i2s_1_1_i2_s_pin.html">I2SPin</a>(<a class="code" href="stm32-i2s_8h.html#a44498895f4b65c359a7e5846c7c16053">I2SPinFunction</a> f, PinName n, <span class="keywordtype">int</span> alt) {}</div>
-<div class="line"><a name="l00055"></a><span class="lineno">   55</span>&#160;  <a class="code" href="stm32-i2s_8h.html#a44498895f4b65c359a7e5846c7c16053">I2SPinFunction</a> <span class="keyword">function</span>;</div>
-<div class="line"><a name="l00056"></a><span class="lineno">   56</span>&#160;  PinName pin;</div>
-<div class="line"><a name="l00057"></a><span class="lineno">   57</span>&#160;  <span class="keywordtype">int</span> altFunction;</div>
-<div class="line"><a name="l00058"></a><span class="lineno">   58</span>&#160;};</div>
-<div class="line"><a name="l00059"></a><span class="lineno">   59</span>&#160; </div>
-<div class="line"><a name="l00065"></a><span class="lineno"><a class="line" href="structstm32__i2s_1_1_hardware_config.html">   65</a></span>&#160;<span class="keyword">struct </span><a class="code" href="structstm32__i2s_1_1_hardware_config.html">HardwareConfig</a> {</div>
-<div class="line"><a name="l00066"></a><span class="lineno">   66</span>&#160;  IRQn_Type irq1 = DMA1_Stream0_IRQn;</div>
-<div class="line"><a name="l00067"></a><span class="lineno">   67</span>&#160;  IRQn_Type irq2 = DMA1_Stream5_IRQn;;</div>
+<div class="line"><a name="l00054"></a><span class="lineno">   54</span>&#160;  <a class="code" href="structstm32__i2s_1_1_i2_s_pin.html">I2SPin</a>(<a class="code" href="stm32-i2s_8h.html#a44498895f4b65c359a7e5846c7c16053">I2SPinFunction</a> f, PinName n, <span class="keywordtype">int</span> alt) {</div>
+<div class="line"><a name="l00055"></a><span class="lineno">   55</span>&#160;    <span class="keyword">function</span> = f;</div>
+<div class="line"><a name="l00056"></a><span class="lineno">   56</span>&#160;    pin = n;</div>
+<div class="line"><a name="l00057"></a><span class="lineno">   57</span>&#160;    altFunction = alt;</div>
+<div class="line"><a name="l00058"></a><span class="lineno">   58</span>&#160;  }</div>
+<div class="line"><a name="l00059"></a><span class="lineno">   59</span>&#160;  <a class="code" href="stm32-i2s_8h.html#a44498895f4b65c359a7e5846c7c16053">I2SPinFunction</a> <span class="keyword">function</span>;</div>
+<div class="line"><a name="l00060"></a><span class="lineno">   60</span>&#160;  PinName pin;</div>
+<div class="line"><a name="l00061"></a><span class="lineno">   61</span>&#160;  <span class="keywordtype">int</span> altFunction;</div>
+<div class="line"><a name="l00062"></a><span class="lineno">   62</span>&#160; </div>
+<div class="line"><a name="l00063"></a><span class="lineno">   63</span>&#160;  <span class="keywordtype">void</span> begin(){</div>
+<div class="line"><a name="l00064"></a><span class="lineno">   64</span>&#160;    <a class="code" href="structstm32__i2s_1_1_i2_s_pin.html#a74b9ea065dd62de38da823d2959c4a3a">end</a>();</div>
+<div class="line"><a name="l00065"></a><span class="lineno">   65</span>&#160;    <span class="comment">// define the pin function</span></div>
+<div class="line"><a name="l00066"></a><span class="lineno">   66</span>&#160;    pin_function(pin, STM_PIN_DATA(STM_MODE_AF_PP, GPIO_NOPULL, altFunction));</div>
+<div class="line"><a name="l00067"></a><span class="lineno">   67</span>&#160;  }</div>
 <div class="line"><a name="l00068"></a><span class="lineno">   68</span>&#160; </div>
-<div class="line"><a name="l00069"></a><span class="lineno">   69</span>&#160;  uint32_t plln = PLLN;</div>
-<div class="line"><a name="l00070"></a><span class="lineno">   70</span>&#160;  uint32_t pllm = PLLM;</div>
-<div class="line"><a name="l00071"></a><span class="lineno">   71</span>&#160;  uint32_t pllr = PLLR;</div>
-<div class="line"><a name="l00072"></a><span class="lineno">   72</span>&#160; </div>
-<div class="line"><a name="l00073"></a><span class="lineno">   73</span>&#160;  DMA_Stream_TypeDef *rx_instance = DMA1_Stream0;</div>
-<div class="line"><a name="l00074"></a><span class="lineno">   74</span>&#160;  uint32_t rx_channel = DMA_CHANNEL_3;</div>
-<div class="line"><a name="l00075"></a><span class="lineno">   75</span>&#160;  uint32_t rx_direction = DMA_PERIPH_TO_MEMORY;</div>
-<div class="line"><a name="l00076"></a><span class="lineno">   76</span>&#160; </div>
-<div class="line"><a name="l00077"></a><span class="lineno">   77</span>&#160;  DMA_Stream_TypeDef *tx_instance = DMA1_Stream5;</div>
-<div class="line"><a name="l00078"></a><span class="lineno">   78</span>&#160;  uint32_t tx_channel = DMA_CHANNEL_0;</div>
-<div class="line"><a name="l00079"></a><span class="lineno">   79</span>&#160;  uint32_t tx_direction = DMA_MEMORY_TO_PERIPH;</div>
-<div class="line"><a name="l00080"></a><span class="lineno">   80</span>&#160; </div>
-<div class="line"><a name="l00081"></a><span class="lineno">   81</span>&#160;  <a class="code" href="structstm32__i2s_1_1_i2_s_pin.html">I2SPin</a> pins[5] = STM_I2S_PINS;</div>
-<div class="line"><a name="l00082"></a><span class="lineno">   82</span>&#160; </div>
-<div class="line"><a name="l00083"></a><span class="lineno">   83</span>&#160;  <a class="code" href="structstm32__i2s_1_1_hardware_config.html">HardwareConfig</a>() {</div>
-<div class="line"><a name="l00084"></a><span class="lineno">   84</span>&#160;    <span class="comment">// overwrite processor specific default settings if necessary</span></div>
-<div class="line"><a name="l00085"></a><span class="lineno">   85</span>&#160;  }</div>
-<div class="line"><a name="l00086"></a><span class="lineno">   86</span>&#160;};</div>
-<div class="line"><a name="l00087"></a><span class="lineno">   87</span>&#160; </div>
-<div class="line"><a name="l00093"></a><span class="lineno"><a class="line" href="structstm32__i2s_1_1_i2_s_settings_s_t_m32.html">   93</a></span>&#160;<span class="keyword">struct </span><a class="code" href="structstm32__i2s_1_1_i2_s_settings_s_t_m32.html">I2SSettingsSTM32</a> {</div>
-<div class="line"><a name="l00094"></a><span class="lineno">   94</span>&#160;  uint32_t mode = I2S_MODE_MASTER_TX;</div>
-<div class="line"><a name="l00095"></a><span class="lineno">   95</span>&#160;  uint32_t standard = I2S_STANDARD_PHILIPS;</div>
-<div class="line"><a name="l00096"></a><span class="lineno">   96</span>&#160;  uint32_t fullduplexmode = I2S_FULLDUPLEXMODE_ENABLE;</div>
-<div class="line"><a name="l00097"></a><span class="lineno">   97</span>&#160;  uint32_t sample_rate = I2S_AUDIOFREQ_44K;</div>
-<div class="line"><a name="l00098"></a><span class="lineno">   98</span>&#160;  <a class="code" href="structstm32__i2s_1_1_hardware_config.html">HardwareConfig</a> hardware_config;</div>
-<div class="line"><a name="l00099"></a><span class="lineno">   99</span>&#160;};</div>
-<div class="line"><a name="l00100"></a><span class="lineno">  100</span>&#160; </div>
-<div class="line"><a name="l00106"></a><span class="lineno"><a class="line" href="classstm32__i2s_1_1_stm32_i2s_class.html">  106</a></span>&#160;<span class="keyword">class </span><a class="code" href="classstm32__i2s_1_1_stm32_i2s_class.html">Stm32I2sClass</a> {</div>
-<div class="line"><a name="l00107"></a><span class="lineno">  107</span>&#160; <span class="keyword">friend</span> <span class="keywordtype">void</span> DMA1_Stream0_IRQHandler(<span class="keywordtype">void</span>);</div>
-<div class="line"><a name="l00108"></a><span class="lineno">  108</span>&#160; <span class="keyword">friend</span> <span class="keywordtype">void</span> DMA1_Stream5_IRQHandler(<span class="keywordtype">void</span>);</div>
-<div class="line"><a name="l00109"></a><span class="lineno">  109</span>&#160; <span class="keyword">friend</span> <span class="keywordtype">void</span> HAL_I2S_MspInit(I2S_HandleTypeDef *hi2s);</div>
-<div class="line"><a name="l00110"></a><span class="lineno">  110</span>&#160; <span class="keyword">friend</span> <span class="keywordtype">void</span> HAL_I2S_MspDeInit(I2S_HandleTypeDef *hi2s);</div>
-<div class="line"><a name="l00111"></a><span class="lineno">  111</span>&#160; <span class="keyword">friend</span> <span class="keywordtype">void</span> HAL_I2S_TxCpltCallback(I2S_HandleTypeDef *hi2s);</div>
-<div class="line"><a name="l00112"></a><span class="lineno">  112</span>&#160; <span class="keyword">friend</span> <span class="keywordtype">void</span> HAL_I2S_TxHalfCpltCallback(I2S_HandleTypeDef *hi2s);</div>
-<div class="line"><a name="l00113"></a><span class="lineno">  113</span>&#160; <span class="keyword">friend</span> <span class="keywordtype">void</span> HAL_I2S_RxCpltCallback(I2S_HandleTypeDef *hi2s);</div>
-<div class="line"><a name="l00114"></a><span class="lineno">  114</span>&#160; <span class="keyword">friend</span> <span class="keywordtype">void</span> HAL_I2S_RxHalfCpltCallback(I2S_HandleTypeDef *hi2s);</div>
-<div class="line"><a name="l00115"></a><span class="lineno">  115</span>&#160; </div>
-<div class="line"><a name="l00116"></a><span class="lineno">  116</span>&#160;<span class="keyword">public</span>:</div>
-<div class="line"><a name="l00118"></a><span class="lineno"><a class="line" href="classstm32__i2s_1_1_stm32_i2s_class.html#aa6106141afdf1742633d9db276432344">  118</a></span>&#160;  <span class="keywordtype">bool</span> <a class="code" href="classstm32__i2s_1_1_stm32_i2s_class.html#aa6106141afdf1742633d9db276432344">startI2STransmit</a>(<a class="code" href="structstm32__i2s_1_1_i2_s_settings_s_t_m32.html">I2SSettingsSTM32</a> settings,</div>
-<div class="line"><a name="l00119"></a><span class="lineno">  119</span>&#160;                        <span class="keywordtype">void</span> (*readToTransmit)(uint8_t *buffer,</div>
-<div class="line"><a name="l00120"></a><span class="lineno">  120</span>&#160;                                               uint16_t byteCount),</div>
-<div class="line"><a name="l00121"></a><span class="lineno">  121</span>&#160;                        uint16_t buffer_size) {</div>
-<div class="line"><a name="l00122"></a><span class="lineno">  122</span>&#160;    this-&gt;settings = settings;</div>
-<div class="line"><a name="l00123"></a><span class="lineno">  123</span>&#160;    this-&gt;hw = settings.hardware_config;</div>
-<div class="line"><a name="l00124"></a><span class="lineno">  124</span>&#160;    readToTransmitCB = readToTransmit;</div>
-<div class="line"><a name="l00125"></a><span class="lineno">  125</span>&#160;    <span class="keywordflow">if</span> (dma_buffer_tx == <span class="keyword">nullptr</span>)</div>
-<div class="line"><a name="l00126"></a><span class="lineno">  126</span>&#160;      dma_buffer_tx = <span class="keyword">new</span> <span class="keywordtype">byte</span>[buffer_size];</div>
-<div class="line"><a name="l00127"></a><span class="lineno">  127</span>&#160;    <span class="keywordtype">bool</span> result = <span class="keyword">true</span>;</div>
-<div class="line"><a name="l00128"></a><span class="lineno">  128</span>&#160;    <span class="keywordflow">if</span> (!<a class="code" href="classstm32__i2s_1_1_stm32_i2s_class.html#abc045de6c4c440593e3bb6ba0cf9921c">i2s_begin</a>()) {</div>
-<div class="line"><a name="l00129"></a><span class="lineno">  129</span>&#160;      <span class="keywordflow">return</span> <span class="keyword">false</span>;</div>
-<div class="line"><a name="l00130"></a><span class="lineno">  130</span>&#160;    }</div>
-<div class="line"><a name="l00131"></a><span class="lineno">  131</span>&#160;    <span class="comment">// start circular dma</span></div>
-<div class="line"><a name="l00132"></a><span class="lineno">  132</span>&#160;    <span class="keywordflow">if</span> (HAL_I2S_Transmit_DMA(&amp;hi2s3, (uint16_t *)dma_buffer_tx, buffer_size) !=</div>
-<div class="line"><a name="l00133"></a><span class="lineno">  133</span>&#160;        HAL_OK) {</div>
-<div class="line"><a name="l00134"></a><span class="lineno">  134</span>&#160;      STM32_LOG(<span class="stringliteral">&quot;error HAL_I2S_Transmit_DMA&quot;</span>);</div>
-<div class="line"><a name="l00135"></a><span class="lineno">  135</span>&#160;      Report_Error();</div>
-<div class="line"><a name="l00136"></a><span class="lineno">  136</span>&#160;      result = <span class="keyword">false</span>;</div>
-<div class="line"><a name="l00137"></a><span class="lineno">  137</span>&#160;    }</div>
-<div class="line"><a name="l00138"></a><span class="lineno">  138</span>&#160;    <span class="keywordflow">return</span> result;</div>
-<div class="line"><a name="l00139"></a><span class="lineno">  139</span>&#160;  }</div>
-<div class="line"><a name="l00140"></a><span class="lineno">  140</span>&#160; </div>
-<div class="line"><a name="l00142"></a><span class="lineno"><a class="line" href="classstm32__i2s_1_1_stm32_i2s_class.html#afa0743706fbe309e2fca3a8aea2b1a0c">  142</a></span>&#160;  <span class="keywordtype">bool</span> <a class="code" href="classstm32__i2s_1_1_stm32_i2s_class.html#afa0743706fbe309e2fca3a8aea2b1a0c">startI2SReceive</a>(<a class="code" href="structstm32__i2s_1_1_i2_s_settings_s_t_m32.html">I2SSettingsSTM32</a> settings,</div>
-<div class="line"><a name="l00143"></a><span class="lineno">  143</span>&#160;                       <span class="keywordtype">void</span> (*writeFromReceive)(uint8_t *buffer,</div>
-<div class="line"><a name="l00144"></a><span class="lineno">  144</span>&#160;                                                uint16_t byteCount),</div>
-<div class="line"><a name="l00145"></a><span class="lineno">  145</span>&#160;                       uint16_t buffer_size) {</div>
-<div class="line"><a name="l00146"></a><span class="lineno">  146</span>&#160;    this-&gt;settings = settings;</div>
-<div class="line"><a name="l00147"></a><span class="lineno">  147</span>&#160;    this-&gt;hw = settings.hardware_config;</div>
-<div class="line"><a name="l00148"></a><span class="lineno">  148</span>&#160;    <span class="keywordtype">bool</span> result = <span class="keyword">true</span>;</div>
-<div class="line"><a name="l00149"></a><span class="lineno">  149</span>&#160;    writeFromReceiveCB = writeFromReceive;</div>
-<div class="line"><a name="l00150"></a><span class="lineno">  150</span>&#160;    <span class="keywordflow">if</span> (dma_buffer_rx == <span class="keyword">nullptr</span>)</div>
-<div class="line"><a name="l00151"></a><span class="lineno">  151</span>&#160;      dma_buffer_rx = <span class="keyword">new</span> <span class="keywordtype">byte</span>[buffer_size];</div>
-<div class="line"><a name="l00152"></a><span class="lineno">  152</span>&#160;    <span class="keywordflow">if</span> (!<a class="code" href="classstm32__i2s_1_1_stm32_i2s_class.html#abc045de6c4c440593e3bb6ba0cf9921c">i2s_begin</a>()) {</div>
-<div class="line"><a name="l00153"></a><span class="lineno">  153</span>&#160;      <span class="keywordflow">return</span> <span class="keyword">false</span>;</div>
-<div class="line"><a name="l00154"></a><span class="lineno">  154</span>&#160;    }</div>
-<div class="line"><a name="l00155"></a><span class="lineno">  155</span>&#160;    <span class="comment">// start circular dma</span></div>
-<div class="line"><a name="l00156"></a><span class="lineno">  156</span>&#160;    <span class="keywordflow">if</span> (HAL_I2S_Receive_DMA(&amp;hi2s3, (uint16_t *)dma_buffer_rx, buffer_size) !=</div>
-<div class="line"><a name="l00157"></a><span class="lineno">  157</span>&#160;        HAL_OK) {</div>
-<div class="line"><a name="l00158"></a><span class="lineno">  158</span>&#160;      STM32_LOG(<span class="stringliteral">&quot;error: HAL_I2S_Transmit_DMA&quot;</span>);</div>
-<div class="line"><a name="l00159"></a><span class="lineno">  159</span>&#160;      Report_Error();</div>
-<div class="line"><a name="l00160"></a><span class="lineno">  160</span>&#160;      result = <span class="keyword">false</span>;</div>
-<div class="line"><a name="l00161"></a><span class="lineno">  161</span>&#160;    }</div>
-<div class="line"><a name="l00162"></a><span class="lineno">  162</span>&#160;    <span class="keywordflow">return</span> result;</div>
-<div class="line"><a name="l00163"></a><span class="lineno">  163</span>&#160;  }</div>
-<div class="line"><a name="l00164"></a><span class="lineno">  164</span>&#160; </div>
-<div class="line"><a name="l00166"></a><span class="lineno"><a class="line" href="classstm32__i2s_1_1_stm32_i2s_class.html#a1fb497436e1c2f73b7db59ed65c29d44">  166</a></span>&#160;  <span class="keywordtype">bool</span> <a class="code" href="classstm32__i2s_1_1_stm32_i2s_class.html#a1fb497436e1c2f73b7db59ed65c29d44">startI2STransmitReceive</a>(<a class="code" href="structstm32__i2s_1_1_i2_s_settings_s_t_m32.html">I2SSettingsSTM32</a> settings,</div>
-<div class="line"><a name="l00167"></a><span class="lineno">  167</span>&#160;                               <span class="keywordtype">void</span> (*readToTransmit)(uint8_t *buffer,</div>
-<div class="line"><a name="l00168"></a><span class="lineno">  168</span>&#160;                                                      uint16_t byteCount),</div>
-<div class="line"><a name="l00169"></a><span class="lineno">  169</span>&#160;                               <span class="keywordtype">void</span> (*writeFromReceive)(uint8_t *buffer,</div>
-<div class="line"><a name="l00170"></a><span class="lineno">  170</span>&#160;                                                        uint16_t byteCount),</div>
-<div class="line"><a name="l00171"></a><span class="lineno">  171</span>&#160;                               uint16_t buffer_size) {</div>
-<div class="line"><a name="l00172"></a><span class="lineno">  172</span>&#160;    this-&gt;settings = settings;</div>
-<div class="line"><a name="l00173"></a><span class="lineno">  173</span>&#160;    this-&gt;hw = settings.hardware_config;</div>
-<div class="line"><a name="l00174"></a><span class="lineno">  174</span>&#160;    <span class="keywordtype">bool</span> result = <span class="keyword">true</span>;</div>
-<div class="line"><a name="l00175"></a><span class="lineno">  175</span>&#160;    readToTransmitCB = readToTransmit;</div>
-<div class="line"><a name="l00176"></a><span class="lineno">  176</span>&#160;    writeFromReceiveCB = writeFromReceive;</div>
-<div class="line"><a name="l00177"></a><span class="lineno">  177</span>&#160; </div>
-<div class="line"><a name="l00178"></a><span class="lineno">  178</span>&#160;    <span class="keywordflow">if</span> (dma_buffer_tx == <span class="keyword">nullptr</span>)</div>
-<div class="line"><a name="l00179"></a><span class="lineno">  179</span>&#160;      dma_buffer_tx = <span class="keyword">new</span> <span class="keywordtype">byte</span>[buffer_size];</div>
-<div class="line"><a name="l00180"></a><span class="lineno">  180</span>&#160; </div>
-<div class="line"><a name="l00181"></a><span class="lineno">  181</span>&#160;    <span class="keywordflow">if</span> (dma_buffer_rx == <span class="keyword">nullptr</span>)</div>
-<div class="line"><a name="l00182"></a><span class="lineno">  182</span>&#160;      dma_buffer_rx = <span class="keyword">new</span> <span class="keywordtype">byte</span>[buffer_size];</div>
-<div class="line"><a name="l00183"></a><span class="lineno">  183</span>&#160; </div>
-<div class="line"><a name="l00184"></a><span class="lineno">  184</span>&#160;    <span class="keywordflow">if</span> (!<a class="code" href="classstm32__i2s_1_1_stm32_i2s_class.html#abc045de6c4c440593e3bb6ba0cf9921c">i2s_begin</a>()) {</div>
-<div class="line"><a name="l00185"></a><span class="lineno">  185</span>&#160;      <span class="keywordflow">return</span> <span class="keyword">false</span>;</div>
-<div class="line"><a name="l00186"></a><span class="lineno">  186</span>&#160;    }</div>
-<div class="line"><a name="l00187"></a><span class="lineno">  187</span>&#160;    <span class="keywordflow">if</span> (HAL_I2SEx_TransmitReceive_DMA(&amp;hi2s3, (uint16_t *)dma_buffer_tx,</div>
-<div class="line"><a name="l00188"></a><span class="lineno">  188</span>&#160;                                      (uint16_t *)dma_buffer_rx,</div>
-<div class="line"><a name="l00189"></a><span class="lineno">  189</span>&#160;                                      buffer_size) != HAL_OK) {</div>
-<div class="line"><a name="l00190"></a><span class="lineno">  190</span>&#160;      STM32_LOG(<span class="stringliteral">&quot;error HAL_I2SEx_TransmitReceive_DMA&quot;</span>);</div>
-<div class="line"><a name="l00191"></a><span class="lineno">  191</span>&#160;      Report_Error();</div>
-<div class="line"><a name="l00192"></a><span class="lineno">  192</span>&#160;      result = <span class="keyword">false</span>;</div>
-<div class="line"><a name="l00193"></a><span class="lineno">  193</span>&#160;    }</div>
-<div class="line"><a name="l00194"></a><span class="lineno">  194</span>&#160;    <span class="keywordflow">return</span> result;</div>
-<div class="line"><a name="l00195"></a><span class="lineno">  195</span>&#160;  }</div>
-<div class="line"><a name="l00196"></a><span class="lineno">  196</span>&#160; </div>
-<div class="line"><a name="l00197"></a><span class="lineno">  197</span>&#160;  <span class="keywordtype">void</span> stopI2S() {</div>
-<div class="line"><a name="l00198"></a><span class="lineno">  198</span>&#160;    HAL_I2S_DMAStop(&amp;hi2s3);</div>
-<div class="line"><a name="l00199"></a><span class="lineno">  199</span>&#160;    HAL_I2S_DeInit(&amp;hi2s3);</div>
-<div class="line"><a name="l00200"></a><span class="lineno">  200</span>&#160;    HAL_I2S_MspDeInit(&amp;hi2s3);</div>
-<div class="line"><a name="l00201"></a><span class="lineno">  201</span>&#160;    <span class="keywordflow">if</span> (dma_buffer_tx != NULL) {</div>
-<div class="line"><a name="l00202"></a><span class="lineno">  202</span>&#160;      <span class="keyword">delete</span>[](dma_buffer_tx);</div>
-<div class="line"><a name="l00203"></a><span class="lineno">  203</span>&#160;    }</div>
-<div class="line"><a name="l00204"></a><span class="lineno">  204</span>&#160;    <span class="keywordflow">if</span> (dma_buffer_rx != NULL) {</div>
-<div class="line"><a name="l00205"></a><span class="lineno">  205</span>&#160;      <span class="keyword">delete</span>[](dma_buffer_rx);</div>
-<div class="line"><a name="l00206"></a><span class="lineno">  206</span>&#160;    }</div>
-<div class="line"><a name="l00207"></a><span class="lineno">  207</span>&#160;  }</div>
-<div class="line"><a name="l00208"></a><span class="lineno">  208</span>&#160; </div>
-<div class="line"><a name="l00209"></a><span class="lineno">  209</span>&#160;<span class="keyword">protected</span>:</div>
-<div class="line"><a name="l00210"></a><span class="lineno">  210</span>&#160;  I2SSettingsSTM32 settings;</div>
-<div class="line"><a name="l00211"></a><span class="lineno">  211</span>&#160;  I2S_HandleTypeDef hi2s3;</div>
-<div class="line"><a name="l00212"></a><span class="lineno">  212</span>&#160;  <span class="keywordtype">byte</span> *dma_buffer_tx = <span class="keyword">nullptr</span>;</div>
-<div class="line"><a name="l00213"></a><span class="lineno">  213</span>&#160;  <span class="keywordtype">byte</span> *dma_buffer_rx = <span class="keyword">nullptr</span>;</div>
-<div class="line"><a name="l00214"></a><span class="lineno">  214</span>&#160;  void (*readToTransmitCB)(uint8_t *buffer, uint16_t byteCount);</div>
-<div class="line"><a name="l00215"></a><span class="lineno">  215</span>&#160;  void (*writeFromReceiveCB)(uint8_t *buffer, uint16_t byteCount);</div>
-<div class="line"><a name="l00216"></a><span class="lineno">  216</span>&#160;  DMA_HandleTypeDef hdma_i2s3_ext_rx;</div>
-<div class="line"><a name="l00217"></a><span class="lineno">  217</span>&#160;  DMA_HandleTypeDef hdma_i2s3_ext_tx;</div>
-<div class="line"><a name="l00218"></a><span class="lineno">  218</span>&#160;  HardwareConfig hw;</div>
-<div class="line"><a name="l00219"></a><span class="lineno">  219</span>&#160; </div>
-<div class="line"><a name="l00222"></a><span class="lineno"><a class="line" href="classstm32__i2s_1_1_stm32_i2s_class.html#a80d0a01ef377e25ab9e819240d9acb8d">  222</a></span>&#160;  <span class="keywordtype">void</span> <a class="code" href="classstm32__i2s_1_1_stm32_i2s_class.html#a80d0a01ef377e25ab9e819240d9acb8d">cb_TxRxComplete</a>(I2S_HandleTypeDef *hi2s) {</div>
-<div class="line"><a name="l00223"></a><span class="lineno">  223</span>&#160;    <span class="comment">// second half finished, filling it up again while first  half is playing</span></div>
-<div class="line"><a name="l00224"></a><span class="lineno">  224</span>&#160;    uint8_t *dma_buffer_tx = (uint8_t *)hi2s-&gt;pTxBuffPtr;</div>
-<div class="line"><a name="l00225"></a><span class="lineno">  225</span>&#160;    uint8_t *dma_buffer_rx = (uint8_t *)hi2s-&gt;pRxBuffPtr;</div>
-<div class="line"><a name="l00226"></a><span class="lineno">  226</span>&#160;    uint16_t buffer_size_tx = hi2s-&gt;TxXferSize * 2; <span class="comment">// XferSize is in words</span></div>
-<div class="line"><a name="l00227"></a><span class="lineno">  227</span>&#160;    uint16_t buffer_size_rx = hi2s-&gt;RxXferSize * 2;</div>
-<div class="line"><a name="l00228"></a><span class="lineno">  228</span>&#160;    <span class="keywordflow">if</span> (readToTransmitCB != NULL)</div>
-<div class="line"><a name="l00229"></a><span class="lineno">  229</span>&#160;      readToTransmitCB(&amp;(dma_buffer_tx[buffer_size_tx / 2]),</div>
-<div class="line"><a name="l00230"></a><span class="lineno">  230</span>&#160;                       buffer_size_tx / 2);</div>
-<div class="line"><a name="l00231"></a><span class="lineno">  231</span>&#160;    <span class="keywordflow">if</span> (writeFromReceiveCB != NULL)</div>
-<div class="line"><a name="l00232"></a><span class="lineno">  232</span>&#160;      writeFromReceiveCB(&amp;(dma_buffer_rx[buffer_size_rx / 2]),</div>
-<div class="line"><a name="l00233"></a><span class="lineno">  233</span>&#160;                         buffer_size_rx / 2);</div>
-<div class="line"><a name="l00234"></a><span class="lineno">  234</span>&#160;  }</div>
-<div class="line"><a name="l00235"></a><span class="lineno">  235</span>&#160; </div>
-<div class="line"><a name="l00238"></a><span class="lineno"><a class="line" href="classstm32__i2s_1_1_stm32_i2s_class.html#aa68f9f957ef9dcf6022da95cc999b45d">  238</a></span>&#160;  <span class="keywordtype">void</span> <a class="code" href="classstm32__i2s_1_1_stm32_i2s_class.html#aa68f9f957ef9dcf6022da95cc999b45d">cb_TxRxHalfComplete</a>(I2S_HandleTypeDef *hi2s) {</div>
-<div class="line"><a name="l00239"></a><span class="lineno">  239</span>&#160;    <span class="comment">// second half finished, filling it up again while first  half is playing</span></div>
-<div class="line"><a name="l00240"></a><span class="lineno">  240</span>&#160;    uint8_t *dma_buffer_tx = (uint8_t *)hi2s-&gt;pTxBuffPtr;</div>
-<div class="line"><a name="l00241"></a><span class="lineno">  241</span>&#160;    uint8_t *dma_buffer_rx = (uint8_t *)hi2s-&gt;pRxBuffPtr;</div>
-<div class="line"><a name="l00242"></a><span class="lineno">  242</span>&#160;    uint16_t buffer_size_tx = hi2s-&gt;TxXferSize * 2; <span class="comment">// XferSize is in words</span></div>
-<div class="line"><a name="l00243"></a><span class="lineno">  243</span>&#160;    uint16_t buffer_size_rx = hi2s-&gt;RxXferSize * 2;</div>
-<div class="line"><a name="l00244"></a><span class="lineno">  244</span>&#160;    <span class="keywordflow">if</span> (readToTransmitCB != NULL)</div>
-<div class="line"><a name="l00245"></a><span class="lineno">  245</span>&#160;      readToTransmitCB(&amp;(dma_buffer_tx[0]), buffer_size_tx / 2);</div>
-<div class="line"><a name="l00246"></a><span class="lineno">  246</span>&#160;    <span class="keywordflow">if</span> (writeFromReceiveCB != NULL)</div>
-<div class="line"><a name="l00247"></a><span class="lineno">  247</span>&#160;      writeFromReceiveCB(&amp;(dma_buffer_rx[0]), buffer_size_rx / 2);</div>
-<div class="line"><a name="l00248"></a><span class="lineno">  248</span>&#160;  }</div>
-<div class="line"><a name="l00249"></a><span class="lineno">  249</span>&#160; </div>
-<div class="line"><a name="l00251"></a><span class="lineno"><a class="line" href="classstm32__i2s_1_1_stm32_i2s_class.html#ad8d19f61eff465692845d405fd321271">  251</a></span>&#160;  <span class="keyword">inline</span> <span class="keywordtype">void</span> <a class="code" href="classstm32__i2s_1_1_stm32_i2s_class.html#ad8d19f61eff465692845d405fd321271">cb_dmaIrqRx</a>() { HAL_DMA_IRQHandler(&amp;hdma_i2s3_ext_rx); }</div>
-<div class="line"><a name="l00252"></a><span class="lineno">  252</span>&#160; </div>
-<div class="line"><a name="l00254"></a><span class="lineno"><a class="line" href="classstm32__i2s_1_1_stm32_i2s_class.html#a8f61f957a528292152ac3aa494d6c8f7">  254</a></span>&#160;  <span class="keyword">inline</span> <span class="keywordtype">void</span> <a class="code" href="classstm32__i2s_1_1_stm32_i2s_class.html#a8f61f957a528292152ac3aa494d6c8f7">cb_dmaIrqTx</a>() { HAL_DMA_IRQHandler(&amp;hdma_i2s3_ext_tx); }</div>
-<div class="line"><a name="l00255"></a><span class="lineno">  255</span>&#160; </div>
-<div class="line"><a name="l00257"></a><span class="lineno"><a class="line" href="classstm32__i2s_1_1_stm32_i2s_class.html#aa6c222c37988e17de110bcee25a16040">  257</a></span>&#160;  <span class="keyword">inline</span> <span class="keywordtype">void</span> <a class="code" href="classstm32__i2s_1_1_stm32_i2s_class.html#aa6c222c37988e17de110bcee25a16040">cb_HAL_I2S_MspInit</a>(I2S_HandleTypeDef *hi2s) { <a class="code" href="classstm32__i2s_1_1_stm32_i2s_class.html#a568cbd430035151c964c90860711fd2b">cb_i2s_MspInit</a>(hi2s); }</div>
-<div class="line"><a name="l00258"></a><span class="lineno">  258</span>&#160; </div>
-<div class="line"><a name="l00260"></a><span class="lineno"><a class="line" href="classstm32__i2s_1_1_stm32_i2s_class.html#a368840768f5316846efbcfc7bfbe72da">  260</a></span>&#160;  <span class="keyword">inline</span> <span class="keywordtype">void</span> <a class="code" href="classstm32__i2s_1_1_stm32_i2s_class.html#a368840768f5316846efbcfc7bfbe72da">cb_HAL_I2S_MspDeInit</a>(I2S_HandleTypeDef *hi2s) { <a class="code" href="classstm32__i2s_1_1_stm32_i2s_class.html#aa17f0e247e1fd708dd6b26dc2a480abe">cb_i2s_MspDeInit</a>(hi2s);}</div>
-<div class="line"><a name="l00261"></a><span class="lineno">  261</span>&#160; </div>
-<div class="line"><a name="l00263"></a><span class="lineno"><a class="line" href="classstm32__i2s_1_1_stm32_i2s_class.html#abc045de6c4c440593e3bb6ba0cf9921c">  263</a></span>&#160;  <span class="keywordtype">bool</span> <a class="code" href="classstm32__i2s_1_1_stm32_i2s_class.html#abc045de6c4c440593e3bb6ba0cf9921c">i2s_begin</a>() {</div>
-<div class="line"><a name="l00264"></a><span class="lineno">  264</span>&#160;    stm32_i2s_is_error = <span class="keyword">false</span>;</div>
-<div class="line"><a name="l00265"></a><span class="lineno">  265</span>&#160;    <span class="keywordflow">if</span> (settings.sample_rate == 0) {</div>
-<div class="line"><a name="l00266"></a><span class="lineno">  266</span>&#160;      STM32_LOG(<span class="stringliteral">&quot;sample_rate must not be 0&quot;</span>);</div>
-<div class="line"><a name="l00267"></a><span class="lineno">  267</span>&#160;      <span class="keywordflow">return</span> <span class="keyword">false</span>;</div>
-<div class="line"><a name="l00268"></a><span class="lineno">  268</span>&#160;    }</div>
-<div class="line"><a name="l00269"></a><span class="lineno">  269</span>&#160;    stm32_i2s_is_error = <span class="keyword">false</span>;</div>
-<div class="line"><a name="l00270"></a><span class="lineno">  270</span>&#160;    <span class="comment">/* Reset of all peripherals, Initializes the Flash interface and the</span></div>
-<div class="line"><a name="l00271"></a><span class="lineno">  271</span>&#160;<span class="comment">     * Systick.</span></div>
-<div class="line"><a name="l00272"></a><span class="lineno">  272</span>&#160;<span class="comment">     */</span></div>
-<div class="line"><a name="l00273"></a><span class="lineno">  273</span>&#160;    <span class="comment">// HAL_Init();// Not needed -&gt; called by Arduino</span></div>
-<div class="line"><a name="l00274"></a><span class="lineno">  274</span>&#160;    <span class="comment">/* Configure the system clock */</span></div>
-<div class="line"><a name="l00275"></a><span class="lineno">  275</span>&#160;    <span class="comment">// SystemClock_Config(); // Not needed -&gt; called by Arduino</span></div>
-<div class="line"><a name="l00276"></a><span class="lineno">  276</span>&#160;    <span class="comment">/* Initialize all configured peripherals */</span></div>
-<div class="line"><a name="l00277"></a><span class="lineno">  277</span>&#160;    <a class="code" href="classstm32__i2s_1_1_stm32_i2s_class.html#a7ea0054cb5a28db73d516bd9f12efe5a">MX_GPIO_Init</a>();</div>
-<div class="line"><a name="l00278"></a><span class="lineno">  278</span>&#160;    <a class="code" href="classstm32__i2s_1_1_stm32_i2s_class.html#a920ca6270f2a640e010f9a73f9805fba">MX_DMA_Init</a>();</div>
-<div class="line"><a name="l00279"></a><span class="lineno">  279</span>&#160;    <a class="code" href="classstm32__i2s_1_1_stm32_i2s_class.html#a0b22eaee894545e639e40215fc411706">MX_I2S3_Init</a>();</div>
-<div class="line"><a name="l00280"></a><span class="lineno">  280</span>&#160;    <span class="keywordflow">return</span> !stm32_i2s_is_error;</div>
-<div class="line"><a name="l00281"></a><span class="lineno">  281</span>&#160;  }</div>
-<div class="line"><a name="l00282"></a><span class="lineno">  282</span>&#160; </div>
-<div class="line"><a name="l00289"></a><span class="lineno"><a class="line" href="classstm32__i2s_1_1_stm32_i2s_class.html#a7ea0054cb5a28db73d516bd9f12efe5a">  289</a></span>&#160;  <span class="keyword">virtual</span> <span class="keywordtype">void</span> <a class="code" href="classstm32__i2s_1_1_stm32_i2s_class.html#a7ea0054cb5a28db73d516bd9f12efe5a">MX_GPIO_Init</a>(<span class="keywordtype">void</span>) {</div>
-<div class="line"><a name="l00290"></a><span class="lineno">  290</span>&#160;    <span class="comment">// GPIO Ports Clock Enable</span></div>
-<div class="line"><a name="l00291"></a><span class="lineno">  291</span>&#160;    __HAL_RCC_GPIOH_CLK_ENABLE();</div>
-<div class="line"><a name="l00292"></a><span class="lineno">  292</span>&#160; </div>
-<div class="line"><a name="l00293"></a><span class="lineno">  293</span>&#160;    <span class="comment">// Define pins</span></div>
-<div class="line"><a name="l00294"></a><span class="lineno">  294</span>&#160;    <span class="keywordflow">for</span> (<a class="code" href="structstm32__i2s_1_1_i2_s_pin.html">I2SPin</a> &amp;pin : hw.pins) {</div>
-<div class="line"><a name="l00295"></a><span class="lineno">  295</span>&#160;      <span class="comment">//pinModeAltFunction(pin.pin, pin.altFunction);</span></div>
-<div class="line"><a name="l00296"></a><span class="lineno">  296</span>&#160;        PinName p = pin.pin;</div>
-<div class="line"><a name="l00297"></a><span class="lineno">  297</span>&#160;        <a class="code" href="classstm32__i2s_1_1_stm32_i2s_class.html#ae9fde31d71da42c270d145089d50cd40">resetPin</a>(p);</div>
-<div class="line"><a name="l00298"></a><span class="lineno">  298</span>&#160;        <span class="comment">// define I2S function (= alternative Function)</span></div>
-<div class="line"><a name="l00299"></a><span class="lineno">  299</span>&#160;        pin_function(p, STM_PIN_DATA(STM_MODE_AF_PP, GPIO_NOPULL, pin.altFunction));</div>
-<div class="line"><a name="l00300"></a><span class="lineno">  300</span>&#160;    }</div>
-<div class="line"><a name="l00301"></a><span class="lineno">  301</span>&#160;  }</div>
-<div class="line"><a name="l00302"></a><span class="lineno">  302</span>&#160; </div>
-<div class="line"><a name="l00303"></a><span class="lineno">  303</span>&#160; </div>
-<div class="line"><a name="l00305"></a><span class="lineno"><a class="line" href="classstm32__i2s_1_1_stm32_i2s_class.html#ae9fde31d71da42c270d145089d50cd40">  305</a></span>&#160;  <span class="keywordtype">void</span> <a class="code" href="classstm32__i2s_1_1_stm32_i2s_class.html#ae9fde31d71da42c270d145089d50cd40">resetPin</a>(PinName p){</div>
-<div class="line"><a name="l00306"></a><span class="lineno">  306</span>&#160;    <span class="keywordflow">if</span> (p != NC) {</div>
-<div class="line"><a name="l00307"></a><span class="lineno">  307</span>&#160;      <span class="comment">// If the pin that support PWM or DAC output, we need to turn it off</span></div>
-<div class="line"><a name="l00308"></a><span class="lineno">  308</span>&#160;<span class="preprocessor">  #if (defined(HAL_DAC_MODULE_ENABLED) &amp;&amp; !defined(HAL_DAC_MODULE_ONLY)) ||\</span></div>
-<div class="line"><a name="l00309"></a><span class="lineno">  309</span>&#160;<span class="preprocessor">      (defined(HAL_TIM_MODULE_ENABLED) &amp;&amp; !defined(HAL_TIM_MODULE_ONLY))</span></div>
-<div class="line"><a name="l00310"></a><span class="lineno">  310</span>&#160;      <span class="keywordflow">if</span> (is_pin_configured(p, g_anOutputPinConfigured)) {</div>
-<div class="line"><a name="l00311"></a><span class="lineno">  311</span>&#160;<span class="preprocessor">  #if defined(HAL_DAC_MODULE_ENABLED) &amp;&amp; !defined(HAL_DAC_MODULE_ONLY)</span></div>
-<div class="line"><a name="l00312"></a><span class="lineno">  312</span>&#160;        <span class="keywordflow">if</span> (pin_in_pinmap(p, PinMap_DAC)) {</div>
-<div class="line"><a name="l00313"></a><span class="lineno">  313</span>&#160;          dac_stop(p);</div>
-<div class="line"><a name="l00314"></a><span class="lineno">  314</span>&#160;        } <span class="keywordflow">else</span></div>
-<div class="line"><a name="l00315"></a><span class="lineno">  315</span>&#160;<span class="preprocessor">  #endif </span><span class="comment">//HAL_DAC_MODULE_ENABLED &amp;&amp; !HAL_DAC_MODULE_ONLY</span></div>
-<div class="line"><a name="l00316"></a><span class="lineno">  316</span>&#160;<span class="preprocessor">  #if defined(HAL_TIM_MODULE_ENABLED) &amp;&amp; !defined(HAL_TIM_MODULE_ONLY)</span></div>
-<div class="line"><a name="l00317"></a><span class="lineno">  317</span>&#160;          <span class="keywordflow">if</span> (pin_in_pinmap(p, PinMap_TIM)) {</div>
-<div class="line"><a name="l00318"></a><span class="lineno">  318</span>&#160;            pwm_stop(p);</div>
-<div class="line"><a name="l00319"></a><span class="lineno">  319</span>&#160;          }</div>
-<div class="line"><a name="l00320"></a><span class="lineno">  320</span>&#160;<span class="preprocessor">  #endif </span><span class="comment">//HAL_TIM_MODULE_ENABLED &amp;&amp; !HAL_TIM_MODULE_ONLY</span></div>
-<div class="line"><a name="l00321"></a><span class="lineno">  321</span>&#160;        {</div>
-<div class="line"><a name="l00322"></a><span class="lineno">  322</span>&#160;          reset_pin_configured(p, g_anOutputPinConfigured);</div>
-<div class="line"><a name="l00323"></a><span class="lineno">  323</span>&#160;        }</div>
-<div class="line"><a name="l00324"></a><span class="lineno">  324</span>&#160;      }</div>
-<div class="line"><a name="l00325"></a><span class="lineno">  325</span>&#160;<span class="preprocessor">  #endif</span></div>
-<div class="line"><a name="l00326"></a><span class="lineno">  326</span>&#160;    }</div>
-<div class="line"><a name="l00327"></a><span class="lineno">  327</span>&#160;  }</div>
-<div class="line"><a name="l00328"></a><span class="lineno">  328</span>&#160; </div>
-<div class="line"><a name="l00332"></a><span class="lineno"><a class="line" href="classstm32__i2s_1_1_stm32_i2s_class.html#a920ca6270f2a640e010f9a73f9805fba">  332</a></span>&#160;  <span class="keyword">virtual</span> <span class="keywordtype">void</span> <a class="code" href="classstm32__i2s_1_1_stm32_i2s_class.html#a920ca6270f2a640e010f9a73f9805fba">MX_DMA_Init</a>(<span class="keywordtype">void</span>) {</div>
-<div class="line"><a name="l00333"></a><span class="lineno">  333</span>&#160;    <span class="comment">/* DMA controller clock enable */</span></div>
-<div class="line"><a name="l00334"></a><span class="lineno">  334</span>&#160;    __HAL_RCC_DMA1_CLK_ENABLE();</div>
-<div class="line"><a name="l00335"></a><span class="lineno">  335</span>&#160; </div>
-<div class="line"><a name="l00336"></a><span class="lineno">  336</span>&#160;    <span class="comment">/* DMA interrupt init */</span></div>
-<div class="line"><a name="l00337"></a><span class="lineno">  337</span>&#160;    <span class="comment">/* DMA1_Stream0_IRQn interrupt configuration */</span></div>
-<div class="line"><a name="l00338"></a><span class="lineno">  338</span>&#160;    HAL_NVIC_SetPriority(hw.irq1, 0, 0);</div>
-<div class="line"><a name="l00339"></a><span class="lineno">  339</span>&#160;    HAL_NVIC_EnableIRQ(hw.irq1);</div>
-<div class="line"><a name="l00340"></a><span class="lineno">  340</span>&#160;    <span class="comment">/* DMA1_Stream5_IRQn interrupt configuration */</span></div>
-<div class="line"><a name="l00341"></a><span class="lineno">  341</span>&#160;    HAL_NVIC_SetPriority(hw.irq2, 0, 0);</div>
-<div class="line"><a name="l00342"></a><span class="lineno">  342</span>&#160;    HAL_NVIC_EnableIRQ(hw.irq2);</div>
-<div class="line"><a name="l00343"></a><span class="lineno">  343</span>&#160;  }</div>
-<div class="line"><a name="l00344"></a><span class="lineno">  344</span>&#160; </div>
-<div class="line"><a name="l00350"></a><span class="lineno"><a class="line" href="classstm32__i2s_1_1_stm32_i2s_class.html#a0b22eaee894545e639e40215fc411706">  350</a></span>&#160;  <span class="keyword">virtual</span> <span class="keywordtype">void</span> <a class="code" href="classstm32__i2s_1_1_stm32_i2s_class.html#a0b22eaee894545e639e40215fc411706">MX_I2S3_Init</a>(<span class="keywordtype">void</span>) {</div>
-<div class="line"><a name="l00351"></a><span class="lineno">  351</span>&#160;    hi2s3.Instance = SPI_INSTANCE_FOR_I2S;</div>
-<div class="line"><a name="l00352"></a><span class="lineno">  352</span>&#160;    hi2s3.Init.Mode = settings.mode;</div>
-<div class="line"><a name="l00353"></a><span class="lineno">  353</span>&#160;    hi2s3.Init.Standard = settings.standard;</div>
-<div class="line"><a name="l00354"></a><span class="lineno">  354</span>&#160;    hi2s3.Init.FullDuplexMode = settings.fullduplexmode;</div>
-<div class="line"><a name="l00355"></a><span class="lineno">  355</span>&#160;    hi2s3.Init.AudioFreq = settings.sample_rate;</div>
-<div class="line"><a name="l00356"></a><span class="lineno">  356</span>&#160;    hi2s3.Init.DataFormat = I2S_DATAFORMAT_16B;</div>
-<div class="line"><a name="l00357"></a><span class="lineno">  357</span>&#160;    hi2s3.Init.MCLKOutput = I2S_MCLKOUTPUT_ENABLE;</div>
-<div class="line"><a name="l00358"></a><span class="lineno">  358</span>&#160;    hi2s3.Init.CPOL = I2S_CPOL_LOW;</div>
-<div class="line"><a name="l00359"></a><span class="lineno">  359</span>&#160;    hi2s3.Init.ClockSource = I2S_CLOCK_PLL;</div>
-<div class="line"><a name="l00360"></a><span class="lineno">  360</span>&#160;    <span class="keywordflow">if</span> (HAL_I2S_Init(&amp;hi2s3) != HAL_OK) {</div>
-<div class="line"><a name="l00361"></a><span class="lineno">  361</span>&#160;      Report_Error();</div>
-<div class="line"><a name="l00362"></a><span class="lineno">  362</span>&#160;    }</div>
-<div class="line"><a name="l00363"></a><span class="lineno">  363</span>&#160;  }</div>
-<div class="line"><a name="l00364"></a><span class="lineno">  364</span>&#160; </div>
-<div class="line"><a name="l00371"></a><span class="lineno"><a class="line" href="classstm32__i2s_1_1_stm32_i2s_class.html#a568cbd430035151c964c90860711fd2b">  371</a></span>&#160;  <span class="keyword">virtual</span> <span class="keywordtype">void</span> <a class="code" href="classstm32__i2s_1_1_stm32_i2s_class.html#a568cbd430035151c964c90860711fd2b">cb_i2s_MspInit</a>(I2S_HandleTypeDef *hi2s) {</div>
-<div class="line"><a name="l00372"></a><span class="lineno">  372</span>&#160;    RCC_PeriphCLKInitTypeDef PeriphClkInitStruct = {0};</div>
-<div class="line"><a name="l00373"></a><span class="lineno">  373</span>&#160;    <span class="keywordflow">if</span> (hi2s-&gt;Instance == SPI3) {</div>
-<div class="line"><a name="l00377"></a><span class="lineno">  377</span>&#160;      PeriphClkInitStruct.PeriphClockSelection = RCC_PERIPHCLK_I2S;</div>
-<div class="line"><a name="l00378"></a><span class="lineno">  378</span>&#160;      PeriphClkInitStruct.PLLI2S.PLLI2SN = hw.plln; <span class="comment">// 192;</span></div>
-<div class="line"><a name="l00379"></a><span class="lineno">  379</span>&#160;<span class="preprocessor">#ifdef PLLM</span></div>
-<div class="line"><a name="l00380"></a><span class="lineno">  380</span>&#160;      PeriphClkInitStruct.PLLI2S.PLLI2SM = hw.pllm; <span class="comment">// 16;</span></div>
-<div class="line"><a name="l00381"></a><span class="lineno">  381</span>&#160;<span class="preprocessor">#endif</span></div>
-<div class="line"><a name="l00382"></a><span class="lineno">  382</span>&#160;      PeriphClkInitStruct.PLLI2S.PLLI2SR = hw.pllr; <span class="comment">// 2;</span></div>
-<div class="line"><a name="l00383"></a><span class="lineno">  383</span>&#160;      <span class="keywordflow">if</span> (HAL_RCCEx_PeriphCLKConfig(&amp;PeriphClkInitStruct) != HAL_OK) {</div>
-<div class="line"><a name="l00384"></a><span class="lineno">  384</span>&#160;        Report_Error();</div>
-<div class="line"><a name="l00385"></a><span class="lineno">  385</span>&#160;      }</div>
-<div class="line"><a name="l00386"></a><span class="lineno">  386</span>&#160; </div>
-<div class="line"><a name="l00387"></a><span class="lineno">  387</span>&#160;      <span class="comment">/* Peripheral clock enable */</span></div>
-<div class="line"><a name="l00388"></a><span class="lineno">  388</span>&#160;      __HAL_RCC_SPI3_CLK_ENABLE();</div>
-<div class="line"><a name="l00389"></a><span class="lineno">  389</span>&#160; </div>
-<div class="line"><a name="l00390"></a><span class="lineno">  390</span>&#160;      <span class="comment">/* I2S3 DMA Init */</span></div>
-<div class="line"><a name="l00391"></a><span class="lineno">  391</span>&#160;      <span class="keywordflow">if</span> (dma_buffer_rx != <span class="keyword">nullptr</span>) {</div>
-<div class="line"><a name="l00392"></a><span class="lineno">  392</span>&#160;        <a class="code" href="classstm32__i2s_1_1_stm32_i2s_class.html#aca5c1d70fd7e9a3f3aa0388749b6cb44">setupDMA</a>(hdma_i2s3_ext_rx, hw.rx_instance, hw.rx_channel,</div>
-<div class="line"><a name="l00393"></a><span class="lineno">  393</span>&#160;                 hw.rx_direction);</div>
-<div class="line"><a name="l00394"></a><span class="lineno">  394</span>&#160;        __HAL_LINKDMA(hi2s, hdmarx, hdma_i2s3_ext_rx);</div>
+<div class="line"><a name="l00070"></a><span class="lineno"><a class="line" href="structstm32__i2s_1_1_i2_s_pin.html#a74b9ea065dd62de38da823d2959c4a3a">   70</a></span>&#160;  <span class="keywordtype">void</span> <a class="code" href="structstm32__i2s_1_1_i2_s_pin.html#a74b9ea065dd62de38da823d2959c4a3a">end</a>(){</div>
+<div class="line"><a name="l00071"></a><span class="lineno">   71</span>&#160;    PinName p = pin;</div>
+<div class="line"><a name="l00072"></a><span class="lineno">   72</span>&#160;    <span class="keywordflow">if</span> (p != NC) {</div>
+<div class="line"><a name="l00073"></a><span class="lineno">   73</span>&#160;      <span class="comment">// If the pin that support PWM or DAC output, we need to turn it off</span></div>
+<div class="line"><a name="l00074"></a><span class="lineno">   74</span>&#160;<span class="preprocessor">  #if (defined(HAL_DAC_MODULE_ENABLED) &amp;&amp; !defined(HAL_DAC_MODULE_ONLY)) ||\</span></div>
+<div class="line"><a name="l00075"></a><span class="lineno">   75</span>&#160;<span class="preprocessor">      (defined(HAL_TIM_MODULE_ENABLED) &amp;&amp; !defined(HAL_TIM_MODULE_ONLY))</span></div>
+<div class="line"><a name="l00076"></a><span class="lineno">   76</span>&#160;      <span class="keywordflow">if</span> (is_pin_configured(p, g_anOutputPinConfigured)) {</div>
+<div class="line"><a name="l00077"></a><span class="lineno">   77</span>&#160;<span class="preprocessor">  #if defined(HAL_DAC_MODULE_ENABLED) &amp;&amp; !defined(HAL_DAC_MODULE_ONLY)</span></div>
+<div class="line"><a name="l00078"></a><span class="lineno">   78</span>&#160;        <span class="keywordflow">if</span> (pin_in_pinmap(p, PinMap_DAC)) {</div>
+<div class="line"><a name="l00079"></a><span class="lineno">   79</span>&#160;          dac_stop(p);</div>
+<div class="line"><a name="l00080"></a><span class="lineno">   80</span>&#160;        } <span class="keywordflow">else</span></div>
+<div class="line"><a name="l00081"></a><span class="lineno">   81</span>&#160;<span class="preprocessor">  #endif </span><span class="comment">//HAL_DAC_MODULE_ENABLED &amp;&amp; !HAL_DAC_MODULE_ONLY</span></div>
+<div class="line"><a name="l00082"></a><span class="lineno">   82</span>&#160;<span class="preprocessor">  #if defined(HAL_TIM_MODULE_ENABLED) &amp;&amp; !defined(HAL_TIM_MODULE_ONLY)</span></div>
+<div class="line"><a name="l00083"></a><span class="lineno">   83</span>&#160;          <span class="keywordflow">if</span> (pin_in_pinmap(p, PinMap_TIM)) {</div>
+<div class="line"><a name="l00084"></a><span class="lineno">   84</span>&#160;            pwm_stop(p);</div>
+<div class="line"><a name="l00085"></a><span class="lineno">   85</span>&#160;          }</div>
+<div class="line"><a name="l00086"></a><span class="lineno">   86</span>&#160;<span class="preprocessor">  #endif </span><span class="comment">//HAL_TIM_MODULE_ENABLED &amp;&amp; !HAL_TIM_MODULE_ONLY</span></div>
+<div class="line"><a name="l00087"></a><span class="lineno">   87</span>&#160;        {</div>
+<div class="line"><a name="l00088"></a><span class="lineno">   88</span>&#160;          reset_pin_configured(p, g_anOutputPinConfigured);</div>
+<div class="line"><a name="l00089"></a><span class="lineno">   89</span>&#160;        }</div>
+<div class="line"><a name="l00090"></a><span class="lineno">   90</span>&#160;      }</div>
+<div class="line"><a name="l00091"></a><span class="lineno">   91</span>&#160;<span class="preprocessor">  #endif</span></div>
+<div class="line"><a name="l00092"></a><span class="lineno">   92</span>&#160;    }</div>
+<div class="line"><a name="l00093"></a><span class="lineno">   93</span>&#160;  }</div>
+<div class="line"><a name="l00094"></a><span class="lineno">   94</span>&#160; </div>
+<div class="line"><a name="l00095"></a><span class="lineno">   95</span>&#160; </div>
+<div class="line"><a name="l00096"></a><span class="lineno">   96</span>&#160;};</div>
+<div class="line"><a name="l00097"></a><span class="lineno">   97</span>&#160; </div>
+<div class="line"><a name="l00103"></a><span class="lineno"><a class="line" href="structstm32__i2s_1_1_hardware_config.html">  103</a></span>&#160;<span class="keyword">struct </span><a class="code" href="structstm32__i2s_1_1_hardware_config.html">HardwareConfig</a> {</div>
+<div class="line"><a name="l00104"></a><span class="lineno">  104</span>&#160;  IRQn_Type irq1 = DMA1_Stream0_IRQn;</div>
+<div class="line"><a name="l00105"></a><span class="lineno">  105</span>&#160;  IRQn_Type irq2 = DMA1_Stream5_IRQn;;</div>
+<div class="line"><a name="l00106"></a><span class="lineno">  106</span>&#160; </div>
+<div class="line"><a name="l00107"></a><span class="lineno">  107</span>&#160;  uint32_t plln = PLLN;</div>
+<div class="line"><a name="l00108"></a><span class="lineno">  108</span>&#160;  uint32_t pllm = PLLM;</div>
+<div class="line"><a name="l00109"></a><span class="lineno">  109</span>&#160;  uint32_t pllr = PLLR;</div>
+<div class="line"><a name="l00110"></a><span class="lineno">  110</span>&#160; </div>
+<div class="line"><a name="l00111"></a><span class="lineno">  111</span>&#160;  DMA_Stream_TypeDef *rx_instance = DMA1_Stream0;</div>
+<div class="line"><a name="l00112"></a><span class="lineno">  112</span>&#160;  uint32_t rx_channel = DMA_CHANNEL_3;</div>
+<div class="line"><a name="l00113"></a><span class="lineno">  113</span>&#160;  uint32_t rx_direction = DMA_PERIPH_TO_MEMORY;</div>
+<div class="line"><a name="l00114"></a><span class="lineno">  114</span>&#160; </div>
+<div class="line"><a name="l00115"></a><span class="lineno">  115</span>&#160;  DMA_Stream_TypeDef *tx_instance = DMA1_Stream5;</div>
+<div class="line"><a name="l00116"></a><span class="lineno">  116</span>&#160;  uint32_t tx_channel = DMA_CHANNEL_0;</div>
+<div class="line"><a name="l00117"></a><span class="lineno">  117</span>&#160;  uint32_t tx_direction = DMA_MEMORY_TO_PERIPH;</div>
+<div class="line"><a name="l00118"></a><span class="lineno">  118</span>&#160; </div>
+<div class="line"><a name="l00119"></a><span class="lineno">  119</span>&#160;  <a class="code" href="structstm32__i2s_1_1_i2_s_pin.html">I2SPin</a> pins[5] = STM_I2S_PINS;</div>
+<div class="line"><a name="l00120"></a><span class="lineno">  120</span>&#160; </div>
+<div class="line"><a name="l00121"></a><span class="lineno">  121</span>&#160;  <a class="code" href="structstm32__i2s_1_1_hardware_config.html">HardwareConfig</a>() {</div>
+<div class="line"><a name="l00122"></a><span class="lineno">  122</span>&#160;    <span class="comment">// overwrite processor specific default settings if necessary</span></div>
+<div class="line"><a name="l00123"></a><span class="lineno">  123</span>&#160;  }</div>
+<div class="line"><a name="l00124"></a><span class="lineno">  124</span>&#160;};</div>
+<div class="line"><a name="l00125"></a><span class="lineno">  125</span>&#160; </div>
+<div class="line"><a name="l00131"></a><span class="lineno"><a class="line" href="structstm32__i2s_1_1_i2_s_settings_s_t_m32.html">  131</a></span>&#160;<span class="keyword">struct </span><a class="code" href="structstm32__i2s_1_1_i2_s_settings_s_t_m32.html">I2SSettingsSTM32</a> {</div>
+<div class="line"><a name="l00132"></a><span class="lineno">  132</span>&#160;  uint32_t mode = I2S_MODE_MASTER_TX;</div>
+<div class="line"><a name="l00133"></a><span class="lineno">  133</span>&#160;  uint32_t standard = I2S_STANDARD_PHILIPS;</div>
+<div class="line"><a name="l00134"></a><span class="lineno">  134</span>&#160;  uint32_t fullduplexmode = I2S_FULLDUPLEXMODE_ENABLE;</div>
+<div class="line"><a name="l00135"></a><span class="lineno">  135</span>&#160;  uint32_t sample_rate = I2S_AUDIOFREQ_44K;</div>
+<div class="line"><a name="l00136"></a><span class="lineno">  136</span>&#160;  <a class="code" href="structstm32__i2s_1_1_hardware_config.html">HardwareConfig</a> hardware_config;</div>
+<div class="line"><a name="l00137"></a><span class="lineno">  137</span>&#160;};</div>
+<div class="line"><a name="l00138"></a><span class="lineno">  138</span>&#160; </div>
+<div class="line"><a name="l00144"></a><span class="lineno"><a class="line" href="classstm32__i2s_1_1_stm32_i2s_class.html">  144</a></span>&#160;<span class="keyword">class </span><a class="code" href="classstm32__i2s_1_1_stm32_i2s_class.html">Stm32I2sClass</a> {</div>
+<div class="line"><a name="l00145"></a><span class="lineno">  145</span>&#160; <span class="keyword">friend</span> <span class="keywordtype">void</span> DMA1_Stream0_IRQHandler(<span class="keywordtype">void</span>);</div>
+<div class="line"><a name="l00146"></a><span class="lineno">  146</span>&#160; <span class="keyword">friend</span> <span class="keywordtype">void</span> DMA1_Stream5_IRQHandler(<span class="keywordtype">void</span>);</div>
+<div class="line"><a name="l00147"></a><span class="lineno">  147</span>&#160; <span class="keyword">friend</span> <span class="keywordtype">void</span> HAL_I2S_MspInit(I2S_HandleTypeDef *hi2s);</div>
+<div class="line"><a name="l00148"></a><span class="lineno">  148</span>&#160; <span class="keyword">friend</span> <span class="keywordtype">void</span> HAL_I2S_MspDeInit(I2S_HandleTypeDef *hi2s);</div>
+<div class="line"><a name="l00149"></a><span class="lineno">  149</span>&#160; <span class="keyword">friend</span> <span class="keywordtype">void</span> HAL_I2S_TxCpltCallback(I2S_HandleTypeDef *hi2s);</div>
+<div class="line"><a name="l00150"></a><span class="lineno">  150</span>&#160; <span class="keyword">friend</span> <span class="keywordtype">void</span> HAL_I2S_TxHalfCpltCallback(I2S_HandleTypeDef *hi2s);</div>
+<div class="line"><a name="l00151"></a><span class="lineno">  151</span>&#160; <span class="keyword">friend</span> <span class="keywordtype">void</span> HAL_I2S_RxCpltCallback(I2S_HandleTypeDef *hi2s);</div>
+<div class="line"><a name="l00152"></a><span class="lineno">  152</span>&#160; <span class="keyword">friend</span> <span class="keywordtype">void</span> HAL_I2S_RxHalfCpltCallback(I2S_HandleTypeDef *hi2s);</div>
+<div class="line"><a name="l00153"></a><span class="lineno">  153</span>&#160; </div>
+<div class="line"><a name="l00154"></a><span class="lineno">  154</span>&#160;<span class="keyword">public</span>:</div>
+<div class="line"><a name="l00156"></a><span class="lineno"><a class="line" href="classstm32__i2s_1_1_stm32_i2s_class.html#aa6106141afdf1742633d9db276432344">  156</a></span>&#160;  <span class="keywordtype">bool</span> <a class="code" href="classstm32__i2s_1_1_stm32_i2s_class.html#aa6106141afdf1742633d9db276432344">startI2STransmit</a>(<a class="code" href="structstm32__i2s_1_1_i2_s_settings_s_t_m32.html">I2SSettingsSTM32</a> settings,</div>
+<div class="line"><a name="l00157"></a><span class="lineno">  157</span>&#160;                        <span class="keywordtype">void</span> (*readToTransmit)(uint8_t *buffer,</div>
+<div class="line"><a name="l00158"></a><span class="lineno">  158</span>&#160;                                               uint16_t byteCount),</div>
+<div class="line"><a name="l00159"></a><span class="lineno">  159</span>&#160;                        uint16_t buffer_size) {</div>
+<div class="line"><a name="l00160"></a><span class="lineno">  160</span>&#160;    this-&gt;settings = settings;</div>
+<div class="line"><a name="l00161"></a><span class="lineno">  161</span>&#160;    this-&gt;hw = settings.hardware_config;</div>
+<div class="line"><a name="l00162"></a><span class="lineno">  162</span>&#160;    readToTransmitCB = readToTransmit;</div>
+<div class="line"><a name="l00163"></a><span class="lineno">  163</span>&#160;    <span class="keywordflow">if</span> (dma_buffer_tx == <span class="keyword">nullptr</span>)</div>
+<div class="line"><a name="l00164"></a><span class="lineno">  164</span>&#160;      dma_buffer_tx = <span class="keyword">new</span> <span class="keywordtype">byte</span>[buffer_size];</div>
+<div class="line"><a name="l00165"></a><span class="lineno">  165</span>&#160;    <span class="keywordtype">bool</span> result = <span class="keyword">true</span>;</div>
+<div class="line"><a name="l00166"></a><span class="lineno">  166</span>&#160;    <span class="keywordflow">if</span> (!<a class="code" href="classstm32__i2s_1_1_stm32_i2s_class.html#abc045de6c4c440593e3bb6ba0cf9921c">i2s_begin</a>()) {</div>
+<div class="line"><a name="l00167"></a><span class="lineno">  167</span>&#160;      <span class="keywordflow">return</span> <span class="keyword">false</span>;</div>
+<div class="line"><a name="l00168"></a><span class="lineno">  168</span>&#160;    }</div>
+<div class="line"><a name="l00169"></a><span class="lineno">  169</span>&#160;    <span class="comment">// start circular dma</span></div>
+<div class="line"><a name="l00170"></a><span class="lineno">  170</span>&#160;    <span class="keywordflow">if</span> (HAL_I2S_Transmit_DMA(&amp;hi2s3, (uint16_t *)dma_buffer_tx, buffer_size) !=</div>
+<div class="line"><a name="l00171"></a><span class="lineno">  171</span>&#160;        HAL_OK) {</div>
+<div class="line"><a name="l00172"></a><span class="lineno">  172</span>&#160;      STM32_LOG(<span class="stringliteral">&quot;error HAL_I2S_Transmit_DMA&quot;</span>);</div>
+<div class="line"><a name="l00173"></a><span class="lineno">  173</span>&#160;      Report_Error();</div>
+<div class="line"><a name="l00174"></a><span class="lineno">  174</span>&#160;      result = <span class="keyword">false</span>;</div>
+<div class="line"><a name="l00175"></a><span class="lineno">  175</span>&#160;    }</div>
+<div class="line"><a name="l00176"></a><span class="lineno">  176</span>&#160;    <span class="keywordflow">return</span> result;</div>
+<div class="line"><a name="l00177"></a><span class="lineno">  177</span>&#160;  }</div>
+<div class="line"><a name="l00178"></a><span class="lineno">  178</span>&#160; </div>
+<div class="line"><a name="l00180"></a><span class="lineno"><a class="line" href="classstm32__i2s_1_1_stm32_i2s_class.html#afa0743706fbe309e2fca3a8aea2b1a0c">  180</a></span>&#160;  <span class="keywordtype">bool</span> <a class="code" href="classstm32__i2s_1_1_stm32_i2s_class.html#afa0743706fbe309e2fca3a8aea2b1a0c">startI2SReceive</a>(<a class="code" href="structstm32__i2s_1_1_i2_s_settings_s_t_m32.html">I2SSettingsSTM32</a> settings,</div>
+<div class="line"><a name="l00181"></a><span class="lineno">  181</span>&#160;                       <span class="keywordtype">void</span> (*writeFromReceive)(uint8_t *buffer,</div>
+<div class="line"><a name="l00182"></a><span class="lineno">  182</span>&#160;                                                uint16_t byteCount),</div>
+<div class="line"><a name="l00183"></a><span class="lineno">  183</span>&#160;                       uint16_t buffer_size) {</div>
+<div class="line"><a name="l00184"></a><span class="lineno">  184</span>&#160;    this-&gt;settings = settings;</div>
+<div class="line"><a name="l00185"></a><span class="lineno">  185</span>&#160;    this-&gt;hw = settings.hardware_config;</div>
+<div class="line"><a name="l00186"></a><span class="lineno">  186</span>&#160;    <span class="keywordtype">bool</span> result = <span class="keyword">true</span>;</div>
+<div class="line"><a name="l00187"></a><span class="lineno">  187</span>&#160;    writeFromReceiveCB = writeFromReceive;</div>
+<div class="line"><a name="l00188"></a><span class="lineno">  188</span>&#160;    <span class="keywordflow">if</span> (dma_buffer_rx == <span class="keyword">nullptr</span>)</div>
+<div class="line"><a name="l00189"></a><span class="lineno">  189</span>&#160;      dma_buffer_rx = <span class="keyword">new</span> <span class="keywordtype">byte</span>[buffer_size];</div>
+<div class="line"><a name="l00190"></a><span class="lineno">  190</span>&#160;    <span class="keywordflow">if</span> (!<a class="code" href="classstm32__i2s_1_1_stm32_i2s_class.html#abc045de6c4c440593e3bb6ba0cf9921c">i2s_begin</a>()) {</div>
+<div class="line"><a name="l00191"></a><span class="lineno">  191</span>&#160;      <span class="keywordflow">return</span> <span class="keyword">false</span>;</div>
+<div class="line"><a name="l00192"></a><span class="lineno">  192</span>&#160;    }</div>
+<div class="line"><a name="l00193"></a><span class="lineno">  193</span>&#160;    <span class="comment">// start circular dma</span></div>
+<div class="line"><a name="l00194"></a><span class="lineno">  194</span>&#160;    <span class="keywordflow">if</span> (HAL_I2S_Receive_DMA(&amp;hi2s3, (uint16_t *)dma_buffer_rx, buffer_size) !=</div>
+<div class="line"><a name="l00195"></a><span class="lineno">  195</span>&#160;        HAL_OK) {</div>
+<div class="line"><a name="l00196"></a><span class="lineno">  196</span>&#160;      STM32_LOG(<span class="stringliteral">&quot;error: HAL_I2S_Transmit_DMA&quot;</span>);</div>
+<div class="line"><a name="l00197"></a><span class="lineno">  197</span>&#160;      Report_Error();</div>
+<div class="line"><a name="l00198"></a><span class="lineno">  198</span>&#160;      result = <span class="keyword">false</span>;</div>
+<div class="line"><a name="l00199"></a><span class="lineno">  199</span>&#160;    }</div>
+<div class="line"><a name="l00200"></a><span class="lineno">  200</span>&#160;    <span class="keywordflow">return</span> result;</div>
+<div class="line"><a name="l00201"></a><span class="lineno">  201</span>&#160;  }</div>
+<div class="line"><a name="l00202"></a><span class="lineno">  202</span>&#160; </div>
+<div class="line"><a name="l00204"></a><span class="lineno"><a class="line" href="classstm32__i2s_1_1_stm32_i2s_class.html#a1fb497436e1c2f73b7db59ed65c29d44">  204</a></span>&#160;  <span class="keywordtype">bool</span> <a class="code" href="classstm32__i2s_1_1_stm32_i2s_class.html#a1fb497436e1c2f73b7db59ed65c29d44">startI2STransmitReceive</a>(<a class="code" href="structstm32__i2s_1_1_i2_s_settings_s_t_m32.html">I2SSettingsSTM32</a> settings,</div>
+<div class="line"><a name="l00205"></a><span class="lineno">  205</span>&#160;                               <span class="keywordtype">void</span> (*readToTransmit)(uint8_t *buffer,</div>
+<div class="line"><a name="l00206"></a><span class="lineno">  206</span>&#160;                                                      uint16_t byteCount),</div>
+<div class="line"><a name="l00207"></a><span class="lineno">  207</span>&#160;                               <span class="keywordtype">void</span> (*writeFromReceive)(uint8_t *buffer,</div>
+<div class="line"><a name="l00208"></a><span class="lineno">  208</span>&#160;                                                        uint16_t byteCount),</div>
+<div class="line"><a name="l00209"></a><span class="lineno">  209</span>&#160;                               uint16_t buffer_size) {</div>
+<div class="line"><a name="l00210"></a><span class="lineno">  210</span>&#160;    this-&gt;settings = settings;</div>
+<div class="line"><a name="l00211"></a><span class="lineno">  211</span>&#160;    this-&gt;hw = settings.hardware_config;</div>
+<div class="line"><a name="l00212"></a><span class="lineno">  212</span>&#160;    <span class="keywordtype">bool</span> result = <span class="keyword">true</span>;</div>
+<div class="line"><a name="l00213"></a><span class="lineno">  213</span>&#160;    readToTransmitCB = readToTransmit;</div>
+<div class="line"><a name="l00214"></a><span class="lineno">  214</span>&#160;    writeFromReceiveCB = writeFromReceive;</div>
+<div class="line"><a name="l00215"></a><span class="lineno">  215</span>&#160; </div>
+<div class="line"><a name="l00216"></a><span class="lineno">  216</span>&#160;    <span class="keywordflow">if</span> (dma_buffer_tx == <span class="keyword">nullptr</span>)</div>
+<div class="line"><a name="l00217"></a><span class="lineno">  217</span>&#160;      dma_buffer_tx = <span class="keyword">new</span> <span class="keywordtype">byte</span>[buffer_size];</div>
+<div class="line"><a name="l00218"></a><span class="lineno">  218</span>&#160; </div>
+<div class="line"><a name="l00219"></a><span class="lineno">  219</span>&#160;    <span class="keywordflow">if</span> (dma_buffer_rx == <span class="keyword">nullptr</span>)</div>
+<div class="line"><a name="l00220"></a><span class="lineno">  220</span>&#160;      dma_buffer_rx = <span class="keyword">new</span> <span class="keywordtype">byte</span>[buffer_size];</div>
+<div class="line"><a name="l00221"></a><span class="lineno">  221</span>&#160; </div>
+<div class="line"><a name="l00222"></a><span class="lineno">  222</span>&#160;    <span class="keywordflow">if</span> (!<a class="code" href="classstm32__i2s_1_1_stm32_i2s_class.html#abc045de6c4c440593e3bb6ba0cf9921c">i2s_begin</a>()) {</div>
+<div class="line"><a name="l00223"></a><span class="lineno">  223</span>&#160;      <span class="keywordflow">return</span> <span class="keyword">false</span>;</div>
+<div class="line"><a name="l00224"></a><span class="lineno">  224</span>&#160;    }</div>
+<div class="line"><a name="l00225"></a><span class="lineno">  225</span>&#160;    <span class="keywordflow">if</span> (HAL_I2SEx_TransmitReceive_DMA(&amp;hi2s3, (uint16_t *)dma_buffer_tx,</div>
+<div class="line"><a name="l00226"></a><span class="lineno">  226</span>&#160;                                      (uint16_t *)dma_buffer_rx,</div>
+<div class="line"><a name="l00227"></a><span class="lineno">  227</span>&#160;                                      buffer_size) != HAL_OK) {</div>
+<div class="line"><a name="l00228"></a><span class="lineno">  228</span>&#160;      STM32_LOG(<span class="stringliteral">&quot;error HAL_I2SEx_TransmitReceive_DMA&quot;</span>);</div>
+<div class="line"><a name="l00229"></a><span class="lineno">  229</span>&#160;      Report_Error();</div>
+<div class="line"><a name="l00230"></a><span class="lineno">  230</span>&#160;      result = <span class="keyword">false</span>;</div>
+<div class="line"><a name="l00231"></a><span class="lineno">  231</span>&#160;    }</div>
+<div class="line"><a name="l00232"></a><span class="lineno">  232</span>&#160;    <span class="keywordflow">return</span> result;</div>
+<div class="line"><a name="l00233"></a><span class="lineno">  233</span>&#160;  }</div>
+<div class="line"><a name="l00234"></a><span class="lineno">  234</span>&#160; </div>
+<div class="line"><a name="l00235"></a><span class="lineno">  235</span>&#160;  <span class="keywordtype">void</span> stopI2S() {</div>
+<div class="line"><a name="l00236"></a><span class="lineno">  236</span>&#160;    HAL_I2S_DMAStop(&amp;hi2s3);</div>
+<div class="line"><a name="l00237"></a><span class="lineno">  237</span>&#160;    HAL_I2S_DeInit(&amp;hi2s3);</div>
+<div class="line"><a name="l00238"></a><span class="lineno">  238</span>&#160;    HAL_I2S_MspDeInit(&amp;hi2s3);</div>
+<div class="line"><a name="l00239"></a><span class="lineno">  239</span>&#160;    <span class="keywordflow">if</span> (dma_buffer_tx != NULL) {</div>
+<div class="line"><a name="l00240"></a><span class="lineno">  240</span>&#160;      <span class="keyword">delete</span>[](dma_buffer_tx);</div>
+<div class="line"><a name="l00241"></a><span class="lineno">  241</span>&#160;    }</div>
+<div class="line"><a name="l00242"></a><span class="lineno">  242</span>&#160;    <span class="keywordflow">if</span> (dma_buffer_rx != NULL) {</div>
+<div class="line"><a name="l00243"></a><span class="lineno">  243</span>&#160;      <span class="keyword">delete</span>[](dma_buffer_rx);</div>
+<div class="line"><a name="l00244"></a><span class="lineno">  244</span>&#160;    }</div>
+<div class="line"><a name="l00245"></a><span class="lineno">  245</span>&#160;  }</div>
+<div class="line"><a name="l00246"></a><span class="lineno">  246</span>&#160; </div>
+<div class="line"><a name="l00247"></a><span class="lineno">  247</span>&#160;<span class="keyword">protected</span>:</div>
+<div class="line"><a name="l00248"></a><span class="lineno">  248</span>&#160;  I2SSettingsSTM32 settings;</div>
+<div class="line"><a name="l00249"></a><span class="lineno">  249</span>&#160;  I2S_HandleTypeDef hi2s3;</div>
+<div class="line"><a name="l00250"></a><span class="lineno">  250</span>&#160;  <span class="keywordtype">byte</span> *dma_buffer_tx = <span class="keyword">nullptr</span>;</div>
+<div class="line"><a name="l00251"></a><span class="lineno">  251</span>&#160;  <span class="keywordtype">byte</span> *dma_buffer_rx = <span class="keyword">nullptr</span>;</div>
+<div class="line"><a name="l00252"></a><span class="lineno">  252</span>&#160;  void (*readToTransmitCB)(uint8_t *buffer, uint16_t byteCount);</div>
+<div class="line"><a name="l00253"></a><span class="lineno">  253</span>&#160;  void (*writeFromReceiveCB)(uint8_t *buffer, uint16_t byteCount);</div>
+<div class="line"><a name="l00254"></a><span class="lineno">  254</span>&#160;  DMA_HandleTypeDef hdma_i2s3_ext_rx;</div>
+<div class="line"><a name="l00255"></a><span class="lineno">  255</span>&#160;  DMA_HandleTypeDef hdma_i2s3_ext_tx;</div>
+<div class="line"><a name="l00256"></a><span class="lineno">  256</span>&#160;  HardwareConfig hw;</div>
+<div class="line"><a name="l00257"></a><span class="lineno">  257</span>&#160; </div>
+<div class="line"><a name="l00260"></a><span class="lineno"><a class="line" href="classstm32__i2s_1_1_stm32_i2s_class.html#a80d0a01ef377e25ab9e819240d9acb8d">  260</a></span>&#160;  <span class="keywordtype">void</span> <a class="code" href="classstm32__i2s_1_1_stm32_i2s_class.html#a80d0a01ef377e25ab9e819240d9acb8d">cb_TxRxComplete</a>(I2S_HandleTypeDef *hi2s) {</div>
+<div class="line"><a name="l00261"></a><span class="lineno">  261</span>&#160;    <span class="comment">// second half finished, filling it up again while first  half is playing</span></div>
+<div class="line"><a name="l00262"></a><span class="lineno">  262</span>&#160;    uint8_t *dma_buffer_tx = (uint8_t *)hi2s-&gt;pTxBuffPtr;</div>
+<div class="line"><a name="l00263"></a><span class="lineno">  263</span>&#160;    uint8_t *dma_buffer_rx = (uint8_t *)hi2s-&gt;pRxBuffPtr;</div>
+<div class="line"><a name="l00264"></a><span class="lineno">  264</span>&#160;    uint16_t buffer_size_tx = hi2s-&gt;TxXferSize * 2; <span class="comment">// XferSize is in words</span></div>
+<div class="line"><a name="l00265"></a><span class="lineno">  265</span>&#160;    uint16_t buffer_size_rx = hi2s-&gt;RxXferSize * 2;</div>
+<div class="line"><a name="l00266"></a><span class="lineno">  266</span>&#160;    <span class="keywordflow">if</span> (readToTransmitCB != NULL)</div>
+<div class="line"><a name="l00267"></a><span class="lineno">  267</span>&#160;      readToTransmitCB(&amp;(dma_buffer_tx[buffer_size_tx / 2]),</div>
+<div class="line"><a name="l00268"></a><span class="lineno">  268</span>&#160;                       buffer_size_tx / 2);</div>
+<div class="line"><a name="l00269"></a><span class="lineno">  269</span>&#160;    <span class="keywordflow">if</span> (writeFromReceiveCB != NULL)</div>
+<div class="line"><a name="l00270"></a><span class="lineno">  270</span>&#160;      writeFromReceiveCB(&amp;(dma_buffer_rx[buffer_size_rx / 2]),</div>
+<div class="line"><a name="l00271"></a><span class="lineno">  271</span>&#160;                         buffer_size_rx / 2);</div>
+<div class="line"><a name="l00272"></a><span class="lineno">  272</span>&#160;  }</div>
+<div class="line"><a name="l00273"></a><span class="lineno">  273</span>&#160; </div>
+<div class="line"><a name="l00276"></a><span class="lineno"><a class="line" href="classstm32__i2s_1_1_stm32_i2s_class.html#aa68f9f957ef9dcf6022da95cc999b45d">  276</a></span>&#160;  <span class="keywordtype">void</span> <a class="code" href="classstm32__i2s_1_1_stm32_i2s_class.html#aa68f9f957ef9dcf6022da95cc999b45d">cb_TxRxHalfComplete</a>(I2S_HandleTypeDef *hi2s) {</div>
+<div class="line"><a name="l00277"></a><span class="lineno">  277</span>&#160;    <span class="comment">// second half finished, filling it up again while first  half is playing</span></div>
+<div class="line"><a name="l00278"></a><span class="lineno">  278</span>&#160;    uint8_t *dma_buffer_tx = (uint8_t *)hi2s-&gt;pTxBuffPtr;</div>
+<div class="line"><a name="l00279"></a><span class="lineno">  279</span>&#160;    uint8_t *dma_buffer_rx = (uint8_t *)hi2s-&gt;pRxBuffPtr;</div>
+<div class="line"><a name="l00280"></a><span class="lineno">  280</span>&#160;    uint16_t buffer_size_tx = hi2s-&gt;TxXferSize * 2; <span class="comment">// XferSize is in words</span></div>
+<div class="line"><a name="l00281"></a><span class="lineno">  281</span>&#160;    uint16_t buffer_size_rx = hi2s-&gt;RxXferSize * 2;</div>
+<div class="line"><a name="l00282"></a><span class="lineno">  282</span>&#160;    <span class="keywordflow">if</span> (readToTransmitCB != NULL)</div>
+<div class="line"><a name="l00283"></a><span class="lineno">  283</span>&#160;      readToTransmitCB(&amp;(dma_buffer_tx[0]), buffer_size_tx / 2);</div>
+<div class="line"><a name="l00284"></a><span class="lineno">  284</span>&#160;    <span class="keywordflow">if</span> (writeFromReceiveCB != NULL)</div>
+<div class="line"><a name="l00285"></a><span class="lineno">  285</span>&#160;      writeFromReceiveCB(&amp;(dma_buffer_rx[0]), buffer_size_rx / 2);</div>
+<div class="line"><a name="l00286"></a><span class="lineno">  286</span>&#160;  }</div>
+<div class="line"><a name="l00287"></a><span class="lineno">  287</span>&#160; </div>
+<div class="line"><a name="l00289"></a><span class="lineno"><a class="line" href="classstm32__i2s_1_1_stm32_i2s_class.html#ad8d19f61eff465692845d405fd321271">  289</a></span>&#160;  <span class="keyword">inline</span> <span class="keywordtype">void</span> <a class="code" href="classstm32__i2s_1_1_stm32_i2s_class.html#ad8d19f61eff465692845d405fd321271">cb_dmaIrqRx</a>() { HAL_DMA_IRQHandler(&amp;hdma_i2s3_ext_rx); }</div>
+<div class="line"><a name="l00290"></a><span class="lineno">  290</span>&#160; </div>
+<div class="line"><a name="l00292"></a><span class="lineno"><a class="line" href="classstm32__i2s_1_1_stm32_i2s_class.html#a8f61f957a528292152ac3aa494d6c8f7">  292</a></span>&#160;  <span class="keyword">inline</span> <span class="keywordtype">void</span> <a class="code" href="classstm32__i2s_1_1_stm32_i2s_class.html#a8f61f957a528292152ac3aa494d6c8f7">cb_dmaIrqTx</a>() { HAL_DMA_IRQHandler(&amp;hdma_i2s3_ext_tx); }</div>
+<div class="line"><a name="l00293"></a><span class="lineno">  293</span>&#160; </div>
+<div class="line"><a name="l00295"></a><span class="lineno"><a class="line" href="classstm32__i2s_1_1_stm32_i2s_class.html#aa6c222c37988e17de110bcee25a16040">  295</a></span>&#160;  <span class="keyword">inline</span> <span class="keywordtype">void</span> <a class="code" href="classstm32__i2s_1_1_stm32_i2s_class.html#aa6c222c37988e17de110bcee25a16040">cb_HAL_I2S_MspInit</a>(I2S_HandleTypeDef *hi2s) { <a class="code" href="classstm32__i2s_1_1_stm32_i2s_class.html#a568cbd430035151c964c90860711fd2b">cb_i2s_MspInit</a>(hi2s); }</div>
+<div class="line"><a name="l00296"></a><span class="lineno">  296</span>&#160; </div>
+<div class="line"><a name="l00298"></a><span class="lineno"><a class="line" href="classstm32__i2s_1_1_stm32_i2s_class.html#a368840768f5316846efbcfc7bfbe72da">  298</a></span>&#160;  <span class="keyword">inline</span> <span class="keywordtype">void</span> <a class="code" href="classstm32__i2s_1_1_stm32_i2s_class.html#a368840768f5316846efbcfc7bfbe72da">cb_HAL_I2S_MspDeInit</a>(I2S_HandleTypeDef *hi2s) { <a class="code" href="classstm32__i2s_1_1_stm32_i2s_class.html#aa17f0e247e1fd708dd6b26dc2a480abe">cb_i2s_MspDeInit</a>(hi2s);}</div>
+<div class="line"><a name="l00299"></a><span class="lineno">  299</span>&#160; </div>
+<div class="line"><a name="l00301"></a><span class="lineno"><a class="line" href="classstm32__i2s_1_1_stm32_i2s_class.html#abc045de6c4c440593e3bb6ba0cf9921c">  301</a></span>&#160;  <span class="keywordtype">bool</span> <a class="code" href="classstm32__i2s_1_1_stm32_i2s_class.html#abc045de6c4c440593e3bb6ba0cf9921c">i2s_begin</a>() {</div>
+<div class="line"><a name="l00302"></a><span class="lineno">  302</span>&#160;    stm32_i2s_is_error = <span class="keyword">false</span>;</div>
+<div class="line"><a name="l00303"></a><span class="lineno">  303</span>&#160;    <span class="keywordflow">if</span> (settings.sample_rate == 0) {</div>
+<div class="line"><a name="l00304"></a><span class="lineno">  304</span>&#160;      STM32_LOG(<span class="stringliteral">&quot;sample_rate must not be 0&quot;</span>);</div>
+<div class="line"><a name="l00305"></a><span class="lineno">  305</span>&#160;      <span class="keywordflow">return</span> <span class="keyword">false</span>;</div>
+<div class="line"><a name="l00306"></a><span class="lineno">  306</span>&#160;    }</div>
+<div class="line"><a name="l00307"></a><span class="lineno">  307</span>&#160;    stm32_i2s_is_error = <span class="keyword">false</span>;</div>
+<div class="line"><a name="l00308"></a><span class="lineno">  308</span>&#160;    <span class="comment">/* Reset of all peripherals, Initializes the Flash interface and the</span></div>
+<div class="line"><a name="l00309"></a><span class="lineno">  309</span>&#160;<span class="comment">     * Systick.</span></div>
+<div class="line"><a name="l00310"></a><span class="lineno">  310</span>&#160;<span class="comment">     */</span></div>
+<div class="line"><a name="l00311"></a><span class="lineno">  311</span>&#160;    <span class="comment">// HAL_Init();// Not needed -&gt; called by Arduino</span></div>
+<div class="line"><a name="l00312"></a><span class="lineno">  312</span>&#160;    <span class="comment">/* Configure the system clock */</span></div>
+<div class="line"><a name="l00313"></a><span class="lineno">  313</span>&#160;    <span class="comment">// SystemClock_Config(); // Not needed -&gt; called by Arduino</span></div>
+<div class="line"><a name="l00314"></a><span class="lineno">  314</span>&#160;    <span class="comment">/* Initialize all configured peripherals */</span></div>
+<div class="line"><a name="l00315"></a><span class="lineno">  315</span>&#160;    <a class="code" href="classstm32__i2s_1_1_stm32_i2s_class.html#a7ea0054cb5a28db73d516bd9f12efe5a">MX_GPIO_Init</a>();</div>
+<div class="line"><a name="l00316"></a><span class="lineno">  316</span>&#160;    <a class="code" href="classstm32__i2s_1_1_stm32_i2s_class.html#a920ca6270f2a640e010f9a73f9805fba">MX_DMA_Init</a>();</div>
+<div class="line"><a name="l00317"></a><span class="lineno">  317</span>&#160;    <a class="code" href="classstm32__i2s_1_1_stm32_i2s_class.html#a0b22eaee894545e639e40215fc411706">MX_I2S3_Init</a>();</div>
+<div class="line"><a name="l00318"></a><span class="lineno">  318</span>&#160;    <span class="keywordflow">return</span> !stm32_i2s_is_error;</div>
+<div class="line"><a name="l00319"></a><span class="lineno">  319</span>&#160;  }</div>
+<div class="line"><a name="l00320"></a><span class="lineno">  320</span>&#160; </div>
+<div class="line"><a name="l00327"></a><span class="lineno"><a class="line" href="classstm32__i2s_1_1_stm32_i2s_class.html#a7ea0054cb5a28db73d516bd9f12efe5a">  327</a></span>&#160;  <span class="keyword">virtual</span> <span class="keywordtype">void</span> <a class="code" href="classstm32__i2s_1_1_stm32_i2s_class.html#a7ea0054cb5a28db73d516bd9f12efe5a">MX_GPIO_Init</a>(<span class="keywordtype">void</span>) {</div>
+<div class="line"><a name="l00328"></a><span class="lineno">  328</span>&#160;    <span class="comment">// GPIO Ports Clock Enable</span></div>
+<div class="line"><a name="l00329"></a><span class="lineno">  329</span>&#160;    __HAL_RCC_GPIOH_CLK_ENABLE();</div>
+<div class="line"><a name="l00330"></a><span class="lineno">  330</span>&#160; </div>
+<div class="line"><a name="l00331"></a><span class="lineno">  331</span>&#160;    <span class="comment">// Define pins</span></div>
+<div class="line"><a name="l00332"></a><span class="lineno">  332</span>&#160;    <span class="keywordflow">for</span> (<a class="code" href="structstm32__i2s_1_1_i2_s_pin.html">I2SPin</a> &amp;pin : hw.pins) {</div>
+<div class="line"><a name="l00333"></a><span class="lineno">  333</span>&#160;        pin.begin();</div>
+<div class="line"><a name="l00334"></a><span class="lineno">  334</span>&#160;    }</div>
+<div class="line"><a name="l00335"></a><span class="lineno">  335</span>&#160;  }</div>
+<div class="line"><a name="l00336"></a><span class="lineno">  336</span>&#160; </div>
+<div class="line"><a name="l00337"></a><span class="lineno">  337</span>&#160; </div>
+<div class="line"><a name="l00338"></a><span class="lineno">  338</span>&#160; </div>
+<div class="line"><a name="l00342"></a><span class="lineno"><a class="line" href="classstm32__i2s_1_1_stm32_i2s_class.html#a920ca6270f2a640e010f9a73f9805fba">  342</a></span>&#160;  <span class="keyword">virtual</span> <span class="keywordtype">void</span> <a class="code" href="classstm32__i2s_1_1_stm32_i2s_class.html#a920ca6270f2a640e010f9a73f9805fba">MX_DMA_Init</a>(<span class="keywordtype">void</span>) {</div>
+<div class="line"><a name="l00343"></a><span class="lineno">  343</span>&#160;    <span class="comment">/* DMA controller clock enable */</span></div>
+<div class="line"><a name="l00344"></a><span class="lineno">  344</span>&#160;    __HAL_RCC_DMA1_CLK_ENABLE();</div>
+<div class="line"><a name="l00345"></a><span class="lineno">  345</span>&#160; </div>
+<div class="line"><a name="l00346"></a><span class="lineno">  346</span>&#160;    <span class="comment">/* DMA interrupt init */</span></div>
+<div class="line"><a name="l00347"></a><span class="lineno">  347</span>&#160;    <span class="comment">/* DMA1_Stream0_IRQn interrupt configuration */</span></div>
+<div class="line"><a name="l00348"></a><span class="lineno">  348</span>&#160;    HAL_NVIC_SetPriority(hw.irq1, 0, 0);</div>
+<div class="line"><a name="l00349"></a><span class="lineno">  349</span>&#160;    HAL_NVIC_EnableIRQ(hw.irq1);</div>
+<div class="line"><a name="l00350"></a><span class="lineno">  350</span>&#160;    <span class="comment">/* DMA1_Stream5_IRQn interrupt configuration */</span></div>
+<div class="line"><a name="l00351"></a><span class="lineno">  351</span>&#160;    HAL_NVIC_SetPriority(hw.irq2, 0, 0);</div>
+<div class="line"><a name="l00352"></a><span class="lineno">  352</span>&#160;    HAL_NVIC_EnableIRQ(hw.irq2);</div>
+<div class="line"><a name="l00353"></a><span class="lineno">  353</span>&#160;  }</div>
+<div class="line"><a name="l00354"></a><span class="lineno">  354</span>&#160; </div>
+<div class="line"><a name="l00360"></a><span class="lineno"><a class="line" href="classstm32__i2s_1_1_stm32_i2s_class.html#a0b22eaee894545e639e40215fc411706">  360</a></span>&#160;  <span class="keyword">virtual</span> <span class="keywordtype">void</span> <a class="code" href="classstm32__i2s_1_1_stm32_i2s_class.html#a0b22eaee894545e639e40215fc411706">MX_I2S3_Init</a>(<span class="keywordtype">void</span>) {</div>
+<div class="line"><a name="l00361"></a><span class="lineno">  361</span>&#160;    hi2s3.Instance = SPI_INSTANCE_FOR_I2S;</div>
+<div class="line"><a name="l00362"></a><span class="lineno">  362</span>&#160;    hi2s3.Init.Mode = settings.mode;</div>
+<div class="line"><a name="l00363"></a><span class="lineno">  363</span>&#160;    hi2s3.Init.Standard = settings.standard;</div>
+<div class="line"><a name="l00364"></a><span class="lineno">  364</span>&#160;    hi2s3.Init.FullDuplexMode = settings.fullduplexmode;</div>
+<div class="line"><a name="l00365"></a><span class="lineno">  365</span>&#160;    hi2s3.Init.AudioFreq = settings.sample_rate;</div>
+<div class="line"><a name="l00366"></a><span class="lineno">  366</span>&#160;    hi2s3.Init.DataFormat = I2S_DATAFORMAT_16B;</div>
+<div class="line"><a name="l00367"></a><span class="lineno">  367</span>&#160;    hi2s3.Init.MCLKOutput = I2S_MCLKOUTPUT_ENABLE;</div>
+<div class="line"><a name="l00368"></a><span class="lineno">  368</span>&#160;    hi2s3.Init.CPOL = I2S_CPOL_LOW;</div>
+<div class="line"><a name="l00369"></a><span class="lineno">  369</span>&#160;    hi2s3.Init.ClockSource = I2S_CLOCK_PLL;</div>
+<div class="line"><a name="l00370"></a><span class="lineno">  370</span>&#160;    <span class="keywordflow">if</span> (HAL_I2S_Init(&amp;hi2s3) != HAL_OK) {</div>
+<div class="line"><a name="l00371"></a><span class="lineno">  371</span>&#160;      Report_Error();</div>
+<div class="line"><a name="l00372"></a><span class="lineno">  372</span>&#160;    }</div>
+<div class="line"><a name="l00373"></a><span class="lineno">  373</span>&#160;  }</div>
+<div class="line"><a name="l00374"></a><span class="lineno">  374</span>&#160; </div>
+<div class="line"><a name="l00381"></a><span class="lineno"><a class="line" href="classstm32__i2s_1_1_stm32_i2s_class.html#a568cbd430035151c964c90860711fd2b">  381</a></span>&#160;  <span class="keyword">virtual</span> <span class="keywordtype">void</span> <a class="code" href="classstm32__i2s_1_1_stm32_i2s_class.html#a568cbd430035151c964c90860711fd2b">cb_i2s_MspInit</a>(I2S_HandleTypeDef *hi2s) {</div>
+<div class="line"><a name="l00382"></a><span class="lineno">  382</span>&#160;    RCC_PeriphCLKInitTypeDef PeriphClkInitStruct = {0};</div>
+<div class="line"><a name="l00383"></a><span class="lineno">  383</span>&#160;    <span class="keywordflow">if</span> (hi2s-&gt;Instance == SPI3) {</div>
+<div class="line"><a name="l00387"></a><span class="lineno">  387</span>&#160;      PeriphClkInitStruct.PeriphClockSelection = RCC_PERIPHCLK_I2S;</div>
+<div class="line"><a name="l00388"></a><span class="lineno">  388</span>&#160;      PeriphClkInitStruct.PLLI2S.PLLI2SN = hw.plln; <span class="comment">// 192;</span></div>
+<div class="line"><a name="l00389"></a><span class="lineno">  389</span>&#160;<span class="preprocessor">#ifdef PLLM</span></div>
+<div class="line"><a name="l00390"></a><span class="lineno">  390</span>&#160;      PeriphClkInitStruct.PLLI2S.PLLI2SM = hw.pllm; <span class="comment">// 16;</span></div>
+<div class="line"><a name="l00391"></a><span class="lineno">  391</span>&#160;<span class="preprocessor">#endif</span></div>
+<div class="line"><a name="l00392"></a><span class="lineno">  392</span>&#160;      PeriphClkInitStruct.PLLI2S.PLLI2SR = hw.pllr; <span class="comment">// 2;</span></div>
+<div class="line"><a name="l00393"></a><span class="lineno">  393</span>&#160;      <span class="keywordflow">if</span> (HAL_RCCEx_PeriphCLKConfig(&amp;PeriphClkInitStruct) != HAL_OK) {</div>
+<div class="line"><a name="l00394"></a><span class="lineno">  394</span>&#160;        Report_Error();</div>
 <div class="line"><a name="l00395"></a><span class="lineno">  395</span>&#160;      }</div>
 <div class="line"><a name="l00396"></a><span class="lineno">  396</span>&#160; </div>
-<div class="line"><a name="l00397"></a><span class="lineno">  397</span>&#160;      <span class="keywordflow">if</span> (dma_buffer_tx != <span class="keyword">nullptr</span>) {</div>
-<div class="line"><a name="l00398"></a><span class="lineno">  398</span>&#160;        <a class="code" href="classstm32__i2s_1_1_stm32_i2s_class.html#aca5c1d70fd7e9a3f3aa0388749b6cb44">setupDMA</a>(hdma_i2s3_ext_tx, hw.tx_instance, hw.tx_channel,</div>
-<div class="line"><a name="l00399"></a><span class="lineno">  399</span>&#160;                 hw.tx_direction);</div>
-<div class="line"><a name="l00400"></a><span class="lineno">  400</span>&#160;        __HAL_LINKDMA(hi2s, hdmatx, hdma_i2s3_ext_tx);</div>
-<div class="line"><a name="l00401"></a><span class="lineno">  401</span>&#160;      }</div>
-<div class="line"><a name="l00402"></a><span class="lineno">  402</span>&#160;    }</div>
-<div class="line"><a name="l00403"></a><span class="lineno">  403</span>&#160;  }</div>
-<div class="line"><a name="l00404"></a><span class="lineno">  404</span>&#160; </div>
-<div class="line"><a name="l00409"></a><span class="lineno"><a class="line" href="classstm32__i2s_1_1_stm32_i2s_class.html#aca5c1d70fd7e9a3f3aa0388749b6cb44">  409</a></span>&#160;  <span class="keywordtype">void</span> <a class="code" href="classstm32__i2s_1_1_stm32_i2s_class.html#aca5c1d70fd7e9a3f3aa0388749b6cb44">setupDMA</a>(DMA_HandleTypeDef &amp;dma, DMA_Stream_TypeDef *instance,</div>
-<div class="line"><a name="l00410"></a><span class="lineno">  410</span>&#160;                uint32_t channel, uint32_t direction) {</div>
-<div class="line"><a name="l00411"></a><span class="lineno">  411</span>&#160;    dma.Instance = instance;</div>
-<div class="line"><a name="l00412"></a><span class="lineno">  412</span>&#160;    dma.Init.Channel = channel;</div>
-<div class="line"><a name="l00413"></a><span class="lineno">  413</span>&#160;    dma.Init.Direction = direction;</div>
-<div class="line"><a name="l00414"></a><span class="lineno">  414</span>&#160;    dma.Init.PeriphInc = DMA_PINC_DISABLE;</div>
-<div class="line"><a name="l00415"></a><span class="lineno">  415</span>&#160;    dma.Init.MemInc = DMA_MINC_ENABLE;</div>
-<div class="line"><a name="l00416"></a><span class="lineno">  416</span>&#160;    dma.Init.PeriphDataAlignment = DMA_PDATAALIGN_HALFWORD;</div>
-<div class="line"><a name="l00417"></a><span class="lineno">  417</span>&#160;    dma.Init.MemDataAlignment = DMA_MDATAALIGN_HALFWORD;</div>
-<div class="line"><a name="l00418"></a><span class="lineno">  418</span>&#160;    dma.Init.Mode = DMA_CIRCULAR;</div>
-<div class="line"><a name="l00419"></a><span class="lineno">  419</span>&#160;    dma.Init.Priority = DMA_PRIORITY_HIGH;</div>
-<div class="line"><a name="l00420"></a><span class="lineno">  420</span>&#160;    dma.Init.FIFOMode = DMA_FIFOMODE_ENABLE;</div>
-<div class="line"><a name="l00421"></a><span class="lineno">  421</span>&#160;    dma.Init.FIFOThreshold = DMA_FIFO_THRESHOLD_HALFFULL;</div>
-<div class="line"><a name="l00422"></a><span class="lineno">  422</span>&#160;    dma.Init.MemBurst = DMA_PBURST_INC4;</div>
-<div class="line"><a name="l00423"></a><span class="lineno">  423</span>&#160;    dma.Init.PeriphBurst = DMA_PBURST_INC4;</div>
-<div class="line"><a name="l00424"></a><span class="lineno">  424</span>&#160;    <span class="keywordflow">if</span> (HAL_DMA_Init(&amp;dma) != HAL_OK) {</div>
-<div class="line"><a name="l00425"></a><span class="lineno">  425</span>&#160;      Report_Error();</div>
-<div class="line"><a name="l00426"></a><span class="lineno">  426</span>&#160;    }</div>
-<div class="line"><a name="l00427"></a><span class="lineno">  427</span>&#160;  }</div>
-<div class="line"><a name="l00428"></a><span class="lineno">  428</span>&#160; </div>
-<div class="line"><a name="l00435"></a><span class="lineno"><a class="line" href="classstm32__i2s_1_1_stm32_i2s_class.html#aa17f0e247e1fd708dd6b26dc2a480abe">  435</a></span>&#160;  <span class="keyword">virtual</span> <span class="keywordtype">void</span> <a class="code" href="classstm32__i2s_1_1_stm32_i2s_class.html#aa17f0e247e1fd708dd6b26dc2a480abe">cb_i2s_MspDeInit</a>(I2S_HandleTypeDef *hi2s) {</div>
-<div class="line"><a name="l00436"></a><span class="lineno">  436</span>&#160;    <span class="keywordflow">if</span> (hi2s-&gt;Instance == SPI3) {</div>
-<div class="line"><a name="l00437"></a><span class="lineno">  437</span>&#160;      <span class="comment">/* Peripheral clock disable */</span></div>
-<div class="line"><a name="l00438"></a><span class="lineno">  438</span>&#160;      __HAL_RCC_SPI3_CLK_DISABLE();</div>
-<div class="line"><a name="l00439"></a><span class="lineno">  439</span>&#160; </div>
-<div class="line"><a name="l00440"></a><span class="lineno">  440</span>&#160;      <span class="comment">/* I2S3 DMA DeInit */</span></div>
-<div class="line"><a name="l00441"></a><span class="lineno">  441</span>&#160;      HAL_DMA_DeInit(hi2s-&gt;hdmarx);</div>
-<div class="line"><a name="l00442"></a><span class="lineno">  442</span>&#160;      HAL_DMA_DeInit(hi2s-&gt;hdmatx);</div>
-<div class="line"><a name="l00443"></a><span class="lineno">  443</span>&#160;    }</div>
-<div class="line"><a name="l00444"></a><span class="lineno">  444</span>&#160;  }</div>
-<div class="line"><a name="l00445"></a><span class="lineno">  445</span>&#160;};</div>
-<div class="line"><a name="l00446"></a><span class="lineno">  446</span>&#160; </div>
-<div class="line"><a name="l00448"></a><span class="lineno">  448</span>&#160;<span class="keyword">extern</span> Stm32I2sClass STM32_I2S;</div>
+<div class="line"><a name="l00397"></a><span class="lineno">  397</span>&#160;      <span class="comment">/* Peripheral clock enable */</span></div>
+<div class="line"><a name="l00398"></a><span class="lineno">  398</span>&#160;      __HAL_RCC_SPI3_CLK_ENABLE();</div>
+<div class="line"><a name="l00399"></a><span class="lineno">  399</span>&#160; </div>
+<div class="line"><a name="l00400"></a><span class="lineno">  400</span>&#160;      <span class="comment">/* I2S3 DMA Init */</span></div>
+<div class="line"><a name="l00401"></a><span class="lineno">  401</span>&#160;      <span class="keywordflow">if</span> (dma_buffer_rx != <span class="keyword">nullptr</span>) {</div>
+<div class="line"><a name="l00402"></a><span class="lineno">  402</span>&#160;        <a class="code" href="classstm32__i2s_1_1_stm32_i2s_class.html#aca5c1d70fd7e9a3f3aa0388749b6cb44">setupDMA</a>(hdma_i2s3_ext_rx, hw.rx_instance, hw.rx_channel,</div>
+<div class="line"><a name="l00403"></a><span class="lineno">  403</span>&#160;                 hw.rx_direction);</div>
+<div class="line"><a name="l00404"></a><span class="lineno">  404</span>&#160;        __HAL_LINKDMA(hi2s, hdmarx, hdma_i2s3_ext_rx);</div>
+<div class="line"><a name="l00405"></a><span class="lineno">  405</span>&#160;      }</div>
+<div class="line"><a name="l00406"></a><span class="lineno">  406</span>&#160; </div>
+<div class="line"><a name="l00407"></a><span class="lineno">  407</span>&#160;      <span class="keywordflow">if</span> (dma_buffer_tx != <span class="keyword">nullptr</span>) {</div>
+<div class="line"><a name="l00408"></a><span class="lineno">  408</span>&#160;        <a class="code" href="classstm32__i2s_1_1_stm32_i2s_class.html#aca5c1d70fd7e9a3f3aa0388749b6cb44">setupDMA</a>(hdma_i2s3_ext_tx, hw.tx_instance, hw.tx_channel,</div>
+<div class="line"><a name="l00409"></a><span class="lineno">  409</span>&#160;                 hw.tx_direction);</div>
+<div class="line"><a name="l00410"></a><span class="lineno">  410</span>&#160;        __HAL_LINKDMA(hi2s, hdmatx, hdma_i2s3_ext_tx);</div>
+<div class="line"><a name="l00411"></a><span class="lineno">  411</span>&#160;      }</div>
+<div class="line"><a name="l00412"></a><span class="lineno">  412</span>&#160;    }</div>
+<div class="line"><a name="l00413"></a><span class="lineno">  413</span>&#160;  }</div>
+<div class="line"><a name="l00414"></a><span class="lineno">  414</span>&#160; </div>
+<div class="line"><a name="l00419"></a><span class="lineno"><a class="line" href="classstm32__i2s_1_1_stm32_i2s_class.html#aca5c1d70fd7e9a3f3aa0388749b6cb44">  419</a></span>&#160;  <span class="keywordtype">void</span> <a class="code" href="classstm32__i2s_1_1_stm32_i2s_class.html#aca5c1d70fd7e9a3f3aa0388749b6cb44">setupDMA</a>(DMA_HandleTypeDef &amp;dma, DMA_Stream_TypeDef *instance,</div>
+<div class="line"><a name="l00420"></a><span class="lineno">  420</span>&#160;                uint32_t channel, uint32_t direction) {</div>
+<div class="line"><a name="l00421"></a><span class="lineno">  421</span>&#160;    dma.Instance = instance;</div>
+<div class="line"><a name="l00422"></a><span class="lineno">  422</span>&#160;    dma.Init.Channel = channel;</div>
+<div class="line"><a name="l00423"></a><span class="lineno">  423</span>&#160;    dma.Init.Direction = direction;</div>
+<div class="line"><a name="l00424"></a><span class="lineno">  424</span>&#160;    dma.Init.PeriphInc = DMA_PINC_DISABLE;</div>
+<div class="line"><a name="l00425"></a><span class="lineno">  425</span>&#160;    dma.Init.MemInc = DMA_MINC_ENABLE;</div>
+<div class="line"><a name="l00426"></a><span class="lineno">  426</span>&#160;    dma.Init.PeriphDataAlignment = DMA_PDATAALIGN_HALFWORD;</div>
+<div class="line"><a name="l00427"></a><span class="lineno">  427</span>&#160;    dma.Init.MemDataAlignment = DMA_MDATAALIGN_HALFWORD;</div>
+<div class="line"><a name="l00428"></a><span class="lineno">  428</span>&#160;    dma.Init.Mode = DMA_CIRCULAR;</div>
+<div class="line"><a name="l00429"></a><span class="lineno">  429</span>&#160;    dma.Init.Priority = DMA_PRIORITY_HIGH;</div>
+<div class="line"><a name="l00430"></a><span class="lineno">  430</span>&#160;    dma.Init.FIFOMode = DMA_FIFOMODE_ENABLE;</div>
+<div class="line"><a name="l00431"></a><span class="lineno">  431</span>&#160;    dma.Init.FIFOThreshold = DMA_FIFO_THRESHOLD_HALFFULL;</div>
+<div class="line"><a name="l00432"></a><span class="lineno">  432</span>&#160;    dma.Init.MemBurst = DMA_PBURST_INC4;</div>
+<div class="line"><a name="l00433"></a><span class="lineno">  433</span>&#160;    dma.Init.PeriphBurst = DMA_PBURST_INC4;</div>
+<div class="line"><a name="l00434"></a><span class="lineno">  434</span>&#160;    <span class="keywordflow">if</span> (HAL_DMA_Init(&amp;dma) != HAL_OK) {</div>
+<div class="line"><a name="l00435"></a><span class="lineno">  435</span>&#160;      Report_Error();</div>
+<div class="line"><a name="l00436"></a><span class="lineno">  436</span>&#160;    }</div>
+<div class="line"><a name="l00437"></a><span class="lineno">  437</span>&#160;  }</div>
+<div class="line"><a name="l00438"></a><span class="lineno">  438</span>&#160; </div>
+<div class="line"><a name="l00445"></a><span class="lineno"><a class="line" href="classstm32__i2s_1_1_stm32_i2s_class.html#aa17f0e247e1fd708dd6b26dc2a480abe">  445</a></span>&#160;  <span class="keyword">virtual</span> <span class="keywordtype">void</span> <a class="code" href="classstm32__i2s_1_1_stm32_i2s_class.html#aa17f0e247e1fd708dd6b26dc2a480abe">cb_i2s_MspDeInit</a>(I2S_HandleTypeDef *hi2s) {</div>
+<div class="line"><a name="l00446"></a><span class="lineno">  446</span>&#160;    <span class="keywordflow">if</span> (hi2s-&gt;Instance == SPI3) {</div>
+<div class="line"><a name="l00447"></a><span class="lineno">  447</span>&#160;      <span class="comment">/* Peripheral clock disable */</span></div>
+<div class="line"><a name="l00448"></a><span class="lineno">  448</span>&#160;      __HAL_RCC_SPI3_CLK_DISABLE();</div>
 <div class="line"><a name="l00449"></a><span class="lineno">  449</span>&#160; </div>
-<div class="line"><a name="l00450"></a><span class="lineno">  450</span>&#160;}</div>
-<div class="line"><a name="l00451"></a><span class="lineno">  451</span>&#160; </div>
-<div class="ttc" id="aclassstm32__i2s_1_1_stm32_i2s_class_html"><div class="ttname"><a href="classstm32__i2s_1_1_stm32_i2s_class.html">stm32_i2s::Stm32I2sClass</a></div><div class="ttdoc">I2S API for STM32.</div><div class="ttdef"><b>Definition:</b> stm32-i2s.h:106</div></div>
-<div class="ttc" id="aclassstm32__i2s_1_1_stm32_i2s_class_html_a0b22eaee894545e639e40215fc411706"><div class="ttname"><a href="classstm32__i2s_1_1_stm32_i2s_class.html#a0b22eaee894545e639e40215fc411706">stm32_i2s::Stm32I2sClass::MX_I2S3_Init</a></div><div class="ttdeci">virtual void MX_I2S3_Init(void)</div><div class="ttdoc">I2S3 Initialization Function.</div><div class="ttdef"><b>Definition:</b> stm32-i2s.h:350</div></div>
-<div class="ttc" id="aclassstm32__i2s_1_1_stm32_i2s_class_html_a1fb497436e1c2f73b7db59ed65c29d44"><div class="ttname"><a href="classstm32__i2s_1_1_stm32_i2s_class.html#a1fb497436e1c2f73b7db59ed65c29d44">stm32_i2s::Stm32I2sClass::startI2STransmitReceive</a></div><div class="ttdeci">bool startI2STransmitReceive(I2SSettingsSTM32 settings, void(*readToTransmit)(uint8_t *buffer, uint16_t byteCount), void(*writeFromReceive)(uint8_t *buffer, uint16_t byteCount), uint16_t buffer_size)</div><div class="ttdoc">Start to receive and transmit I2S data.</div><div class="ttdef"><b>Definition:</b> stm32-i2s.h:166</div></div>
-<div class="ttc" id="aclassstm32__i2s_1_1_stm32_i2s_class_html_a368840768f5316846efbcfc7bfbe72da"><div class="ttname"><a href="classstm32__i2s_1_1_stm32_i2s_class.html#a368840768f5316846efbcfc7bfbe72da">stm32_i2s::Stm32I2sClass::cb_HAL_I2S_MspDeInit</a></div><div class="ttdeci">void cb_HAL_I2S_MspDeInit(I2S_HandleTypeDef *hi2s)</div><div class="ttdoc">Callback I2S de-intitialization.</div><div class="ttdef"><b>Definition:</b> stm32-i2s.h:260</div></div>
-<div class="ttc" id="aclassstm32__i2s_1_1_stm32_i2s_class_html_a568cbd430035151c964c90860711fd2b"><div class="ttname"><a href="classstm32__i2s_1_1_stm32_i2s_class.html#a568cbd430035151c964c90860711fd2b">stm32_i2s::Stm32I2sClass::cb_i2s_MspInit</a></div><div class="ttdeci">virtual void cb_i2s_MspInit(I2S_HandleTypeDef *hi2s)</div><div class="ttdoc">I2S MSP Initialization This function configures the hardware resources used in this example.</div><div class="ttdef"><b>Definition:</b> stm32-i2s.h:371</div></div>
-<div class="ttc" id="aclassstm32__i2s_1_1_stm32_i2s_class_html_a7ea0054cb5a28db73d516bd9f12efe5a"><div class="ttname"><a href="classstm32__i2s_1_1_stm32_i2s_class.html#a7ea0054cb5a28db73d516bd9f12efe5a">stm32_i2s::Stm32I2sClass::MX_GPIO_Init</a></div><div class="ttdeci">virtual void MX_GPIO_Init(void)</div><div class="ttdoc">GPIO Initialization Function for I2S pins.</div><div class="ttdef"><b>Definition:</b> stm32-i2s.h:289</div></div>
-<div class="ttc" id="aclassstm32__i2s_1_1_stm32_i2s_class_html_a80d0a01ef377e25ab9e819240d9acb8d"><div class="ttname"><a href="classstm32__i2s_1_1_stm32_i2s_class.html#a80d0a01ef377e25ab9e819240d9acb8d">stm32_i2s::Stm32I2sClass::cb_TxRxComplete</a></div><div class="ttdeci">void cb_TxRxComplete(I2S_HandleTypeDef *hi2s)</div><div class="ttdoc">Callback for double buffer.</div><div class="ttdef"><b>Definition:</b> stm32-i2s.h:222</div></div>
-<div class="ttc" id="aclassstm32__i2s_1_1_stm32_i2s_class_html_a8f61f957a528292152ac3aa494d6c8f7"><div class="ttname"><a href="classstm32__i2s_1_1_stm32_i2s_class.html#a8f61f957a528292152ac3aa494d6c8f7">stm32_i2s::Stm32I2sClass::cb_dmaIrqTx</a></div><div class="ttdeci">void cb_dmaIrqTx()</div><div class="ttdoc">Callback for DMA interrupt request.</div><div class="ttdef"><b>Definition:</b> stm32-i2s.h:254</div></div>
-<div class="ttc" id="aclassstm32__i2s_1_1_stm32_i2s_class_html_a920ca6270f2a640e010f9a73f9805fba"><div class="ttname"><a href="classstm32__i2s_1_1_stm32_i2s_class.html#a920ca6270f2a640e010f9a73f9805fba">stm32_i2s::Stm32I2sClass::MX_DMA_Init</a></div><div class="ttdeci">virtual void MX_DMA_Init(void)</div><div class="ttdef"><b>Definition:</b> stm32-i2s.h:332</div></div>
-<div class="ttc" id="aclassstm32__i2s_1_1_stm32_i2s_class_html_aa17f0e247e1fd708dd6b26dc2a480abe"><div class="ttname"><a href="classstm32__i2s_1_1_stm32_i2s_class.html#aa17f0e247e1fd708dd6b26dc2a480abe">stm32_i2s::Stm32I2sClass::cb_i2s_MspDeInit</a></div><div class="ttdeci">virtual void cb_i2s_MspDeInit(I2S_HandleTypeDef *hi2s)</div><div class="ttdoc">I2S MSP De-Initialization This function freeze the hardware resources used in this example.</div><div class="ttdef"><b>Definition:</b> stm32-i2s.h:435</div></div>
-<div class="ttc" id="aclassstm32__i2s_1_1_stm32_i2s_class_html_aa6106141afdf1742633d9db276432344"><div class="ttname"><a href="classstm32__i2s_1_1_stm32_i2s_class.html#aa6106141afdf1742633d9db276432344">stm32_i2s::Stm32I2sClass::startI2STransmit</a></div><div class="ttdeci">bool startI2STransmit(I2SSettingsSTM32 settings, void(*readToTransmit)(uint8_t *buffer, uint16_t byteCount), uint16_t buffer_size)</div><div class="ttdoc">Start to transmit I2S data.</div><div class="ttdef"><b>Definition:</b> stm32-i2s.h:118</div></div>
-<div class="ttc" id="aclassstm32__i2s_1_1_stm32_i2s_class_html_aa68f9f957ef9dcf6022da95cc999b45d"><div class="ttname"><a href="classstm32__i2s_1_1_stm32_i2s_class.html#aa68f9f957ef9dcf6022da95cc999b45d">stm32_i2s::Stm32I2sClass::cb_TxRxHalfComplete</a></div><div class="ttdeci">void cb_TxRxHalfComplete(I2S_HandleTypeDef *hi2s)</div><div class="ttdoc">Callback for double buffer.</div><div class="ttdef"><b>Definition:</b> stm32-i2s.h:238</div></div>
-<div class="ttc" id="aclassstm32__i2s_1_1_stm32_i2s_class_html_aa6c222c37988e17de110bcee25a16040"><div class="ttname"><a href="classstm32__i2s_1_1_stm32_i2s_class.html#aa6c222c37988e17de110bcee25a16040">stm32_i2s::Stm32I2sClass::cb_HAL_I2S_MspInit</a></div><div class="ttdeci">void cb_HAL_I2S_MspInit(I2S_HandleTypeDef *hi2s)</div><div class="ttdoc">Callback I2S intitialization.</div><div class="ttdef"><b>Definition:</b> stm32-i2s.h:257</div></div>
-<div class="ttc" id="aclassstm32__i2s_1_1_stm32_i2s_class_html_abc045de6c4c440593e3bb6ba0cf9921c"><div class="ttname"><a href="classstm32__i2s_1_1_stm32_i2s_class.html#abc045de6c4c440593e3bb6ba0cf9921c">stm32_i2s::Stm32I2sClass::i2s_begin</a></div><div class="ttdeci">bool i2s_begin()</div><div class="ttdoc">Starts the i2s processing.</div><div class="ttdef"><b>Definition:</b> stm32-i2s.h:263</div></div>
-<div class="ttc" id="aclassstm32__i2s_1_1_stm32_i2s_class_html_aca5c1d70fd7e9a3f3aa0388749b6cb44"><div class="ttname"><a href="classstm32__i2s_1_1_stm32_i2s_class.html#aca5c1d70fd7e9a3f3aa0388749b6cb44">stm32_i2s::Stm32I2sClass::setupDMA</a></div><div class="ttdeci">void setupDMA(DMA_HandleTypeDef &amp;dma, DMA_Stream_TypeDef *instance, uint32_t channel, uint32_t direction)</div><div class="ttdoc">DMA Initialization This function configures and initializes the DMA.</div><div class="ttdef"><b>Definition:</b> stm32-i2s.h:409</div></div>
-<div class="ttc" id="aclassstm32__i2s_1_1_stm32_i2s_class_html_ad8d19f61eff465692845d405fd321271"><div class="ttname"><a href="classstm32__i2s_1_1_stm32_i2s_class.html#ad8d19f61eff465692845d405fd321271">stm32_i2s::Stm32I2sClass::cb_dmaIrqRx</a></div><div class="ttdeci">void cb_dmaIrqRx()</div><div class="ttdoc">Callback for DMA interrupt request.</div><div class="ttdef"><b>Definition:</b> stm32-i2s.h:251</div></div>
-<div class="ttc" id="aclassstm32__i2s_1_1_stm32_i2s_class_html_ae9fde31d71da42c270d145089d50cd40"><div class="ttname"><a href="classstm32__i2s_1_1_stm32_i2s_class.html#ae9fde31d71da42c270d145089d50cd40">stm32_i2s::Stm32I2sClass::resetPin</a></div><div class="ttdeci">void resetPin(PinName p)</div><div class="ttdoc">Undo the current pin function.</div><div class="ttdef"><b>Definition:</b> stm32-i2s.h:305</div></div>
-<div class="ttc" id="aclassstm32__i2s_1_1_stm32_i2s_class_html_afa0743706fbe309e2fca3a8aea2b1a0c"><div class="ttname"><a href="classstm32__i2s_1_1_stm32_i2s_class.html#afa0743706fbe309e2fca3a8aea2b1a0c">stm32_i2s::Stm32I2sClass::startI2SReceive</a></div><div class="ttdeci">bool startI2SReceive(I2SSettingsSTM32 settings, void(*writeFromReceive)(uint8_t *buffer, uint16_t byteCount), uint16_t buffer_size)</div><div class="ttdoc">Start to receive I2S data.</div><div class="ttdef"><b>Definition:</b> stm32-i2s.h:142</div></div>
+<div class="line"><a name="l00450"></a><span class="lineno">  450</span>&#160;      <span class="comment">/* I2S3 DMA DeInit */</span></div>
+<div class="line"><a name="l00451"></a><span class="lineno">  451</span>&#160;      HAL_DMA_DeInit(hi2s-&gt;hdmarx);</div>
+<div class="line"><a name="l00452"></a><span class="lineno">  452</span>&#160;      HAL_DMA_DeInit(hi2s-&gt;hdmatx);</div>
+<div class="line"><a name="l00453"></a><span class="lineno">  453</span>&#160;    }</div>
+<div class="line"><a name="l00454"></a><span class="lineno">  454</span>&#160;  }</div>
+<div class="line"><a name="l00455"></a><span class="lineno">  455</span>&#160;};</div>
+<div class="line"><a name="l00456"></a><span class="lineno">  456</span>&#160; </div>
+<div class="line"><a name="l00458"></a><span class="lineno">  458</span>&#160;<span class="keyword">extern</span> Stm32I2sClass STM32_I2S;</div>
+<div class="line"><a name="l00459"></a><span class="lineno">  459</span>&#160; </div>
+<div class="line"><a name="l00460"></a><span class="lineno">  460</span>&#160;}</div>
+<div class="line"><a name="l00461"></a><span class="lineno">  461</span>&#160; </div>
+<div class="ttc" id="aclassstm32__i2s_1_1_stm32_i2s_class_html"><div class="ttname"><a href="classstm32__i2s_1_1_stm32_i2s_class.html">stm32_i2s::Stm32I2sClass</a></div><div class="ttdoc">I2S API for STM32.</div><div class="ttdef"><b>Definition:</b> stm32-i2s.h:144</div></div>
+<div class="ttc" id="aclassstm32__i2s_1_1_stm32_i2s_class_html_a0b22eaee894545e639e40215fc411706"><div class="ttname"><a href="classstm32__i2s_1_1_stm32_i2s_class.html#a0b22eaee894545e639e40215fc411706">stm32_i2s::Stm32I2sClass::MX_I2S3_Init</a></div><div class="ttdeci">virtual void MX_I2S3_Init(void)</div><div class="ttdoc">I2S3 Initialization Function.</div><div class="ttdef"><b>Definition:</b> stm32-i2s.h:360</div></div>
+<div class="ttc" id="aclassstm32__i2s_1_1_stm32_i2s_class_html_a1fb497436e1c2f73b7db59ed65c29d44"><div class="ttname"><a href="classstm32__i2s_1_1_stm32_i2s_class.html#a1fb497436e1c2f73b7db59ed65c29d44">stm32_i2s::Stm32I2sClass::startI2STransmitReceive</a></div><div class="ttdeci">bool startI2STransmitReceive(I2SSettingsSTM32 settings, void(*readToTransmit)(uint8_t *buffer, uint16_t byteCount), void(*writeFromReceive)(uint8_t *buffer, uint16_t byteCount), uint16_t buffer_size)</div><div class="ttdoc">Start to receive and transmit I2S data.</div><div class="ttdef"><b>Definition:</b> stm32-i2s.h:204</div></div>
+<div class="ttc" id="aclassstm32__i2s_1_1_stm32_i2s_class_html_a368840768f5316846efbcfc7bfbe72da"><div class="ttname"><a href="classstm32__i2s_1_1_stm32_i2s_class.html#a368840768f5316846efbcfc7bfbe72da">stm32_i2s::Stm32I2sClass::cb_HAL_I2S_MspDeInit</a></div><div class="ttdeci">void cb_HAL_I2S_MspDeInit(I2S_HandleTypeDef *hi2s)</div><div class="ttdoc">Callback I2S de-intitialization.</div><div class="ttdef"><b>Definition:</b> stm32-i2s.h:298</div></div>
+<div class="ttc" id="aclassstm32__i2s_1_1_stm32_i2s_class_html_a568cbd430035151c964c90860711fd2b"><div class="ttname"><a href="classstm32__i2s_1_1_stm32_i2s_class.html#a568cbd430035151c964c90860711fd2b">stm32_i2s::Stm32I2sClass::cb_i2s_MspInit</a></div><div class="ttdeci">virtual void cb_i2s_MspInit(I2S_HandleTypeDef *hi2s)</div><div class="ttdoc">I2S MSP Initialization This function configures the hardware resources used in this example.</div><div class="ttdef"><b>Definition:</b> stm32-i2s.h:381</div></div>
+<div class="ttc" id="aclassstm32__i2s_1_1_stm32_i2s_class_html_a7ea0054cb5a28db73d516bd9f12efe5a"><div class="ttname"><a href="classstm32__i2s_1_1_stm32_i2s_class.html#a7ea0054cb5a28db73d516bd9f12efe5a">stm32_i2s::Stm32I2sClass::MX_GPIO_Init</a></div><div class="ttdeci">virtual void MX_GPIO_Init(void)</div><div class="ttdoc">GPIO Initialization Function for I2S pins.</div><div class="ttdef"><b>Definition:</b> stm32-i2s.h:327</div></div>
+<div class="ttc" id="aclassstm32__i2s_1_1_stm32_i2s_class_html_a80d0a01ef377e25ab9e819240d9acb8d"><div class="ttname"><a href="classstm32__i2s_1_1_stm32_i2s_class.html#a80d0a01ef377e25ab9e819240d9acb8d">stm32_i2s::Stm32I2sClass::cb_TxRxComplete</a></div><div class="ttdeci">void cb_TxRxComplete(I2S_HandleTypeDef *hi2s)</div><div class="ttdoc">Callback for double buffer.</div><div class="ttdef"><b>Definition:</b> stm32-i2s.h:260</div></div>
+<div class="ttc" id="aclassstm32__i2s_1_1_stm32_i2s_class_html_a8f61f957a528292152ac3aa494d6c8f7"><div class="ttname"><a href="classstm32__i2s_1_1_stm32_i2s_class.html#a8f61f957a528292152ac3aa494d6c8f7">stm32_i2s::Stm32I2sClass::cb_dmaIrqTx</a></div><div class="ttdeci">void cb_dmaIrqTx()</div><div class="ttdoc">Callback for DMA interrupt request.</div><div class="ttdef"><b>Definition:</b> stm32-i2s.h:292</div></div>
+<div class="ttc" id="aclassstm32__i2s_1_1_stm32_i2s_class_html_a920ca6270f2a640e010f9a73f9805fba"><div class="ttname"><a href="classstm32__i2s_1_1_stm32_i2s_class.html#a920ca6270f2a640e010f9a73f9805fba">stm32_i2s::Stm32I2sClass::MX_DMA_Init</a></div><div class="ttdeci">virtual void MX_DMA_Init(void)</div><div class="ttdef"><b>Definition:</b> stm32-i2s.h:342</div></div>
+<div class="ttc" id="aclassstm32__i2s_1_1_stm32_i2s_class_html_aa17f0e247e1fd708dd6b26dc2a480abe"><div class="ttname"><a href="classstm32__i2s_1_1_stm32_i2s_class.html#aa17f0e247e1fd708dd6b26dc2a480abe">stm32_i2s::Stm32I2sClass::cb_i2s_MspDeInit</a></div><div class="ttdeci">virtual void cb_i2s_MspDeInit(I2S_HandleTypeDef *hi2s)</div><div class="ttdoc">I2S MSP De-Initialization This function freeze the hardware resources used in this example.</div><div class="ttdef"><b>Definition:</b> stm32-i2s.h:445</div></div>
+<div class="ttc" id="aclassstm32__i2s_1_1_stm32_i2s_class_html_aa6106141afdf1742633d9db276432344"><div class="ttname"><a href="classstm32__i2s_1_1_stm32_i2s_class.html#aa6106141afdf1742633d9db276432344">stm32_i2s::Stm32I2sClass::startI2STransmit</a></div><div class="ttdeci">bool startI2STransmit(I2SSettingsSTM32 settings, void(*readToTransmit)(uint8_t *buffer, uint16_t byteCount), uint16_t buffer_size)</div><div class="ttdoc">Start to transmit I2S data.</div><div class="ttdef"><b>Definition:</b> stm32-i2s.h:156</div></div>
+<div class="ttc" id="aclassstm32__i2s_1_1_stm32_i2s_class_html_aa68f9f957ef9dcf6022da95cc999b45d"><div class="ttname"><a href="classstm32__i2s_1_1_stm32_i2s_class.html#aa68f9f957ef9dcf6022da95cc999b45d">stm32_i2s::Stm32I2sClass::cb_TxRxHalfComplete</a></div><div class="ttdeci">void cb_TxRxHalfComplete(I2S_HandleTypeDef *hi2s)</div><div class="ttdoc">Callback for double buffer.</div><div class="ttdef"><b>Definition:</b> stm32-i2s.h:276</div></div>
+<div class="ttc" id="aclassstm32__i2s_1_1_stm32_i2s_class_html_aa6c222c37988e17de110bcee25a16040"><div class="ttname"><a href="classstm32__i2s_1_1_stm32_i2s_class.html#aa6c222c37988e17de110bcee25a16040">stm32_i2s::Stm32I2sClass::cb_HAL_I2S_MspInit</a></div><div class="ttdeci">void cb_HAL_I2S_MspInit(I2S_HandleTypeDef *hi2s)</div><div class="ttdoc">Callback I2S intitialization.</div><div class="ttdef"><b>Definition:</b> stm32-i2s.h:295</div></div>
+<div class="ttc" id="aclassstm32__i2s_1_1_stm32_i2s_class_html_abc045de6c4c440593e3bb6ba0cf9921c"><div class="ttname"><a href="classstm32__i2s_1_1_stm32_i2s_class.html#abc045de6c4c440593e3bb6ba0cf9921c">stm32_i2s::Stm32I2sClass::i2s_begin</a></div><div class="ttdeci">bool i2s_begin()</div><div class="ttdoc">Starts the i2s processing.</div><div class="ttdef"><b>Definition:</b> stm32-i2s.h:301</div></div>
+<div class="ttc" id="aclassstm32__i2s_1_1_stm32_i2s_class_html_aca5c1d70fd7e9a3f3aa0388749b6cb44"><div class="ttname"><a href="classstm32__i2s_1_1_stm32_i2s_class.html#aca5c1d70fd7e9a3f3aa0388749b6cb44">stm32_i2s::Stm32I2sClass::setupDMA</a></div><div class="ttdeci">void setupDMA(DMA_HandleTypeDef &amp;dma, DMA_Stream_TypeDef *instance, uint32_t channel, uint32_t direction)</div><div class="ttdoc">DMA Initialization This function configures and initializes the DMA.</div><div class="ttdef"><b>Definition:</b> stm32-i2s.h:419</div></div>
+<div class="ttc" id="aclassstm32__i2s_1_1_stm32_i2s_class_html_ad8d19f61eff465692845d405fd321271"><div class="ttname"><a href="classstm32__i2s_1_1_stm32_i2s_class.html#ad8d19f61eff465692845d405fd321271">stm32_i2s::Stm32I2sClass::cb_dmaIrqRx</a></div><div class="ttdeci">void cb_dmaIrqRx()</div><div class="ttdoc">Callback for DMA interrupt request.</div><div class="ttdef"><b>Definition:</b> stm32-i2s.h:289</div></div>
+<div class="ttc" id="aclassstm32__i2s_1_1_stm32_i2s_class_html_afa0743706fbe309e2fca3a8aea2b1a0c"><div class="ttname"><a href="classstm32__i2s_1_1_stm32_i2s_class.html#afa0743706fbe309e2fca3a8aea2b1a0c">stm32_i2s::Stm32I2sClass::startI2SReceive</a></div><div class="ttdeci">bool startI2SReceive(I2SSettingsSTM32 settings, void(*writeFromReceive)(uint8_t *buffer, uint16_t byteCount), uint16_t buffer_size)</div><div class="ttdoc">Start to receive I2S data.</div><div class="ttdef"><b>Definition:</b> stm32-i2s.h:180</div></div>
 <div class="ttc" id="astm32-i2s_8h_html_a44498895f4b65c359a7e5846c7c16053"><div class="ttname"><a href="stm32-i2s_8h.html#a44498895f4b65c359a7e5846c7c16053">stm32_i2s::I2SPinFunction</a></div><div class="ttdeci">I2SPinFunction</div><div class="ttdoc">i2s pin function used as documentation</div><div class="ttdef"><b>Definition:</b> stm32-i2s.h:44</div></div>
-<div class="ttc" id="astructstm32__i2s_1_1_hardware_config_html"><div class="ttname"><a href="structstm32__i2s_1_1_hardware_config.html">stm32_i2s::HardwareConfig</a></div><div class="ttdoc">Processor specific settings that are needed to set up I2S.</div><div class="ttdef"><b>Definition:</b> stm32-i2s.h:65</div></div>
-<div class="ttc" id="astructstm32__i2s_1_1_i2_s_pin_html"><div class="ttname"><a href="structstm32__i2s_1_1_i2_s_pin.html">stm32_i2s::I2SPin</a></div><div class="ttdoc">Define individual Pin. This is used to set up processor specific arrays with all I2S pins.</div><div class="ttdef"><b>Definition:</b> stm32-i2s.h:53</div></div>
-<div class="ttc" id="astructstm32__i2s_1_1_i2_s_settings_s_t_m32_html"><div class="ttname"><a href="structstm32__i2s_1_1_i2_s_settings_s_t_m32.html">stm32_i2s::I2SSettingsSTM32</a></div><div class="ttdoc">Currently supported parameters.</div><div class="ttdef"><b>Definition:</b> stm32-i2s.h:93</div></div>
+<div class="ttc" id="astructstm32__i2s_1_1_hardware_config_html"><div class="ttname"><a href="structstm32__i2s_1_1_hardware_config.html">stm32_i2s::HardwareConfig</a></div><div class="ttdoc">Processor specific settings that are needed to set up I2S.</div><div class="ttdef"><b>Definition:</b> stm32-i2s.h:103</div></div>
+<div class="ttc" id="astructstm32__i2s_1_1_i2_s_pin_html"><div class="ttname"><a href="structstm32__i2s_1_1_i2_s_pin.html">stm32_i2s::I2SPin</a></div><div class="ttdoc">Define individual Pin. This is used to set up processor specific arrays with all I2S pins and to setu...</div><div class="ttdef"><b>Definition:</b> stm32-i2s.h:53</div></div>
+<div class="ttc" id="astructstm32__i2s_1_1_i2_s_pin_html_a74b9ea065dd62de38da823d2959c4a3a"><div class="ttname"><a href="structstm32__i2s_1_1_i2_s_pin.html#a74b9ea065dd62de38da823d2959c4a3a">stm32_i2s::I2SPin::end</a></div><div class="ttdeci">void end()</div><div class="ttdoc">Undo the current pin function.</div><div class="ttdef"><b>Definition:</b> stm32-i2s.h:70</div></div>
+<div class="ttc" id="astructstm32__i2s_1_1_i2_s_settings_s_t_m32_html"><div class="ttname"><a href="structstm32__i2s_1_1_i2_s_settings_s_t_m32.html">stm32_i2s::I2SSettingsSTM32</a></div><div class="ttdoc">Currently supported parameters.</div><div class="ttdef"><b>Definition:</b> stm32-i2s.h:131</div></div>
 </div><!-- fragment --></div><!-- contents -->
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>

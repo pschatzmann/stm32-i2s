@@ -74,7 +74,7 @@ $(function() {
 </div><!--header-->
 <div class="contents">
 
-<p>Define individual Pin. This is used to set up processor specific arrays with all I2S pins.  
+<p>Define individual Pin. This is used to set up processor specific arrays with all I2S pins and to setup and end the pin definition.  
  <a href="structstm32__i2s_1_1_i2_s_pin.html#details">More...</a></p>
 
 <p><code>#include &lt;<a class="el" href="stm32-i2s_8h_source.html">stm32-i2s.h</a>&gt;</code></p>
@@ -84,6 +84,13 @@ Public Member Functions</h2></td></tr>
 <tr class="memitem:a1955e7e004b561df0b80f827c7c62068"><td class="memItemLeft" align="right" valign="top"><a id="a1955e7e004b561df0b80f827c7c62068"></a>
 &#160;</td><td class="memItemRight" valign="bottom"><b>I2SPin</b> (<a class="el" href="stm32-i2s_8h.html#a44498895f4b65c359a7e5846c7c16053">I2SPinFunction</a> f, PinName n, int alt)</td></tr>
 <tr class="separator:a1955e7e004b561df0b80f827c7c62068"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a8bf62476850fde0c66680c9e4f55cf68"><td class="memItemLeft" align="right" valign="top"><a id="a8bf62476850fde0c66680c9e4f55cf68"></a>
+void&#160;</td><td class="memItemRight" valign="bottom"><b>begin</b> ()</td></tr>
+<tr class="separator:a8bf62476850fde0c66680c9e4f55cf68"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a74b9ea065dd62de38da823d2959c4a3a"><td class="memItemLeft" align="right" valign="top"><a id="a74b9ea065dd62de38da823d2959c4a3a"></a>
+void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structstm32__i2s_1_1_i2_s_pin.html#a74b9ea065dd62de38da823d2959c4a3a">end</a> ()</td></tr>
+<tr class="memdesc:a74b9ea065dd62de38da823d2959c4a3a"><td class="mdescLeft">&#160;</td><td class="mdescRight">Undo the current pin function. <br /></td></tr>
+<tr class="separator:a74b9ea065dd62de38da823d2959c4a3a"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-attribs"></a>
 Public Attributes</h2></td></tr>
@@ -98,7 +105,7 @@ int&#160;</td><td class="memItemRight" valign="bottom"><b>altFunction</b></td></
 <tr class="separator:a22f85d2a2b7fcdd61d200f9602467882"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
-<div class="textblock"><p>Define individual Pin. This is used to set up processor specific arrays with all I2S pins. </p>
+<div class="textblock"><p>Define individual Pin. This is used to set up processor specific arrays with all I2S pins and to setup and end the pin definition. </p>
 <dl class="section author"><dt>Author</dt><dd>Phil Schatzmann </dd></dl>
 <dl class="section copyright"><dt>Copyright</dt><dd>GPLv3 </dd></dl>
 </div><hr/>The documentation for this struct was generated from the following file:<ul>
