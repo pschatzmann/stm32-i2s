@@ -45,7 +45,7 @@ enum I2SPinFunction { mclk, bck, ws, data_out, data_in };
 
 /**
  * @brief Define individual Pin. This is used to set up processor specific
- * arrays with all I2S pins.
+ * arrays with all I2S pins and to setup and end the pin definition.
  * @author Phil Schatzmann
  * @copyright GPLv3
  */
@@ -59,6 +59,40 @@ struct I2SPin {
   I2SPinFunction function;
   PinName pin;
   int altFunction;
+
+  void begin(){
+    end();
+    // define the pin function
+    pin_function(pin, STM_PIN_DATA(STM_MODE_AF_PP, GPIO_NOPULL, altFunction));
+  }
+
+  /// Undo the current pin function
+  void end(){
+    PinName p = pin;
+    if (p != NC) {
+      // If the pin that support PWM or DAC output, we need to turn it off
+  #if (defined(HAL_DAC_MODULE_ENABLED) && !defined(HAL_DAC_MODULE_ONLY)) ||\
+      (defined(HAL_TIM_MODULE_ENABLED) && !defined(HAL_TIM_MODULE_ONLY))
+      if (is_pin_configured(p, g_anOutputPinConfigured)) {
+  #if defined(HAL_DAC_MODULE_ENABLED) && !defined(HAL_DAC_MODULE_ONLY)
+        if (pin_in_pinmap(p, PinMap_DAC)) {
+          dac_stop(p);
+        } else
+  #endif //HAL_DAC_MODULE_ENABLED && !HAL_DAC_MODULE_ONLY
+  #if defined(HAL_TIM_MODULE_ENABLED) && !defined(HAL_TIM_MODULE_ONLY)
+          if (pin_in_pinmap(p, PinMap_TIM)) {
+            pwm_stop(p);
+          }
+  #endif //HAL_TIM_MODULE_ENABLED && !HAL_TIM_MODULE_ONLY
+        {
+          reset_pin_configured(p, g_anOutputPinConfigured);
+        }
+      }
+  #endif
+    }
+  }
+
+
 };
 
 /**
@@ -296,39 +330,11 @@ protected:
 
     // Define pins
     for (I2SPin &pin : hw.pins) {
-      //pinModeAltFunction(pin.pin, pin.altFunction);
-        PinName p = pin.pin;
-        resetPin(p);
-        // define I2S function (= alternative Function)
-        pin_function(p, STM_PIN_DATA(STM_MODE_AF_PP, GPIO_NOPULL, pin.altFunction));
+        pin.begin();
     }
   }
 
 
-  /// Undo the current pin function
-  void resetPin(PinName p){
-    if (p != NC) {
-      // If the pin that support PWM or DAC output, we need to turn it off
-  #if (defined(HAL_DAC_MODULE_ENABLED) && !defined(HAL_DAC_MODULE_ONLY)) ||\
-      (defined(HAL_TIM_MODULE_ENABLED) && !defined(HAL_TIM_MODULE_ONLY))
-      if (is_pin_configured(p, g_anOutputPinConfigured)) {
-  #if defined(HAL_DAC_MODULE_ENABLED) && !defined(HAL_DAC_MODULE_ONLY)
-        if (pin_in_pinmap(p, PinMap_DAC)) {
-          dac_stop(p);
-        } else
-  #endif //HAL_DAC_MODULE_ENABLED && !HAL_DAC_MODULE_ONLY
-  #if defined(HAL_TIM_MODULE_ENABLED) && !defined(HAL_TIM_MODULE_ONLY)
-          if (pin_in_pinmap(p, PinMap_TIM)) {
-            pwm_stop(p);
-          }
-  #endif //HAL_TIM_MODULE_ENABLED && !HAL_TIM_MODULE_ONLY
-        {
-          reset_pin_configured(p, g_anOutputPinConfigured);
-        }
-      }
-  #endif
-    }
-  }
 
   /**
    * Enable DMA controller clock

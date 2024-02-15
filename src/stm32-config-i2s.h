@@ -26,8 +26,8 @@
       {mclk, PC_7, GPIO_AF6_SPI3},\
       {bck, PC_10, GPIO_AF6_SPI3},\
       {ws, PA_4, GPIO_AF6_SPI3},\
-      {data_out, PC_3, GPIO_AF6_SPI3},\
-      {data_in, PC_12, GPIO_AF6_SPI3}\
+      {data_out, PC_12, GPIO_AF6_SPI3},\
+      {data_in, PC_3, GPIO_AF6_SPI3}\
     };
   #define PLLN 200
   #define PLLM   5
