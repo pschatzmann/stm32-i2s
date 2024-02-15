@@ -51,7 +51,11 @@ enum I2SPinFunction { mclk, bck, ws, data_out, data_in };
  */
 
 struct I2SPin {
-  I2SPin(I2SPinFunction f, PinName n, int alt) {}
+  I2SPin(I2SPinFunction f, PinName n, int alt) {
+    function = f;
+    pin = n;
+    altFunction = alt;
+  }
   I2SPinFunction function;
   PinName pin;
   int altFunction;
