@@ -1,4 +1,4 @@
 var searchData=
 [
-  ['memmanage_5fhandler_88',['MemManage_Handler',['../stm32f4xx__it_8c.html#a3150f74512510287a942624aa9b44cc5',1,'MemManage_Handler(void):&#160;stm32f4xx_it.c'],['../stm32f4xx__it_8h.html#a3150f74512510287a942624aa9b44cc5',1,'MemManage_Handler(void):&#160;stm32f4xx_it.c']]]
+  ['setupdma_53',['setupDMA',['../classstm32__i2s_1_1_stm32_i2s_class.html#aca5c1d70fd7e9a3f3aa0388749b6cb44',1,'stm32_i2s::Stm32I2sClass']]]
 ];

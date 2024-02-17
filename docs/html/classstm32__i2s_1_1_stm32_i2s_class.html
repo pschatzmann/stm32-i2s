@@ -83,24 +83,37 @@ $(function() {
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-methods"></a>
 Public Member Functions</h2></td></tr>
-<tr class="memitem:aa6106141afdf1742633d9db276432344"><td class="memItemLeft" align="right" valign="top"><a id="aa6106141afdf1742633d9db276432344"></a>
-bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classstm32__i2s_1_1_stm32_i2s_class.html#aa6106141afdf1742633d9db276432344">startI2STransmit</a> (<a class="el" href="structstm32__i2s_1_1_i2_s_settings_s_t_m32.html">I2SSettingsSTM32</a> settings, void(*readToTransmit)(uint8_t *buffer, uint16_t byteCount), uint16_t buffer_size)</td></tr>
-<tr class="memdesc:aa6106141afdf1742633d9db276432344"><td class="mdescLeft">&#160;</td><td class="mdescRight">Start to transmit I2S data. <br /></td></tr>
-<tr class="separator:aa6106141afdf1742633d9db276432344"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:afa0743706fbe309e2fca3a8aea2b1a0c"><td class="memItemLeft" align="right" valign="top"><a id="afa0743706fbe309e2fca3a8aea2b1a0c"></a>
-bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classstm32__i2s_1_1_stm32_i2s_class.html#afa0743706fbe309e2fca3a8aea2b1a0c">startI2SReceive</a> (<a class="el" href="structstm32__i2s_1_1_i2_s_settings_s_t_m32.html">I2SSettingsSTM32</a> settings, void(*writeFromReceive)(uint8_t *buffer, uint16_t byteCount), uint16_t buffer_size)</td></tr>
-<tr class="memdesc:afa0743706fbe309e2fca3a8aea2b1a0c"><td class="mdescLeft">&#160;</td><td class="mdescRight">Start to receive I2S data. <br /></td></tr>
-<tr class="separator:afa0743706fbe309e2fca3a8aea2b1a0c"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a1fb497436e1c2f73b7db59ed65c29d44"><td class="memItemLeft" align="right" valign="top"><a id="a1fb497436e1c2f73b7db59ed65c29d44"></a>
-bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classstm32__i2s_1_1_stm32_i2s_class.html#a1fb497436e1c2f73b7db59ed65c29d44">startI2STransmitReceive</a> (<a class="el" href="structstm32__i2s_1_1_i2_s_settings_s_t_m32.html">I2SSettingsSTM32</a> settings, void(*readToTransmit)(uint8_t *buffer, uint16_t byteCount), void(*writeFromReceive)(uint8_t *buffer, uint16_t byteCount), uint16_t buffer_size)</td></tr>
-<tr class="memdesc:a1fb497436e1c2f73b7db59ed65c29d44"><td class="mdescLeft">&#160;</td><td class="mdescRight">Start to receive and transmit I2S data. <br /></td></tr>
-<tr class="separator:a1fb497436e1c2f73b7db59ed65c29d44"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a4ba1d2dc34129308dd46df1147593c59"><td class="memItemLeft" align="right" valign="top"><a id="a4ba1d2dc34129308dd46df1147593c59"></a>
-void&#160;</td><td class="memItemRight" valign="bottom"><b>stopI2S</b> ()</td></tr>
-<tr class="separator:a4ba1d2dc34129308dd46df1147593c59"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ab2cdf54a05448b66c5aded8b8a632230"><td class="memItemLeft" align="right" valign="top"><a id="ab2cdf54a05448b66c5aded8b8a632230"></a>
+bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classstm32__i2s_1_1_stm32_i2s_class.html#ab2cdf54a05448b66c5aded8b8a632230">begin</a> (<a class="el" href="structstm32__i2s_1_1_i2_s_settings_s_t_m32.html">I2SSettingsSTM32</a> settings, bool transmit, bool receive)</td></tr>
+<tr class="memdesc:ab2cdf54a05448b66c5aded8b8a632230"><td class="mdescLeft">&#160;</td><td class="mdescRight">start I2S w/o DMA: use write and readBytes <br /></td></tr>
+<tr class="separator:ab2cdf54a05448b66c5aded8b8a632230"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a184c62a4b0e0b2bfed4c6760aca5b127"><td class="memItemLeft" align="right" valign="top"><a id="a184c62a4b0e0b2bfed4c6760aca5b127"></a>
+bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classstm32__i2s_1_1_stm32_i2s_class.html#a184c62a4b0e0b2bfed4c6760aca5b127">beginWriteDMA</a> (<a class="el" href="structstm32__i2s_1_1_i2_s_settings_s_t_m32.html">I2SSettingsSTM32</a> settings, void(*readToTransmit)(uint8_t *buffer, uint16_t byteCount, void *ref)=nullptr)</td></tr>
+<tr class="memdesc:a184c62a4b0e0b2bfed4c6760aca5b127"><td class="mdescLeft">&#160;</td><td class="mdescRight">Start to transmit I2S data. <br /></td></tr>
+<tr class="separator:a184c62a4b0e0b2bfed4c6760aca5b127"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a0bd110eb19354cfd1317e68b4c74732a"><td class="memItemLeft" align="right" valign="top"><a id="a0bd110eb19354cfd1317e68b4c74732a"></a>
+bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classstm32__i2s_1_1_stm32_i2s_class.html#a0bd110eb19354cfd1317e68b4c74732a">beginReadDMA</a> (<a class="el" href="structstm32__i2s_1_1_i2_s_settings_s_t_m32.html">I2SSettingsSTM32</a> settings, void(*writeFromReceive)(uint8_t *buffer, uint16_t byteCount, void *ref)=nullptr)</td></tr>
+<tr class="memdesc:a0bd110eb19354cfd1317e68b4c74732a"><td class="mdescLeft">&#160;</td><td class="mdescRight">Start to receive I2S data. <br /></td></tr>
+<tr class="separator:a0bd110eb19354cfd1317e68b4c74732a"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ab5ad88e38c7a426e4c5ab99ee5be6262"><td class="memItemLeft" align="right" valign="top"><a id="ab5ad88e38c7a426e4c5ab99ee5be6262"></a>
+bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classstm32__i2s_1_1_stm32_i2s_class.html#ab5ad88e38c7a426e4c5ab99ee5be6262">beginReadWriteDMA</a> (<a class="el" href="structstm32__i2s_1_1_i2_s_settings_s_t_m32.html">I2SSettingsSTM32</a> settings, void(*readToTransmit)(uint8_t *buffer, uint16_t byteCount, void *)=nullptr, void(*writeFromReceive)(uint8_t *buffer, uint16_t byteCount, void *)=nullptr)</td></tr>
+<tr class="memdesc:ab5ad88e38c7a426e4c5ab99ee5be6262"><td class="mdescLeft">&#160;</td><td class="mdescRight">Start to receive and transmit I2S data. <br /></td></tr>
+<tr class="separator:ab5ad88e38c7a426e4c5ab99ee5be6262"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a505b7b363dafee43e295ac23f05d8d19"><td class="memItemLeft" align="right" valign="top"><a id="a505b7b363dafee43e295ac23f05d8d19"></a>
+void&#160;</td><td class="memItemRight" valign="bottom"><b>end</b> ()</td></tr>
+<tr class="separator:a505b7b363dafee43e295ac23f05d8d19"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a1d8a05bc02fc2d184b9dc22376dc9cc7"><td class="memItemLeft" align="right" valign="top">size_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classstm32__i2s_1_1_stm32_i2s_class.html#a1d8a05bc02fc2d184b9dc22376dc9cc7">write</a> (const uint8_t *data, size_t bytes)</td></tr>
+<tr class="memdesc:a1d8a05bc02fc2d184b9dc22376dc9cc7"><td class="mdescLeft">&#160;</td><td class="mdescRight">Write method which needs to be called when ansync mode is disabled.  <a href="classstm32__i2s_1_1_stm32_i2s_class.html#a1d8a05bc02fc2d184b9dc22376dc9cc7">More...</a><br /></td></tr>
+<tr class="separator:a1d8a05bc02fc2d184b9dc22376dc9cc7"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a95c8ee5b3e293c9d4f553be2897a6cbb"><td class="memItemLeft" align="right" valign="top">size_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classstm32__i2s_1_1_stm32_i2s_class.html#a95c8ee5b3e293c9d4f553be2897a6cbb">readBytes</a> (uint8_t *data, size_t bytes)</td></tr>
+<tr class="memdesc:a95c8ee5b3e293c9d4f553be2897a6cbb"><td class="mdescLeft">&#160;</td><td class="mdescRight">Read method which needs to be called when ansync mode is disabled.  <a href="classstm32__i2s_1_1_stm32_i2s_class.html#a95c8ee5b3e293c9d4f553be2897a6cbb">More...</a><br /></td></tr>
+<tr class="separator:a95c8ee5b3e293c9d4f553be2897a6cbb"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pro-methods"></a>
 Protected Member Functions</h2></td></tr>
+<tr class="memitem:afa8fcfb78fc1b156edfc5422bef817c8"><td class="memItemLeft" align="right" valign="top"><a id="afa8fcfb78fc1b156edfc5422bef817c8"></a>
+int&#160;</td><td class="memItemRight" valign="bottom"><b>getBytes</b> ()</td></tr>
+<tr class="separator:afa8fcfb78fc1b156edfc5422bef817c8"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a80d0a01ef377e25ab9e819240d9acb8d"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classstm32__i2s_1_1_stm32_i2s_class.html#a80d0a01ef377e25ab9e819240d9acb8d">cb_TxRxComplete</a> (I2S_HandleTypeDef *hi2s)</td></tr>
 <tr class="memdesc:a80d0a01ef377e25ab9e819240d9acb8d"><td class="mdescLeft">&#160;</td><td class="mdescRight">Callback for double buffer.  <a href="classstm32__i2s_1_1_stm32_i2s_class.html#a80d0a01ef377e25ab9e819240d9acb8d">More...</a><br /></td></tr>
 <tr class="separator:a80d0a01ef377e25ab9e819240d9acb8d"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -160,12 +173,12 @@ byte *&#160;</td><td class="memItemRight" valign="bottom"><b>dma_buffer_tx</b> =
 <tr class="memitem:aaa8d491d23a2be4a5bc9813636a351b0"><td class="memItemLeft" align="right" valign="top"><a id="aaa8d491d23a2be4a5bc9813636a351b0"></a>
 byte *&#160;</td><td class="memItemRight" valign="bottom"><b>dma_buffer_rx</b> = nullptr</td></tr>
 <tr class="separator:aaa8d491d23a2be4a5bc9813636a351b0"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a04a17fb0623b21916498e3976a8f4a5b"><td class="memItemLeft" align="right" valign="top"><a id="a04a17fb0623b21916498e3976a8f4a5b"></a>
-void(*&#160;</td><td class="memItemRight" valign="bottom"><b>readToTransmitCB</b> )(uint8_t *buffer, uint16_t byteCount)</td></tr>
-<tr class="separator:a04a17fb0623b21916498e3976a8f4a5b"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ad9c549b43b81a236ea5642f478a0cdd8"><td class="memItemLeft" align="right" valign="top"><a id="ad9c549b43b81a236ea5642f478a0cdd8"></a>
-void(*&#160;</td><td class="memItemRight" valign="bottom"><b>writeFromReceiveCB</b> )(uint8_t *buffer, uint16_t byteCount)</td></tr>
-<tr class="separator:ad9c549b43b81a236ea5642f478a0cdd8"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a089036b8c1d7d1513f55d7ae1869e95a"><td class="memItemLeft" align="right" valign="top"><a id="a089036b8c1d7d1513f55d7ae1869e95a"></a>
+void(*&#160;</td><td class="memItemRight" valign="bottom"><b>readToTransmitCB</b> )(uint8_t *buffer, uint16_t byteCount, void *ref)</td></tr>
+<tr class="separator:a089036b8c1d7d1513f55d7ae1869e95a"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ae5242b9a069015aec071bc8a74a84e3e"><td class="memItemLeft" align="right" valign="top"><a id="ae5242b9a069015aec071bc8a74a84e3e"></a>
+void(*&#160;</td><td class="memItemRight" valign="bottom"><b>writeFromReceiveCB</b> )(uint8_t *buffer, uint16_t byteCount, void *ref)</td></tr>
+<tr class="separator:ae5242b9a069015aec071bc8a74a84e3e"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a26778096e73e3fb7aa97f87c5f1a7c57"><td class="memItemLeft" align="right" valign="top"><a id="a26778096e73e3fb7aa97f87c5f1a7c57"></a>
 DMA_HandleTypeDef&#160;</td><td class="memItemRight" valign="bottom"><b>hdma_i2s3_ext_rx</b></td></tr>
 <tr class="separator:a26778096e73e3fb7aa97f87c5f1a7c57"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -175,6 +188,9 @@ DMA_HandleTypeDef&#160;</td><td class="memItemRight" valign="bottom"><b>hdma_i2s
 <tr class="memitem:a419b66f0ffd7b4934534a8cba36e6866"><td class="memItemLeft" align="right" valign="top"><a id="a419b66f0ffd7b4934534a8cba36e6866"></a>
 <a class="el" href="structstm32__i2s_1_1_hardware_config.html">HardwareConfig</a>&#160;</td><td class="memItemRight" valign="bottom"><b>hw</b></td></tr>
 <tr class="separator:a419b66f0ffd7b4934534a8cba36e6866"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aa62c0b61fb28776f3667a7824e6d5b7c"><td class="memItemLeft" align="right" valign="top"><a id="aa62c0b61fb28776f3667a7824e6d5b7c"></a>
+bool&#160;</td><td class="memItemRight" valign="bottom"><b>use_dma</b> = false</td></tr>
+<tr class="separator:aa62c0b61fb28776f3667a7824e6d5b7c"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="friends"></a>
 Friends</h2></td></tr>
@@ -316,8 +332,7 @@ void&#160;</td><td class="memItemRight" valign="bottom"><b>HAL_I2S_RxHalfCpltCal
 <p>Callback for double buffer. </p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
-    <tr><td class="paramname">hi2s</td><td><br  />
- </td></tr>
+    <tr><td class="paramname">hi2s</td><td></td></tr>
   </table>
   </dd>
 </dl>
@@ -351,8 +366,7 @@ void&#160;</td><td class="memItemRight" valign="bottom"><b>HAL_I2S_RxHalfCpltCal
 <p>Callback for double buffer. </p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
-    <tr><td class="paramname">hi2s</td><td><br  />
- </td></tr>
+    <tr><td class="paramname">hi2s</td><td></td></tr>
   </table>
   </dd>
 </dl>
@@ -463,6 +477,98 @@ void&#160;</td><td class="memItemRight" valign="bottom"><b>HAL_I2S_RxHalfCpltCal
   </table>
   </dd>
 </dl>
+
+</div>
+</div>
+<a id="a95c8ee5b3e293c9d4f553be2897a6cbb"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a95c8ee5b3e293c9d4f553be2897a6cbb">&#9670;&nbsp;</a></span>readBytes()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">size_t stm32_i2s::Stm32I2sClass::readBytes </td>
+          <td>(</td>
+          <td class="paramtype">uint8_t *&#160;</td>
+          <td class="paramname"><em>data</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">size_t&#160;</td>
+          <td class="paramname"><em>bytes</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Read method which needs to be called when ansync mode is disabled. </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">data</td><td></td></tr>
+    <tr><td class="paramname">bytes</td><td></td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd></dd></dl>
+
+</div>
+</div>
+<a id="a1d8a05bc02fc2d184b9dc22376dc9cc7"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a1d8a05bc02fc2d184b9dc22376dc9cc7">&#9670;&nbsp;</a></span>write()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">size_t stm32_i2s::Stm32I2sClass::write </td>
+          <td>(</td>
+          <td class="paramtype">const uint8_t *&#160;</td>
+          <td class="paramname"><em>data</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">size_t&#160;</td>
+          <td class="paramname"><em>bytes</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Write method which needs to be called when ansync mode is disabled. </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">data</td><td></td></tr>
+    <tr><td class="paramname">bytes</td><td></td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd></dd></dl>
 
 </div>
 </div>

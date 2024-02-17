@@ -1,4 +1,4 @@
 var searchData=
 [
-  ['i2s_5fbegin_41',['i2s_begin',['../classstm32__i2s_1_1_stm32_i2s_class.html#abc045de6c4c440593e3bb6ba0cf9921c',1,'stm32_i2s::Stm32I2sClass']]]
+  ['end_47',['end',['../structstm32__i2s_1_1_i2_s_pin.html#a74b9ea065dd62de38da823d2959c4a3a',1,'stm32_i2s::I2SPin']]]
 ];

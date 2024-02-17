@@ -1,4 +1,4 @@
 var searchData=
 [
-  ['i2s_5fbegin_87',['i2s_begin',['../main_8c.html#aecf051d1328a5ea8ac5b8e64427a1cfd',1,'main.c']]]
+  ['readbytes_52',['readBytes',['../classstm32__i2s_1_1_stm32_i2s_class.html#a95c8ee5b3e293c9d4f553be2897a6cbb',1,'stm32_i2s::Stm32I2sClass']]]
 ];
