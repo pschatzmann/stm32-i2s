@@ -14,8 +14,9 @@
     {data_out, PB_4, GPIO_AF7_I2S3ext},\
     {data_in, PB_5, GPIO_AF6_SPI3},\
   }
-  #define PLLN 192
+// 8 MHz / M * N / R  => I2S Freq
   #define PLLM  16
+  #define PLLN 192
   #define PLLR   2
 #endif
 
@@ -29,8 +30,9 @@
       {data_out, PC_12, GPIO_AF6_SPI3},\
       {data_in, PC_3, GPIO_AF6_SPI3}\
     };
-  #define PLLN 200
-  #define PLLM   5
-  #define PLLR   2
+// 8 MHz / M * N / R  => I2S Freq
+  #define PLLM   16
+  #define PLLN   100
+  #define PLLR    2
 #endif
 

@@ -3,23 +3,23 @@
 
 namespace stm32_i2s {
 
-Stm32I2sClass STM32_I2S;
+Stm32I2sClass I2S;
 bool stm32_i2s_is_error = false;
 
 extern "C" void HAL_I2S_TxCpltCallback(I2S_HandleTypeDef *hi2s) {
-  STM32_I2S.cb_TxRxComplete(hi2s);
+  I2S.cb_TxRxComplete(hi2s);
 }
 
 extern "C" void HAL_I2S_TxHalfCpltCallback(I2S_HandleTypeDef *hi2s) {
-  STM32_I2S.cb_TxRxHalfComplete(hi2s);
+  I2S.cb_TxRxHalfComplete(hi2s);
 }
 
 extern "C" void HAL_I2S_RxCpltCallback(I2S_HandleTypeDef *hi2s) {
-  STM32_I2S.cb_TxRxComplete(hi2s);
+  I2S.cb_TxRxComplete(hi2s);
 }
 
 extern "C" void HAL_I2S_RxHalfCpltCallback(I2S_HandleTypeDef *hi2s) {
-  STM32_I2S.cb_TxRxHalfComplete(hi2s);
+  I2S.cb_TxRxHalfComplete(hi2s);
 }
 
 extern "C" void HAL_I2S_ErrorCallback(I2S_HandleTypeDef *hi2s) { Report_Error(); }
@@ -27,12 +27,12 @@ extern "C" void HAL_I2S_ErrorCallback(I2S_HandleTypeDef *hi2s) { Report_Error();
 /**
  * @brief This function handles DMA1 stream0 global interrupt.
  */
-extern "C" void DMA1_Stream0_IRQHandler(void) { STM32_I2S.cb_dmaIrqRx(); }
+extern "C" void DMA1_Stream0_IRQHandler(void) { I2S.cb_dmaIrqRx(); }
 
 /**
  * @brief This function handles DMA1 stream5 global interrupt.
  */
-extern "C" void DMA1_Stream5_IRQHandler(void) { STM32_I2S.cb_dmaIrqTx(); }
+extern "C" void DMA1_Stream5_IRQHandler(void) { I2S.cb_dmaIrqTx(); }
 
 /**
  * @brief I2S MSP Initialization
@@ -40,7 +40,7 @@ extern "C" void DMA1_Stream5_IRQHandler(void) { STM32_I2S.cb_dmaIrqTx(); }
  * @param hi2s: I2S handle pointer
  * @retval None
  */
-extern "C" void HAL_I2S_MspInit(I2S_HandleTypeDef *hi2s) { STM32_I2S.cb_HAL_I2S_MspInit(hi2s); }
+extern "C" void HAL_I2S_MspInit(I2S_HandleTypeDef *hi2s) { I2S.cb_HAL_I2S_MspInit(hi2s); }
 
 /**
  * @brief I2S MSP De-Initialization
@@ -48,7 +48,7 @@ extern "C" void HAL_I2S_MspInit(I2S_HandleTypeDef *hi2s) { STM32_I2S.cb_HAL_I2S_
  * @param hi2s: I2S handle pointer
  * @retval None
  */
-extern "C" void HAL_I2S_MspDeInit(I2S_HandleTypeDef *hi2s) { STM32_I2S.cb_HAL_I2S_MspDeInit(hi2s); }
+extern "C" void HAL_I2S_MspDeInit(I2S_HandleTypeDef *hi2s) { I2S.cb_HAL_I2S_MspDeInit(hi2s); }
 /**
  * @brief  This function is executed in case of error occurrence.
  * @retval None
