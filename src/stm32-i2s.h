@@ -20,7 +20,12 @@
 #include "Arduino.h"
 #include "PinConfigured.h"
 #include "stm32-config-i2s.h"
-#include "stm32f4xx_hal.h"
+#ifdef STM32H7xx
+#  include "stm32h7xx_hal.h"
+#endif
+#ifdef STM32F4xx
+#  include "stm32f4xx_hal.h"
+#endif
 
 extern uint32_t g_anOutputPinConfigured[MAX_NB_PORT];
 
@@ -103,15 +108,23 @@ struct HardwareConfig {
 #ifdef PLLM
   uint32_t pllm = PLLM;
 #endif
+#ifdef PLLN
   uint32_t plln = PLLN;
+#endif
+#ifdef PLLR
   uint32_t pllr = PLLR;
+#endif
 
   DMA_Stream_TypeDef *rx_instance = DMA1_Stream0;
+  #ifdef IS_F4
   uint32_t rx_channel = DMA_CHANNEL_3;
+  #endif
   uint32_t rx_direction = DMA_PERIPH_TO_MEMORY;
 
   DMA_Stream_TypeDef *tx_instance = DMA1_Stream5;
+  #ifdef IS_F4
   uint32_t tx_channel = DMA_CHANNEL_0;
+  #endif
   uint32_t tx_direction = DMA_MEMORY_TO_PERIPH;
 
   I2SPin pins[5] = STM_I2S_PINS;
@@ -131,7 +144,9 @@ struct HardwareConfig {
 struct I2SSettingsSTM32 {
   uint32_t mode = I2S_MODE_MASTER_TX;
   uint32_t standard = I2S_STANDARD_PHILIPS;
+#ifdef IS_F4
   uint32_t fullduplexmode = I2S_FULLDUPLEXMODE_ENABLE;
+#endif
   uint32_t sample_rate = I2S_AUDIOFREQ_44K;
   uint32_t data_format = I2S_DATAFORMAT_16B;
   HardwareConfig hardware_config;
@@ -455,12 +470,21 @@ class Stm32I2sClass {
     hi2s3.Instance = SPI_INSTANCE_FOR_I2S;
     hi2s3.Init.Mode = settings.mode;
     hi2s3.Init.Standard = settings.standard;
-    hi2s3.Init.FullDuplexMode = settings.fullduplexmode;
     hi2s3.Init.AudioFreq = settings.sample_rate;
     hi2s3.Init.DataFormat = settings.data_format;
     hi2s3.Init.MCLKOutput = I2S_MCLKOUTPUT_ENABLE;
     hi2s3.Init.CPOL = I2S_CPOL_LOW;
+#ifdef IS_F4
+    hi2s3.Init.FullDuplexMode = settings.fullduplexmode;
     hi2s3.Init.ClockSource = I2S_CLOCK_PLL;
+#endif
+#ifdef IS_H7
+    hi2s3.Init.FirstBit = I2S_FIRSTBIT_MSB;
+    hi2s3.Init.WSInversion = I2S_WS_INVERSION_DISABLE;
+    hi2s3.Init.Data24BitAlignment = I2S_DATA_24BIT_ALIGNMENT_RIGHT;
+    hi2s3.Init.MasterKeepIOState = I2S_MASTER_KEEP_IO_STATE_DISABLE;
+#endif
+
     if (HAL_I2S_Init(&hi2s3) != HAL_OK) {
       Report_Error();
     }
@@ -477,7 +501,18 @@ class Stm32I2sClass {
     /**
      * Initializes the peripherals clock
      */
+#ifdef IS_F4
     PeriphClkInitStruct.PeriphClockSelection = RCC_PERIPHCLK_I2S;
+#endif
+#ifdef IS_H7
+    if (hi2s->Instance == SPI1) 
+      PeriphClkInitStruct.PeriphClockSelection = RCC_PERIPHCLK_SPI1;
+    if (hi2s->Instance == SPI2) 
+      PeriphClkInitStruct.PeriphClockSelection = RCC_PERIPHCLK_SPI2;
+    if (hi2s->Instance == SPI3) 
+      PeriphClkInitStruct.PeriphClockSelection = RCC_PERIPHCLK_SPI3;
+#endif
+
 #ifdef PLLM
     PeriphClkInitStruct.PLLI2S.PLLI2SM = hw.pllm;  // 16;
 #endif
@@ -492,20 +527,34 @@ class Stm32I2sClass {
     }
 
     /* Peripheral clock enable */
-    __HAL_RCC_SPI3_CLK_ENABLE();
+    if (hi2s->Instance == SPI1) 
+        __HAL_RCC_SPI1_CLK_ENABLE();
+    if (hi2s->Instance == SPI2) 
+        __HAL_RCC_SPI2_CLK_ENABLE();
+    if (hi2s->Instance == SPI3) 
+        __HAL_RCC_SPI3_CLK_ENABLE();
 
     if (use_dma) {
-
       /* I2S3 DMA Init */
       if (dma_buffer_rx != nullptr) {
-        setupDMA(hdma_i2s3_ext_rx, hw.rx_instance, hw.rx_channel,
-                 hw.rx_direction);
+#ifdef IS_F4
+        uint32_t ch = hw.rx_channel;
+#else
+        uint32_t ch = 0; // not used
+#endif
+        setupDMA(hdma_i2s3_ext_rx, hw.rx_instance, ch,
+                 hw.rx_direction, hi2s->Instance);
         __HAL_LINKDMA(hi2s, hdmarx, hdma_i2s3_ext_rx);
       }
 
       if (dma_buffer_tx != nullptr) {
-        setupDMA(hdma_i2s3_ext_tx, hw.tx_instance, hw.tx_channel,
-                 hw.tx_direction);
+#ifdef IS_F4
+        uint32_t ch = hw.tx_channel;
+#else
+        uint32_t ch = 0; // not used
+#endif
+        setupDMA(hdma_i2s3_ext_tx, hw.tx_instance, ch,
+                 hw.tx_direction, hi2s->Instance);
         __HAL_LINKDMA(hi2s, hdmatx, hdma_i2s3_ext_tx);
       }
     }
@@ -516,9 +565,30 @@ class Stm32I2sClass {
    * This function configures and initializes the DMA
    */
   void setupDMA(DMA_HandleTypeDef &dma, DMA_Stream_TypeDef *instance,
-                uint32_t channel, uint32_t direction) {
+                uint32_t channel, uint32_t direction, SPI_TypeDef* port) {
     dma.Instance = instance;
+#ifdef IS_F4
     dma.Init.Channel = channel;
+#endif
+#ifdef IS_H7
+    if (direction == DMA_PERIPH_TO_MEMORY) {
+      if (port == SPI1) 
+        dma.Init.Request = DMA_REQUEST_SPI1_RX;
+      if (port == SPI2) 
+        dma.Init.Request = DMA_REQUEST_SPI2_RX;
+      if (port == SPI3) 
+        dma.Init.Request = DMA_REQUEST_SPI3_RX;
+    }
+    if (direction == DMA_MEMORY_TO_PERIPH) {
+      if (port == SPI1) 
+        dma.Init.Request = DMA_REQUEST_SPI1_TX;
+      if (port == SPI2) 
+        dma.Init.Request = DMA_REQUEST_SPI2_TX;
+      if (port == SPI3) 
+        dma.Init.Request = DMA_REQUEST_SPI3_TX;
+    }
+#endif
+
     dma.Init.Direction = direction;
     dma.Init.PeriphInc = DMA_PINC_DISABLE;
     dma.Init.MemInc = DMA_MINC_ENABLE;
@@ -542,14 +612,17 @@ class Stm32I2sClass {
    * @retval None
    */
   virtual void cb_i2s_MspDeInit(I2S_HandleTypeDef *hi2s) {
-    if (hi2s->Instance == SPI3) {
-      /* Peripheral clock disable */
-      __HAL_RCC_SPI3_CLK_DISABLE();
+    /* Peripheral clock disable */
+    if (hi2s->Instance == SPI1) 
+        __HAL_RCC_SPI1_CLK_DISABLE();
+    if (hi2s->Instance == SPI2) 
+        __HAL_RCC_SPI2_CLK_DISABLE();
+    if (hi2s->Instance == SPI3) 
+        __HAL_RCC_SPI3_CLK_DISABLE();
 
-      /* I2S3 DMA DeInit */
-      HAL_DMA_DeInit(hi2s->hdmarx);
-      HAL_DMA_DeInit(hi2s->hdmatx);
-    }
+    /* I2S3 DMA DeInit */
+    HAL_DMA_DeInit(hi2s->hdmarx);
+    HAL_DMA_DeInit(hi2s->hdmatx);
   }
 };
 
