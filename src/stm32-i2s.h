@@ -210,6 +210,7 @@ class Stm32I2sClass {
         }
       }
 
+#ifndef IS_F7
       if (receive && transmit) {
         if (HAL_I2SEx_TransmitReceive_DMA(&hi2s3, (uint16_t *)dma_buffer_tx,
                                           (uint16_t *)dma_buffer_rx,
@@ -219,6 +220,7 @@ class Stm32I2sClass {
           result = false;
         }
       }
+#endif
     }
 
     return result;
