@@ -346,6 +346,17 @@ class Stm32I2sClass {
     return rc == HAL_OK ? bytes : 0;
   }
 
+void STM32_LOG(const char *fmt, ...) {
+  char log_buffer[200];
+  strcpy(log_buffer, "STM32: ");
+  va_list arg;
+  va_start(arg, fmt);
+  int len = vsnprintf(log_buffer + 7, 200, fmt, arg);
+  va_end(arg);
+  Serial.println(log_buffer);
+  Serial.flush();
+}
+
  protected:
   I2SSettingsSTM32 settings;
   I2S_HandleTypeDef hi2s3;

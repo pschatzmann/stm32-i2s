@@ -63,14 +63,20 @@ void Report_Error() {
  * @brief Write log output to Serial
  */
 void STM32_LOG(const char *fmt, ...) {
-  char log_buffer[200];
-  strcpy(log_buffer, "STM32: ");
+  // char log_buffer[200];
+  // strcpy(log_buffer, "STM32: ");
+  // va_list arg;
+  // va_start(arg, fmt);
+  // int len = vsnprintf(log_buffer + 7, 200, fmt, arg);
+  // va_end(arg);
+  // Serial.println(log_buffer);
+  // Serial.flush();
+
+  // minimize progmem when not used
   va_list arg;
   va_start(arg, fmt);
-  int len = vsnprintf(log_buffer + 7, 200, fmt, arg);
+  self_I2S->STM32_LOG(fmt, arg);
   va_end(arg);
-  Serial.println(log_buffer);
-  Serial.flush();
 }
 
 #ifdef USE_FULL_ASSERT
