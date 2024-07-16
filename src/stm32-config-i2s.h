@@ -53,7 +53,7 @@
   #define IS_H7
 #endif
 
-#ifdef STM32H743VITX
+#ifdef STM32H743xx
   #define SPI_INSTANCE_FOR_I2S SPI3
   #define STM_I2S_PINS \
     { \
