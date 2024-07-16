@@ -154,6 +154,10 @@ struct I2SSettingsSTM32 {
   void *ref = nullptr;
 };
 
+
+class Stm32I2sClass;
+static Stm32I2sClass *self_I2S = nullptr;
+
 /**
  * @brief I2S API for STM32
  * @author Phil Schatzmann
@@ -170,6 +174,7 @@ class Stm32I2sClass {
   friend void HAL_I2S_RxHalfCpltCallback(I2S_HandleTypeDef *hi2s);
 
  public:
+  Stm32I2sClass() {self_I2S = this; }
   /// start I2S w/o DMA: use write and readBytes
   bool begin(I2SSettingsSTM32 settings, bool transmit, bool receive) {
     this->use_dma = false;
@@ -626,7 +631,7 @@ class Stm32I2sClass {
   }
 };
 
-/// @brief Global I2S Object
-extern Stm32I2sClass I2S;
+///// @brief Global I2S Object
+//extern Stm32I2sClass I2S;
 
 }  // namespace stm32_i2s
