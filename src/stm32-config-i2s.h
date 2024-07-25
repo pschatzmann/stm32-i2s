@@ -19,6 +19,7 @@
   #define PLLN 192
   #define PLLR   2
   #define IS_F4
+  #define IS_READWRITE
 
 #endif
 
@@ -37,6 +38,7 @@
   #define PLLN   100
   #define PLLR    2
   #define IS_F4
+  #define IS_READWRITE
 
 #endif
 
@@ -51,6 +53,7 @@
       {data_in, PC_11, GPIO_AF6_SPI3}\
     };
   #define IS_H7
+  #define IS_READWRITE
 #endif
 
 #ifdef STM32H743xx
@@ -64,6 +67,7 @@
       {data_in, PB_4, GPIO_AF6_SPI3}\
     };
   #define IS_H7
+  #define IS_READWRITE
 #endif
 
 #ifdef STM32F723xx

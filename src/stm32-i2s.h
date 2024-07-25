@@ -210,7 +210,7 @@ class Stm32I2sClass {
         }
       }
 
-#ifndef IS_F7
+#ifdef IS_READWRITE
       if (receive && transmit) {
         if (HAL_I2SEx_TransmitReceive_DMA(&hi2s3, (uint16_t *)dma_buffer_tx,
                                           (uint16_t *)dma_buffer_rx,
@@ -275,6 +275,8 @@ class Stm32I2sClass {
     return result;
   }
 
+#ifdef IS_READWRITE
+
   /// Start to receive and transmit I2S data
   bool beginReadWriteDMA(I2SSettingsSTM32 settings,
                          void (*readToTransmit)(uint8_t *buffer,
@@ -307,6 +309,8 @@ class Stm32I2sClass {
     }
     return result;
   }
+
+#endif
 
   void end() {
     if (use_dma) HAL_I2S_DMAStop(&hi2s3);
@@ -514,8 +518,8 @@ void STM32_LOG(const char *fmt, ...) {
    * @param hi2s: I2S handle pointer
    * @retval None
    */
-  virtual void cb_i2s_MspInit(I2S_HandleTypeDef *hi2s) {
-    RCC_PeriphCLKInitTypeDef PeriphClkInitStruct = {0};
+  virtual void cb_i2s_MspInitCB(I2S_HandleTypeDef *hi2s) {
+        RCC_PeriphCLKInitTypeDef PeriphClkInitStruct = {0};
     /**
      * Initializes the peripherals clock
      */
