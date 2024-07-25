@@ -518,7 +518,7 @@ void STM32_LOG(const char *fmt, ...) {
    * @param hi2s: I2S handle pointer
    * @retval None
    */
-  virtual void cb_i2s_MspInitCB(I2S_HandleTypeDef *hi2s) {
+  virtual void cb_i2s_MspInit(I2S_HandleTypeDef *hi2s) {
         RCC_PeriphCLKInitTypeDef PeriphClkInitStruct = {0};
     /**
      * Initializes the peripherals clock
