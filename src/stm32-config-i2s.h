@@ -74,11 +74,11 @@
   #define SPI_INSTANCE_FOR_I2S SPI3
   #define STM_I2S_PINS \
     { \
-      {mclk, PB_7, GPIO_AF6_SPI3},\
-      {bck, PB_3, GPIO_AF6_SPI3},\
+      {mclk, PC_7, GPIO_AF6_SPI3},\
+      {bck, PC_10, GPIO_AF6_SPI3},\
       {ws, PA_15, GPIO_AF6_SPI3},\
-      {data_out, PB_5, GPIO_AF6_SPI3},\
-      {data_in, PB_4, GPIO_AF6_SPI3}\
+      {data_out, PC_12, GPIO_AF6_SPI3},\
+      {data_in, PC_11, GPIO_AF6_SPI3}\
     };
   #define IS_F7
 #endif
