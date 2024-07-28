@@ -22,6 +22,7 @@
 #include "stm32-config-i2s.h"
 #ifdef STM32H7xx
 #  include "stm32h7xx_hal.h"
+#  include "stm32h7xx_ll_rcc.h"
 #endif
 #ifdef STM32F4xx
 #  include "stm32f4xx_hal.h"
@@ -41,7 +42,7 @@ extern "C" void DMA1_Stream0_IRQHandler(void);
 extern "C" void DMA1_Stream5_IRQHandler(void);
 extern "C" void HAL_I2S_MspInit(I2S_HandleTypeDef *hi2s);
 extern "C" void HAL_I2S_MspDeInit(I2S_HandleTypeDef *hi2s);
-extern "C" void Report_Error();
+extern "C" void Report_Error(int no);
 extern "C" void STM32_LOG(const char *fmt, ...);
 extern bool stm32_i2s_is_error;
 
@@ -129,7 +130,7 @@ struct HardwareConfig {
 
   I2SPin pins[5] = STM_I2S_PINS;
 
-  int buffer_size = 512;
+  int buffer_size = 1024;
 
   HardwareConfig() {
     // overwrite processor specific default settings if necessary
@@ -144,9 +145,7 @@ struct HardwareConfig {
 struct I2SSettingsSTM32 {
   uint32_t mode = I2S_MODE_MASTER_TX;
   uint32_t standard = I2S_STANDARD_PHILIPS;
-#ifdef IS_F4
   uint32_t fullduplexmode = I2S_FULLDUPLEXMODE_ENABLE;
-#endif
   uint32_t sample_rate = I2S_AUDIOFREQ_44K;
   uint32_t data_format = I2S_DATAFORMAT_16B;
   HardwareConfig hardware_config;
@@ -156,7 +155,7 @@ struct I2SSettingsSTM32 {
 
 
 class Stm32I2sClass;
-static Stm32I2sClass *self_I2S = nullptr;
+extern Stm32I2sClass *self_I2S;
 
 /**
  * @brief I2S API for STM32
@@ -196,7 +195,7 @@ class Stm32I2sClass {
         if (HAL_I2S_Transmit_DMA(&hi2s3, (uint16_t *)dma_buffer_tx,
                                  buffer_size) != HAL_OK) {
           STM32_LOG("error HAL_I2S_Transmit_DMA");
-          Report_Error();
+          Report_Error(1);
           result = false;
         }
       }
@@ -205,22 +204,20 @@ class Stm32I2sClass {
         if (HAL_I2S_Receive_DMA(&hi2s3, (uint16_t *)dma_buffer_rx,
                                 buffer_size) != HAL_OK) {
           STM32_LOG("error: HAL_I2S_Receive_DMA");
-          Report_Error();
+          Report_Error(2);
           result = false;
         }
       }
 
-#ifdef IS_READWRITE
       if (receive && transmit) {
         if (HAL_I2SEx_TransmitReceive_DMA(&hi2s3, (uint16_t *)dma_buffer_tx,
                                           (uint16_t *)dma_buffer_rx,
                                           buffer_size) != HAL_OK) {
           STM32_LOG("error HAL_I2SEx_TransmitReceive_DMA");
-          Report_Error();
+          Report_Error(3);
           result = false;
         }
       }
-#endif
     }
 
     return result;
@@ -244,7 +241,7 @@ class Stm32I2sClass {
     if (HAL_I2S_Transmit_DMA(&hi2s3, (uint16_t *)dma_buffer_tx, buffer_size) !=
         HAL_OK) {
       STM32_LOG("error HAL_I2S_Transmit_DMA");
-      Report_Error();
+      Report_Error(4);
       result = false;
     }
     return result;
@@ -269,13 +266,12 @@ class Stm32I2sClass {
     if (HAL_I2S_Receive_DMA(&hi2s3, (uint16_t *)dma_buffer_rx, buffer_size) !=
         HAL_OK) {
       STM32_LOG("error: HAL_I2S_Transmit_DMA");
-      Report_Error();
+      Report_Error(5);
       result = false;
     }
     return result;
   }
 
-#ifdef IS_READWRITE
 
   /// Start to receive and transmit I2S data
   bool beginReadWriteDMA(I2SSettingsSTM32 settings,
@@ -294,7 +290,6 @@ class Stm32I2sClass {
     writeFromReceiveCB = writeFromReceive;
 
     if (dma_buffer_tx == nullptr) dma_buffer_tx = new byte[buffer_size];
-
     if (dma_buffer_rx == nullptr) dma_buffer_rx = new byte[buffer_size];
 
     if (!i2s_begin()) {
@@ -304,23 +299,24 @@ class Stm32I2sClass {
                                       (uint16_t *)dma_buffer_rx,
                                       buffer_size) != HAL_OK) {
       STM32_LOG("error HAL_I2SEx_TransmitReceive_DMA");
-      Report_Error();
+      Report_Error(6);
       result = false;
     }
     return result;
   }
 
-#endif
 
   void end() {
     if (use_dma) HAL_I2S_DMAStop(&hi2s3);
     HAL_I2S_DeInit(&hi2s3);
     HAL_I2S_MspDeInit(&hi2s3);
-    if (dma_buffer_tx != NULL) {
+    if (dma_buffer_tx != nullptr) {
       delete[] (dma_buffer_tx);
+      dma_buffer_tx = nullptr;
     }
-    if (dma_buffer_rx != NULL) {
+    if (dma_buffer_rx != nullptr) {
       delete[] (dma_buffer_rx);
+      dma_buffer_rx = nullptr;
     }
   }
 
@@ -352,14 +348,8 @@ class Stm32I2sClass {
     return rc == HAL_OK ? bytes : 0;
   }
 
-void STM32_LOG(const char *fmt, ...) {
-  char log_buffer[200];
-  strcpy(log_buffer, "STM32: ");
-  va_list arg;
-  va_start(arg, fmt);
-  int len = vsnprintf(log_buffer + 7, 200, fmt, arg);
-  va_end(arg);
-  Serial.println(log_buffer);
+void STM32_LOG(const char *msg) {
+  Serial.println(msg);
   Serial.flush();
 }
 
@@ -387,15 +377,15 @@ void STM32_LOG(const char *fmt, ...) {
   /// @param hi2s
   void cb_TxRxComplete(I2S_HandleTypeDef *hi2s) {
     // second half finished, filling it up again while first  half is playing
-    uint8_t *dma_buffer_tx = (uint8_t *)hi2s->pTxBuffPtr;
-    uint8_t *dma_buffer_rx = (uint8_t *)hi2s->pRxBuffPtr;
+    uint8_t *tmp_buffer_tx = (uint8_t *)hi2s->pTxBuffPtr;
+    uint8_t *tmp_buffer_rx = (uint8_t *)hi2s->pRxBuffPtr;
     uint16_t buffer_size_tx = hi2s->TxXferSize * 2;  // XferSize is in words
     uint16_t buffer_size_rx = hi2s->RxXferSize * 2;
-    if (readToTransmitCB != NULL)
-      readToTransmitCB(&(dma_buffer_tx[buffer_size_tx / 2]), buffer_size_tx / 2,
+    if (readToTransmitCB != nullptr)
+      readToTransmitCB(&(tmp_buffer_tx[buffer_size_tx / 2]), buffer_size_tx / 2,
                        settings.ref);
-    if (writeFromReceiveCB != NULL)
-      writeFromReceiveCB(&(dma_buffer_rx[buffer_size_rx / 2]),
+    if (writeFromReceiveCB != nullptr)
+      writeFromReceiveCB(&(tmp_buffer_rx[buffer_size_rx / 2]),
                          buffer_size_rx / 2, settings.ref);
   }
 
@@ -403,14 +393,14 @@ void STM32_LOG(const char *fmt, ...) {
   /// @param hi2s
   void cb_TxRxHalfComplete(I2S_HandleTypeDef *hi2s) {
     // second half finished, filling it up again while first  half is playing
-    uint8_t *dma_buffer_tx = (uint8_t *)hi2s->pTxBuffPtr;
-    uint8_t *dma_buffer_rx = (uint8_t *)hi2s->pRxBuffPtr;
+    uint8_t *tmp_buffer_tx = (uint8_t *)hi2s->pTxBuffPtr;
+    uint8_t *tmp_buffer_rx = (uint8_t *)hi2s->pRxBuffPtr;
     uint16_t buffer_size_tx = hi2s->TxXferSize * 2;  // XferSize is in words
     uint16_t buffer_size_rx = hi2s->RxXferSize * 2;
-    if (readToTransmitCB != NULL)
-      readToTransmitCB(&(dma_buffer_tx[0]), buffer_size_tx / 2, settings.ref);
-    if (writeFromReceiveCB != NULL)
-      writeFromReceiveCB(&(dma_buffer_rx[0]), buffer_size_rx / 2, settings.ref);
+    if (readToTransmitCB != nullptr)
+      readToTransmitCB(&(tmp_buffer_tx[0]), buffer_size_tx / 2, settings.ref);
+    if (writeFromReceiveCB != nullptr)
+      writeFromReceiveCB(&(tmp_buffer_rx[0]), buffer_size_rx / 2, settings.ref);
   }
 
   /// @brief Callback for DMA interrupt request
@@ -436,7 +426,7 @@ void STM32_LOG(const char *fmt, ...) {
       STM32_LOG("sample_rate must not be 0");
       return false;
     }
-    STM32_LOG("use_dma: %s", use_dma ? "true" : "false");
+    STM32_LOG(use_dma ? "use_dma: true" : "use_dma: false");
     stm32_i2s_is_error = false;
     /* Reset of all peripherals, Initializes the Flash interface and the
      * Systick.
@@ -457,9 +447,7 @@ void STM32_LOG(const char *fmt, ...) {
    * @param None
    * @retval None
    */
-  virtual void MX_GPIO_Init(void) {
-    // GPIO Ports Clock Enable
-    __HAL_RCC_GPIOH_CLK_ENABLE();
+   void MX_GPIO_Init(void) {
 
     // Define pins
     for (I2SPin &pin : hw.pins) {
@@ -470,7 +458,7 @@ void STM32_LOG(const char *fmt, ...) {
   /**
    * Enable DMA controller clock
    */
-  virtual void MX_DMA_Init(void) {
+   void MX_DMA_Init(void) {
     /* DMA controller clock enable */
     __HAL_RCC_DMA1_CLK_ENABLE();
 
@@ -481,6 +469,7 @@ void STM32_LOG(const char *fmt, ...) {
     /* DMA1_Stream5_IRQn interrupt configuration */
     HAL_NVIC_SetPriority(hw.irq2, 0, 0);
     HAL_NVIC_EnableIRQ(hw.irq2);
+   
   }
 
   /**
@@ -488,7 +477,7 @@ void STM32_LOG(const char *fmt, ...) {
    * @param None
    * @retval None
    */
-  virtual void MX_I2S3_Init(void) {
+   void MX_I2S3_Init(void) {
     hi2s3.Instance = SPI_INSTANCE_FOR_I2S;
     hi2s3.Init.Mode = settings.mode;
     hi2s3.Init.Standard = settings.standard;
@@ -508,7 +497,7 @@ void STM32_LOG(const char *fmt, ...) {
 #endif
 
     if (HAL_I2S_Init(&hi2s3) != HAL_OK) {
-      Report_Error();
+      Report_Error(7);
     }
   }
 
@@ -518,7 +507,7 @@ void STM32_LOG(const char *fmt, ...) {
    * @param hi2s: I2S handle pointer
    * @retval None
    */
-  virtual void cb_i2s_MspInit(I2S_HandleTypeDef *hi2s) {
+   void cb_i2s_MspInit(I2S_HandleTypeDef *hi2s) {
         RCC_PeriphCLKInitTypeDef PeriphClkInitStruct = {0};
     /**
      * Initializes the peripherals clock
@@ -527,12 +516,12 @@ void STM32_LOG(const char *fmt, ...) {
     PeriphClkInitStruct.PeriphClockSelection = RCC_PERIPHCLK_I2S;
 #endif
 #ifdef IS_H7
-    if (hi2s->Instance == SPI1) 
-      PeriphClkInitStruct.PeriphClockSelection = RCC_PERIPHCLK_SPI1;
-    if (hi2s->Instance == SPI2) 
-      PeriphClkInitStruct.PeriphClockSelection = RCC_PERIPHCLK_SPI2;
-    if (hi2s->Instance == SPI3) 
-      PeriphClkInitStruct.PeriphClockSelection = RCC_PERIPHCLK_SPI3;
+    // if (hi2s->Instance == SPI1) 
+    //   PeriphClkInitStruct.PeriphClockSelection = RCC_PERIPHCLK_SPI1;
+    // if (hi2s->Instance == SPI2) 
+    //   PeriphClkInitStruct.PeriphClockSelection = RCC_PERIPHCLK_SPI2;
+    // if (hi2s->Instance == SPI3) 
+//       PeriphClkInitStruct.PeriphClockSelection = RCC_SPI123CLKSOURCE_PLL2;
 #endif
 
 #ifdef PLLM
@@ -544,9 +533,14 @@ void STM32_LOG(const char *fmt, ...) {
 #ifdef PLLR
     PeriphClkInitStruct.PLLI2S.PLLI2SR = hw.pllr;  // 2;
 #endif
+
+#ifdef SPI_CLOCK_SOURCE
+    LL_RCC_SetSPIClockSource(SPI_CLOCK_SOURCE);
+#else
     if (HAL_RCCEx_PeriphCLKConfig(&PeriphClkInitStruct) != HAL_OK) {
-      Report_Error();
+      Report_Error(8);
     }
+#endif
 
     /* Peripheral clock enable */
     if (hi2s->Instance == SPI1) 
@@ -623,7 +617,7 @@ void STM32_LOG(const char *fmt, ...) {
     dma.Init.MemBurst = DMA_PBURST_INC4;
     dma.Init.PeriphBurst = DMA_PBURST_INC4;
     if (HAL_DMA_Init(&dma) != HAL_OK) {
-      Report_Error();
+      Report_Error(9);
     }
   }
 
@@ -633,7 +627,7 @@ void STM32_LOG(const char *fmt, ...) {
    * @param hi2s: I2S handle pointer
    * @retval None
    */
-  virtual void cb_i2s_MspDeInit(I2S_HandleTypeDef *hi2s) {
+   void cb_i2s_MspDeInit(I2S_HandleTypeDef *hi2s) {
     /* Peripheral clock disable */
     if (hi2s->Instance == SPI1) 
         __HAL_RCC_SPI1_CLK_DISABLE();

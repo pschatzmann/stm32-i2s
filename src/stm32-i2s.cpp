@@ -4,6 +4,7 @@
 namespace stm32_i2s {
 
 //Stm32I2sClass I2S;
+Stm32I2sClass *self_I2S = nullptr;
 
 bool stm32_i2s_is_error = false;
 
@@ -23,7 +24,7 @@ extern "C" void HAL_I2S_RxHalfCpltCallback(I2S_HandleTypeDef *hi2s) {
   self_I2S->cb_TxRxHalfComplete(hi2s);
 }
 
-extern "C" void HAL_I2S_ErrorCallback(I2S_HandleTypeDef *hi2s) { Report_Error(); }
+extern "C" void HAL_I2S_ErrorCallback(I2S_HandleTypeDef *hi2s) { Report_Error(10); }
 
 /**
  * @brief This function handles DMA1 stream0 global interrupt.
@@ -54,28 +55,22 @@ extern "C" void HAL_I2S_MspDeInit(I2S_HandleTypeDef *hi2s) { self_I2S->cb_HAL_I2
  * @brief  This function is executed in case of error occurrence.
  * @retval None
  */
-void Report_Error() {
+void Report_Error(int no) {
   stm32_i2s_is_error = true;
-  STM32_LOG("%s", "stm32-i2s: Error");
+  STM32_LOG("%s %d", "stm32-i2s: Error", no);
 }
 
 /**
  * @brief Write log output to Serial
  */
 void STM32_LOG(const char *fmt, ...) {
-  // char log_buffer[200];
-  // strcpy(log_buffer, "STM32: ");
-  // va_list arg;
-  // va_start(arg, fmt);
-  // int len = vsnprintf(log_buffer + 7, 200, fmt, arg);
-  // va_end(arg);
-  // Serial.println(log_buffer);
-  // Serial.flush();
-
-  // minimize progmem when not used
+  char log_buffer[200];
+  strcpy(log_buffer, "STM32: ");
   va_list arg;
   va_start(arg, fmt);
-  self_I2S->STM32_LOG(fmt, arg);
+  int len = vsnprintf(log_buffer + 7, 200, fmt, arg);
+  va_end(arg);
+  self_I2S->STM32_LOG(log_buffer);
   va_end(arg);
 }
 
