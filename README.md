@@ -1,4 +1,4 @@
-# Arduino STM32F411 I2S Library
+# Arduino STM32 I2S Library
 
 I wanted to use __I2S__ in Arduino with my __STM32F411 Black Pill__ processor together with my [Arduino Audio Tools](https://github.com/pschatzmann/arduino-audio-tools)! 
 
@@ -18,15 +18,11 @@ My first trials failed miserably using the DMA versions of the HAL API, so I dec
 - Only __16bit__ data is supported
 - I also incuded the __codec drivers__ that are part of some stm32 evaluation boards. 
 
+Subsequently, I have extended the functionality to support other variants.
+
 ## Pins for I2S3
 
-FUNCTIONs  | BlackP | Disco
------------|--------|------
-MCK	       | PB10   | PC7
-BCK	       | PB3    | PC10
-WS (LRC)   | PA4	| PA4
-SD	       | PB5    | PC3
-ext_SD	   | PB4    | PC12
+See [src/stm32-config-i2s.h](https://github.com/pschatzmann/stm32-i2s/blob/main/src/stm32-config-i2s.h).
 
 ## Supported Sample Rates
 
