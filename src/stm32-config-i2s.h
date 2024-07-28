@@ -1,6 +1,5 @@
 #pragma once
 
-#define I2S_BUFFER_SIZE 512
 #define STM32_I2S_WITH_OBJECT
 #define USE_FULL_ASSERT
 

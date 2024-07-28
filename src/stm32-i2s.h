@@ -516,12 +516,11 @@ void STM32_LOG(const char *msg) {
     PeriphClkInitStruct.PeriphClockSelection = RCC_PERIPHCLK_I2S;
 #endif
 #ifdef IS_H7
-    // if (hi2s->Instance == SPI1) 
-    //   PeriphClkInitStruct.PeriphClockSelection = RCC_PERIPHCLK_SPI1;
-    // if (hi2s->Instance == SPI2) 
-    //   PeriphClkInitStruct.PeriphClockSelection = RCC_PERIPHCLK_SPI2;
-    // if (hi2s->Instance == SPI3) 
-//       PeriphClkInitStruct.PeriphClockSelection = RCC_SPI123CLKSOURCE_PLL2;
+    if (hi2s->Instance == SPI1) 
+      PeriphClkInitStruct.PeriphClockSelection = RCC_PERIPHCLK_SPI1;
+    if (hi2s->Instance == SPI2) 
+      PeriphClkInitStruct.PeriphClockSelection = RCC_PERIPHCLK_SPI2;
+    if (hi2s->Instance == SPI3) 
 #endif
 
 #ifdef PLLM
