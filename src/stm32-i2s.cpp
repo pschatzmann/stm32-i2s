@@ -1,6 +1,8 @@
 
 #include "stm32-i2s.h"
 
+#ifdef STM_I2S_PINS
+
 namespace stm32_i2s {
 
 //Stm32I2sClass I2S;
@@ -92,3 +94,6 @@ extern "C" void assert_failed(uint8_t *file, uint32_t line) {
 #endif /* USE_FULL_ASSERT */
 
 }
+
+#endif // STM_I2S_PINS
+

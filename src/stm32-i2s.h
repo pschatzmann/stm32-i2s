@@ -28,6 +28,9 @@
 #  include "stm32f4xx_hal.h"
 #endif
 
+#ifdef STM_I2S_PINS
+
+
 extern uint32_t g_anOutputPinConfigured[MAX_NB_PORT];
 
 namespace stm32_i2s {
@@ -645,3 +648,7 @@ void STM32_LOG(const char *msg) {
 //extern Stm32I2sClass I2S;
 
 }  // namespace stm32_i2s
+
+#else
+#warning STM_I2S_PINS not defined
+#endif
