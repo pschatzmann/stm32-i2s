@@ -1,4 +1,4 @@
-# Arduino STM32F411 I2S Library
+# Arduino STM32 I2S Library
 
 I wanted to use __I2S__ in Arduino with my __STM32F411 Black Pill__ processor together with my [Arduino Audio Tools](https://github.com/pschatzmann/arduino-audio-tools)! 
 
@@ -18,15 +18,11 @@ My first trials failed miserably using the DMA versions of the HAL API, so I dec
 - Only __16bit__ data is supported
 - I also incuded the __codec drivers__ that are part of some stm32 evaluation boards. 
 
+Subsequently, I have extended the functionality to support other variants.
+
 ## Pins for I2S3
 
-FUNCTIONs  | BlackP | Disco
------------|--------|------
-MCK	       | PB10   | PC7
-BCK	       | PB3    | PC10
-WS (LRC)   | PA4	| PA4
-SD	       | PB5    | PC3
-ext_SD	   | PB4    | PC12
+See [src/stm32-config-i2s.h](https://github.com/pschatzmann/stm32-i2s/blob/main/src/stm32-config-i2s.h).
 
 ## Supported Sample Rates
 
@@ -55,6 +51,7 @@ using namespace stm32_i2s;
 
 SineWaveGenerator<int16_t> sineWave(32000);   // subclass of SoundGenerator with max amplitude of 32000
 I2SSettingsSTM32 i2s_settings;
+Stm32I2sClass I2S;
 int sample_rate = 8000;
 int channels = 1;
 
@@ -92,6 +89,7 @@ using namespace stm32_i2s;
 
 CsvStream<int16_t> out(Serial, 2); // ASCII output stream 
 I2SSettingsSTM32 i2s_settings;
+Stm32I2sClass I2S;
 
 void writeFromReceive(uint8_t *buffer, uint16_t byteCount, void*){
 	out.write(buffer, byteCount);
@@ -100,7 +98,7 @@ void writeFromReceive(uint8_t *buffer, uint16_t byteCount, void*){
 void setup() {
 	Serial.begin(115200);
 	i2s_settings.sample_rate = I2S_AUDIOFREQ_8K;
-	if (!I2s.beginReadDMA(i2s_settings, writeFromReceive){
+	if (!I2S.beginReadDMA(i2s_settings, writeFromReceive){
 		Serial.println("I2S Error");
 	}
 }
@@ -122,7 +120,7 @@ You can download the library as zip and call include Library -> zip library. Or 
 
 ```
 cd  ~/Documents/Arduino/libraries
-git clone https://github.com/pschatzmann/stm32f411-i2s.git
+git clone https://github.com/pschatzmann/stm32-i2s.git
 ```
 
 I recommend to use git because you can easily update to the latest version just by executing the ```git pull``` command in the project folder.

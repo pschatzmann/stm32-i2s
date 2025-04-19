@@ -20,7 +20,16 @@
 #include "Arduino.h"
 #include "PinConfigured.h"
 #include "stm32-config-i2s.h"
-#include "stm32f4xx_hal.h"
+#ifdef STM32H7xx
+#  include "stm32h7xx_hal.h"
+#  include "stm32h7xx_ll_rcc.h"
+#endif
+#ifdef STM32F4xx
+#  include "stm32f4xx_hal.h"
+#endif
+
+#ifdef STM_I2S_PINS
+
 
 extern uint32_t g_anOutputPinConfigured[MAX_NB_PORT];
 
@@ -36,7 +45,7 @@ extern "C" void DMA1_Stream0_IRQHandler(void);
 extern "C" void DMA1_Stream5_IRQHandler(void);
 extern "C" void HAL_I2S_MspInit(I2S_HandleTypeDef *hi2s);
 extern "C" void HAL_I2S_MspDeInit(I2S_HandleTypeDef *hi2s);
-extern "C" void Report_Error();
+extern "C" void Report_Error(int no);
 extern "C" void STM32_LOG(const char *fmt, ...);
 extern bool stm32_i2s_is_error;
 
@@ -105,20 +114,28 @@ struct HardwareConfig {
 #ifdef PLLM
   uint32_t pllm = PLLM;
 #endif
+#ifdef PLLN
   uint32_t plln = PLLN;
+#endif
+#ifdef PLLR
   uint32_t pllr = PLLR;
+#endif
 
   DMA_Stream_TypeDef *rx_instance = DMA1_Stream0;
+  #ifdef IS_F4
   uint32_t rx_channel = DMA_CHANNEL_3;
+  #endif
   uint32_t rx_direction = DMA_PERIPH_TO_MEMORY;
 
   DMA_Stream_TypeDef *tx_instance = DMA1_Stream5;
+  #ifdef IS_F4
   uint32_t tx_channel = DMA_CHANNEL_0;
+  #endif
   uint32_t tx_direction = DMA_MEMORY_TO_PERIPH;
 
   I2SPin pins[5] = STM_I2S_PINS;
 
-  int buffer_size = 512;
+  int buffer_size = 1024;
 
   HardwareConfig() {
     // overwrite processor specific default settings if necessary
@@ -141,6 +158,10 @@ struct I2SSettingsSTM32 {
   void *ref = nullptr;
 };
 
+
+class Stm32I2sClass;
+extern Stm32I2sClass *self_I2S;
+
 /**
  * @brief I2S API for STM32
  * @author Phil Schatzmann
@@ -157,6 +178,7 @@ class Stm32I2sClass {
   friend void HAL_I2S_RxHalfCpltCallback(I2S_HandleTypeDef *hi2s);
 
  public:
+  Stm32I2sClass() {self_I2S = this; }
   /// start I2S w/o DMA: use write and readBytes
   bool begin(I2SSettingsSTM32 settings, bool transmit, bool receive) {
     this->use_dma = false;
@@ -178,7 +200,7 @@ class Stm32I2sClass {
         if (HAL_I2S_Transmit_DMA(&hi2s3, (uint16_t *)dma_buffer_tx,
                                  buffer_size) != HAL_OK) {
           STM32_LOG("error HAL_I2S_Transmit_DMA");
-          Report_Error();
+          Report_Error(1);
           result = false;
         }
       }
@@ -187,7 +209,7 @@ class Stm32I2sClass {
         if (HAL_I2S_Receive_DMA(&hi2s3, (uint16_t *)dma_buffer_rx,
                                 buffer_size) != HAL_OK) {
           STM32_LOG("error: HAL_I2S_Receive_DMA");
-          Report_Error();
+          Report_Error(2);
           result = false;
         }
       }
@@ -197,7 +219,7 @@ class Stm32I2sClass {
                                           (uint16_t *)dma_buffer_rx,
                                           buffer_size) != HAL_OK) {
           STM32_LOG("error HAL_I2SEx_TransmitReceive_DMA");
-          Report_Error();
+          Report_Error(3);
           result = false;
         }
       }
@@ -224,7 +246,7 @@ class Stm32I2sClass {
     if (HAL_I2S_Transmit_DMA(&hi2s3, (uint16_t *)dma_buffer_tx, buffer_size) !=
         HAL_OK) {
       STM32_LOG("error HAL_I2S_Transmit_DMA");
-      Report_Error();
+      Report_Error(4);
       result = false;
     }
     return result;
@@ -249,11 +271,12 @@ class Stm32I2sClass {
     if (HAL_I2S_Receive_DMA(&hi2s3, (uint16_t *)dma_buffer_rx, buffer_size) !=
         HAL_OK) {
       STM32_LOG("error: HAL_I2S_Transmit_DMA");
-      Report_Error();
+      Report_Error(5);
       result = false;
     }
     return result;
   }
+
 
   /// Start to receive and transmit I2S data
   bool beginReadWriteDMA(I2SSettingsSTM32 settings,
@@ -272,7 +295,6 @@ class Stm32I2sClass {
     writeFromReceiveCB = writeFromReceive;
 
     if (dma_buffer_tx == nullptr) dma_buffer_tx = new byte[buffer_size];
-
     if (dma_buffer_rx == nullptr) dma_buffer_rx = new byte[buffer_size];
 
     if (!i2s_begin()) {
@@ -282,21 +304,24 @@ class Stm32I2sClass {
                                       (uint16_t *)dma_buffer_rx,
                                       buffer_size) != HAL_OK) {
       STM32_LOG("error HAL_I2SEx_TransmitReceive_DMA");
-      Report_Error();
+      Report_Error(6);
       result = false;
     }
     return result;
   }
 
+
   void end() {
     if (use_dma) HAL_I2S_DMAStop(&hi2s3);
     HAL_I2S_DeInit(&hi2s3);
     HAL_I2S_MspDeInit(&hi2s3);
-    if (dma_buffer_tx != NULL) {
+    if (dma_buffer_tx != nullptr) {
       delete[] (dma_buffer_tx);
+      dma_buffer_tx = nullptr;
     }
-    if (dma_buffer_rx != NULL) {
+    if (dma_buffer_rx != nullptr) {
       delete[] (dma_buffer_rx);
+      dma_buffer_rx = nullptr;
     }
   }
 
@@ -328,6 +353,11 @@ class Stm32I2sClass {
     return rc == HAL_OK ? bytes : 0;
   }
 
+void STM32_LOG(const char *msg) {
+  Serial.println(msg);
+  Serial.flush();
+}
+
  protected:
   I2SSettingsSTM32 settings;
   I2S_HandleTypeDef hi2s3;
@@ -352,15 +382,15 @@ class Stm32I2sClass {
   /// @param hi2s
   void cb_TxRxComplete(I2S_HandleTypeDef *hi2s) {
     // second half finished, filling it up again while first  half is playing
-    uint8_t *dma_buffer_tx = (uint8_t *)hi2s->pTxBuffPtr;
-    uint8_t *dma_buffer_rx = (uint8_t *)hi2s->pRxBuffPtr;
+    uint8_t *tmp_buffer_tx = (uint8_t *)hi2s->pTxBuffPtr;
+    uint8_t *tmp_buffer_rx = (uint8_t *)hi2s->pRxBuffPtr;
     uint16_t buffer_size_tx = hi2s->TxXferSize * 2;  // XferSize is in words
     uint16_t buffer_size_rx = hi2s->RxXferSize * 2;
-    if (readToTransmitCB != NULL)
-      readToTransmitCB(&(dma_buffer_tx[buffer_size_tx / 2]), buffer_size_tx / 2,
+    if (readToTransmitCB != nullptr)
+      readToTransmitCB(&(tmp_buffer_tx[buffer_size_tx / 2]), buffer_size_tx / 2,
                        settings.ref);
-    if (writeFromReceiveCB != NULL)
-      writeFromReceiveCB(&(dma_buffer_rx[buffer_size_rx / 2]),
+    if (writeFromReceiveCB != nullptr)
+      writeFromReceiveCB(&(tmp_buffer_rx[buffer_size_rx / 2]),
                          buffer_size_rx / 2, settings.ref);
   }
 
@@ -368,14 +398,14 @@ class Stm32I2sClass {
   /// @param hi2s
   void cb_TxRxHalfComplete(I2S_HandleTypeDef *hi2s) {
     // second half finished, filling it up again while first  half is playing
-    uint8_t *dma_buffer_tx = (uint8_t *)hi2s->pTxBuffPtr;
-    uint8_t *dma_buffer_rx = (uint8_t *)hi2s->pRxBuffPtr;
+    uint8_t *tmp_buffer_tx = (uint8_t *)hi2s->pTxBuffPtr;
+    uint8_t *tmp_buffer_rx = (uint8_t *)hi2s->pRxBuffPtr;
     uint16_t buffer_size_tx = hi2s->TxXferSize * 2;  // XferSize is in words
     uint16_t buffer_size_rx = hi2s->RxXferSize * 2;
-    if (readToTransmitCB != NULL)
-      readToTransmitCB(&(dma_buffer_tx[0]), buffer_size_tx / 2, settings.ref);
-    if (writeFromReceiveCB != NULL)
-      writeFromReceiveCB(&(dma_buffer_rx[0]), buffer_size_rx / 2, settings.ref);
+    if (readToTransmitCB != nullptr)
+      readToTransmitCB(&(tmp_buffer_tx[0]), buffer_size_tx / 2, settings.ref);
+    if (writeFromReceiveCB != nullptr)
+      writeFromReceiveCB(&(tmp_buffer_rx[0]), buffer_size_rx / 2, settings.ref);
   }
 
   /// @brief Callback for DMA interrupt request
@@ -401,7 +431,7 @@ class Stm32I2sClass {
       STM32_LOG("sample_rate must not be 0");
       return false;
     }
-    STM32_LOG("use_dma: %s", use_dma ? "true" : "false");
+    STM32_LOG(use_dma ? "use_dma: true" : "use_dma: false");
     stm32_i2s_is_error = false;
     /* Reset of all peripherals, Initializes the Flash interface and the
      * Systick.
@@ -422,9 +452,7 @@ class Stm32I2sClass {
    * @param None
    * @retval None
    */
-  virtual void MX_GPIO_Init(void) {
-    // GPIO Ports Clock Enable
-    __HAL_RCC_GPIOH_CLK_ENABLE();
+   void MX_GPIO_Init(void) {
 
     // Define pins
     for (I2SPin &pin : hw.pins) {
@@ -435,7 +463,7 @@ class Stm32I2sClass {
   /**
    * Enable DMA controller clock
    */
-  virtual void MX_DMA_Init(void) {
+   void MX_DMA_Init(void) {
     /* DMA controller clock enable */
     __HAL_RCC_DMA1_CLK_ENABLE();
 
@@ -446,6 +474,7 @@ class Stm32I2sClass {
     /* DMA1_Stream5_IRQn interrupt configuration */
     HAL_NVIC_SetPriority(hw.irq2, 0, 0);
     HAL_NVIC_EnableIRQ(hw.irq2);
+   
   }
 
   /**
@@ -453,18 +482,27 @@ class Stm32I2sClass {
    * @param None
    * @retval None
    */
-  virtual void MX_I2S3_Init(void) {
+   void MX_I2S3_Init(void) {
     hi2s3.Instance = SPI_INSTANCE_FOR_I2S;
     hi2s3.Init.Mode = settings.mode;
     hi2s3.Init.Standard = settings.standard;
-    hi2s3.Init.FullDuplexMode = settings.fullduplexmode;
     hi2s3.Init.AudioFreq = settings.sample_rate;
     hi2s3.Init.DataFormat = settings.data_format;
     hi2s3.Init.MCLKOutput = I2S_MCLKOUTPUT_ENABLE;
     hi2s3.Init.CPOL = I2S_CPOL_LOW;
+#ifdef IS_F4
+    hi2s3.Init.FullDuplexMode = settings.fullduplexmode;
     hi2s3.Init.ClockSource = I2S_CLOCK_PLL;
+#endif
+#ifdef IS_H7
+    hi2s3.Init.FirstBit = I2S_FIRSTBIT_MSB;
+    hi2s3.Init.WSInversion = I2S_WS_INVERSION_DISABLE;
+    hi2s3.Init.Data24BitAlignment = I2S_DATA_24BIT_ALIGNMENT_RIGHT;
+    hi2s3.Init.MasterKeepIOState = I2S_MASTER_KEEP_IO_STATE_DISABLE;
+#endif
+
     if (HAL_I2S_Init(&hi2s3) != HAL_OK) {
-      Report_Error();
+      Report_Error(7);
     }
   }
 
@@ -474,12 +512,22 @@ class Stm32I2sClass {
    * @param hi2s: I2S handle pointer
    * @retval None
    */
-  virtual void cb_i2s_MspInit(I2S_HandleTypeDef *hi2s) {
-    RCC_PeriphCLKInitTypeDef PeriphClkInitStruct = {0};
+   void cb_i2s_MspInit(I2S_HandleTypeDef *hi2s) {
+        RCC_PeriphCLKInitTypeDef PeriphClkInitStruct = {0};
     /**
      * Initializes the peripherals clock
      */
+#ifdef IS_F4
     PeriphClkInitStruct.PeriphClockSelection = RCC_PERIPHCLK_I2S;
+#endif
+#ifdef IS_H7
+    if (hi2s->Instance == SPI1) 
+      PeriphClkInitStruct.PeriphClockSelection = RCC_PERIPHCLK_SPI1;
+    if (hi2s->Instance == SPI2) 
+      PeriphClkInitStruct.PeriphClockSelection = RCC_PERIPHCLK_SPI2;
+    if (hi2s->Instance == SPI3) 
+#endif
+
 #ifdef PLLM
     PeriphClkInitStruct.PLLI2S.PLLI2SM = hw.pllm;  // 16;
 #endif
@@ -489,9 +537,14 @@ class Stm32I2sClass {
 #ifdef PLLR
     PeriphClkInitStruct.PLLI2S.PLLI2SR = hw.pllr;  // 2;
 #endif
+
+#ifdef SPI_CLOCK_SOURCE
+    LL_RCC_SetSPIClockSource(SPI_CLOCK_SOURCE);
+#else
     if (HAL_RCCEx_PeriphCLKConfig(&PeriphClkInitStruct) != HAL_OK) {
-      Report_Error();
+      Report_Error(8);
     }
+#endif
 
     /* Peripheral clock enable */
     if (hi2s->Instance == SPI1)
@@ -506,14 +559,24 @@ class Stm32I2sClass {
     if (use_dma) {
       /* I2S3 DMA Init */
       if (dma_buffer_rx != nullptr) {
-        setupDMA(hdma_i2s3_ext_rx, hw.rx_instance, hw.rx_channel,
-                 hw.rx_direction);
+#ifdef IS_F4
+        uint32_t ch = hw.rx_channel;
+#else
+        uint32_t ch = 0; // not used
+#endif
+        setupDMA(hdma_i2s3_ext_rx, hw.rx_instance, ch,
+                 hw.rx_direction, hi2s->Instance);
         __HAL_LINKDMA(hi2s, hdmarx, hdma_i2s3_ext_rx);
       }
 
       if (dma_buffer_tx != nullptr) {
-        setupDMA(hdma_i2s3_ext_tx, hw.tx_instance, hw.tx_channel,
-                 hw.tx_direction);
+#ifdef IS_F4
+        uint32_t ch = hw.tx_channel;
+#else
+        uint32_t ch = 0; // not used
+#endif
+        setupDMA(hdma_i2s3_ext_tx, hw.tx_instance, ch,
+                 hw.tx_direction, hi2s->Instance);
         __HAL_LINKDMA(hi2s, hdmatx, hdma_i2s3_ext_tx);
       }
     }
@@ -524,9 +587,30 @@ class Stm32I2sClass {
    * This function configures and initializes the DMA
    */
   void setupDMA(DMA_HandleTypeDef &dma, DMA_Stream_TypeDef *instance,
-                uint32_t channel, uint32_t direction) {
+                uint32_t channel, uint32_t direction, SPI_TypeDef* port) {
     dma.Instance = instance;
+#ifdef IS_F4
     dma.Init.Channel = channel;
+#endif
+#ifdef IS_H7
+    if (direction == DMA_PERIPH_TO_MEMORY) {
+      if (port == SPI1) 
+        dma.Init.Request = DMA_REQUEST_SPI1_RX;
+      if (port == SPI2) 
+        dma.Init.Request = DMA_REQUEST_SPI2_RX;
+      if (port == SPI3) 
+        dma.Init.Request = DMA_REQUEST_SPI3_RX;
+    }
+    if (direction == DMA_MEMORY_TO_PERIPH) {
+      if (port == SPI1) 
+        dma.Init.Request = DMA_REQUEST_SPI1_TX;
+      if (port == SPI2) 
+        dma.Init.Request = DMA_REQUEST_SPI2_TX;
+      if (port == SPI3) 
+        dma.Init.Request = DMA_REQUEST_SPI3_TX;
+    }
+#endif
+
     dma.Init.Direction = direction;
     dma.Init.PeriphInc = DMA_PINC_DISABLE;
     dma.Init.MemInc = DMA_MINC_ENABLE;
@@ -539,7 +623,7 @@ class Stm32I2sClass {
     dma.Init.MemBurst = DMA_PBURST_INC4;
     dma.Init.PeriphBurst = DMA_PBURST_INC4;
     if (HAL_DMA_Init(&dma) != HAL_OK) {
-      Report_Error();
+      Report_Error(9);
     }
   }
 
@@ -567,7 +651,11 @@ class Stm32I2sClass {
   }
 };
 
-/// @brief Global I2S Object
-extern Stm32I2sClass I2S;
+///// @brief Global I2S Object
+//extern Stm32I2sClass I2S;
 
 }  // namespace stm32_i2s
+
+#else
+#warning STM_I2S_PINS not defined
+#endif
