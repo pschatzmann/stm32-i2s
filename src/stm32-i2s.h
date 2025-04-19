@@ -84,7 +84,9 @@ struct I2SPin {
           pwm_stop(p);
         }
 #endif  // HAL_TIM_MODULE_ENABLED && !HAL_TIM_MODULE_ONLY
-        { reset_pin_configured(p, g_anOutputPinConfigured); }
+        {
+          reset_pin_configured(p, g_anOutputPinConfigured);
+        }
       }
 #endif
     }
@@ -492,10 +494,16 @@ class Stm32I2sClass {
     }
 
     /* Peripheral clock enable */
-    __HAL_RCC_SPI3_CLK_ENABLE();
+    if (hi2s->Instance == SPI1)
+      __HAL_RCC_SPI1_CLK_ENABLE();
+    else if (hi2s->Instance == SPI2)
+      __HAL_RCC_SPI2_CLK_ENABLE();
+    else if (hi2s->Instance == SPI3)
+      __HAL_RCC_SPI3_CLK_ENABLE();
+    else
+      STM32_LOG("error: invalid hi2s->Instance");
 
     if (use_dma) {
-
       /* I2S3 DMA Init */
       if (dma_buffer_rx != nullptr) {
         setupDMA(hdma_i2s3_ext_rx, hw.rx_instance, hw.rx_channel,
@@ -542,14 +550,20 @@ class Stm32I2sClass {
    * @retval None
    */
   virtual void cb_i2s_MspDeInit(I2S_HandleTypeDef *hi2s) {
-    if (hi2s->Instance == SPI3) {
-      /* Peripheral clock disable */
+    if (hi2s->Instance == SPI1)
+      __HAL_RCC_SPI1_CLK_DISABLE();
+    else if (hi2s->Instance == SPI2)
+      __HAL_RCC_SPI2_CLK_DISABLE();
+    else if (hi2s->Instance == SPI3)
       __HAL_RCC_SPI3_CLK_DISABLE();
+    else
+      STM32_LOG("error: invalid hi2s->Instance");
 
-      /* I2S3 DMA DeInit */
-      HAL_DMA_DeInit(hi2s->hdmarx);
-      HAL_DMA_DeInit(hi2s->hdmatx);
-    }
+    /* Peripheral clock disable */
+
+    /* I2S3 DMA DeInit */
+    HAL_DMA_DeInit(hi2s->hdmarx);
+    HAL_DMA_DeInit(hi2s->hdmatx);
   }
 };
 
