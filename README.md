@@ -2,7 +2,7 @@
 
 I wanted to use __I2S__ in Arduino with my __STM32F411 Black Pill__ processor together with my [Arduino Audio Tools](https://github.com/pschatzmann/arduino-audio-tools)! 
 
-![stm32f411](https://pschatzmann.github.io/stm32f411-i2s/stm32f411.jpeg)
+![stm32f411](https://pschatzmann.github.io/stm32-i2s/stm32f411.jpeg)
 
 Unfortunately [STMDuino](https://github.com/stm32duino) does not provide this functionality.
 
@@ -109,7 +109,7 @@ void loop() {}
 
 ## Documentation
 
-Here is the link to the [actual documentation](https://pschatzmann.github.io/stm32f411-i2s/html/classstm32__i2s_1_1_stm32_i2s_class.html).
+Here is the link to the [actual documentation](https://pschatzmann.github.io/stm32-i2s/html/classstm32__i2s_1_1_stm32_i2s_class.html).
 
 You might also find further information in [my Blogs](https://www.pschatzmann.ch/tags/stm32)
 
